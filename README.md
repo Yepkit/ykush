@@ -71,9 +71,9 @@ Note that the script requires Internet connectivity to fetch the latest version 
 Some dependencies may not have been satisfied and some additional systems components and utilities may be required.
 If that was the case please install them and re-run the script. 
 
-After a successful build process you can install the ykush command in the system. To do so run:
+After a successful build process you can install the ykush command in the system. To do so, in `ykush/` folder run:
 ```
-./install.sh
+sudo ./install.sh
 ```
 
 After install, the `ykush` command is ready for use.
