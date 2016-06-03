@@ -1,0 +1,9 @@
+hidapi/
+Release/
+Debug/
+release/
+debug/
+*.swp
+*.bak
+*.o
+.directory
