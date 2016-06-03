@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#
+# YKUSH command application build script
 
 rm -rf hidapi
 
