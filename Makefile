@@ -5,8 +5,8 @@ LOADPATHS = -L$(CUR_PATH)/ykushcmd/linux
 PREPROCESSOR_DEFS = -DLINUX
 CPP = g++
 
-ykush : $(OBJS)
-	$(CPP) $(LOADPATHS) -o bin/ykush $(OBJS) $(LIBS)
+ykushcmd : $(OBJS)
+	$(CPP) $(LOADPATHS) -o bin/ykushcmd $(OBJS) $(LIBS)
 
 
 ykushcmd/objs/ykushcmd.o : ykushcmd/ykushcmd.cpp ykushcmd/commandParser.h
