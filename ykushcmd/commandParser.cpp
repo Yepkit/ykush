@@ -398,9 +398,11 @@ int printUsage(){
     printf("-------------------\n");
     printf("\nykush -d downstream_number \t\tTurns DOWN the downstream port with the number downstream_number\n");
     printf("\nykush -u downstream_number \t\tTurns UP the downstream port with the number downstream_number\n");
+    printf("\nykush -g downstream_number \t\tObtains the switching status of port with the number downstream_number\n");
     printf("\nykush -l \t\t\t\tLists all currently attached YKUSH boards\n");
     printf("\nykush -s serial_number -d downstream_number \tTurns DOWN the downstream port with the number downstream_number for the board with the specified serial number\n");
     printf("\nykush -s serial_number -u downstream_number \tTurns UP the downstream port with the number downstream_number for the board with the specified serial number\n\n\n");
+    printf("\nykush -s serial_number -g downstream_number \tObtains the switching status of port with the number downstream_number for the board with the specified serial number\n\n\n");
 
     return 0;
 }

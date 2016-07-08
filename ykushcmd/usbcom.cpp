@@ -90,12 +90,19 @@ using namespace std;
 int listDevices() {
 
     	// Enumerate and print the YKUSH devices on the system
+        
+        hid_device *handle;
     	struct hid_device_info *devs, *cur_dev;
 
     	devs = hid_enumerate(0x0, 0x0);
     	if (devs == NULL) {
-        	// No HID devices found
-        	printf("\nNo HID USB devices connected to this Host\n");
+            // Limited Legaccy firmware support (does not work in all systems)
+            handle = hid_open(VENDOR_ID, OLD_PRODUCT_ID, NULL);
+            if (handle == NULL){
+                // No HID devices found
+                printf("\nNo HID USB devices connected to this Host\n");
+            }
+
     	}
 
     	cur_dev = devs;
@@ -157,7 +164,13 @@ int listDevices() {
      	handle = hid_open(VENDOR_ID, PRODUCT_ID, NULL);
 
      	if (handle == NULL) {
-            return 0;
+
+            // Limited Legaccy firmware support (does not work in all systems)
+            handle = hid_open(VENDOR_ID, OLD_PRODUCT_ID, NULL);
+            if (handle == NULL){
+                return 0;
+            }
+
         }
 
         // Set the hid_read() function to be blocking.
@@ -239,11 +252,17 @@ int listDevices() {
 
 
      	// Open the YKUSH device 
- 	handle = hid_open(VENDOR_ID, PRODUCT_ID, serial);
+        handle = hid_open(VENDOR_ID, PRODUCT_ID, serial);
 
     
-     	if (handle == NULL) {
-            return 0;
+        if (handle == NULL) {
+
+            // Limited Legaccy firmware support (does not work in all systems)
+            handle = hid_open(VENDOR_ID, OLD_PRODUCT_ID, NULL);
+            if (handle == NULL){
+                return 0;
+            }
+
         }
 
      	// Set the hid_read() function to be blocking (wait for response from YKUSH).
