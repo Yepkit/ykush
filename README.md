@@ -117,24 +117,24 @@ Let's look at some command examples.
 
 Assuming that just one YKUSH board is connected to our host, if we wanted to turn **OFF** the downstream port 1 we would issue the following command.
 ```
-ykush.exe -d 1
+ykushcmd.exe -d 1
 ```
 
 Similarly, if we wanted to turn the downstream 1 back **ON** we would issue the following command.
 ```
-ykush.exe -u 1
+ykushcmd.exe -u 1
 ```
 
 Assuming that two YKUSH boards are connected to our host and we wanted to turn **OFF** the downstream port 1 of one specific board. 
 To accomplish this we need to address the command by the YKUSH board **serial number**. 
 To find out the boards serial number we can issue the following command.
 ```
-ykush.exe -l
+ykushcmd.exe -l
 ```
 This will print the serial number of all YKUSH boards attached to the host.
 Assuming the our board had the serial number YK1234567, we would issue the following command.
 ```
-ykush.exe -s YK1234567 -d 1
+ykushcmd.exe -s YK1234567 -d 1
 ```
 This would turn **OFF** the downstream port 1 of the board with the serial number YK12345.
 
@@ -142,7 +142,7 @@ This would turn **OFF** the downstream port 1 of the board with the serial numbe
 Linux
 -----
 For Linux the command options and syntax are the same with the slight difference that the executable file does not have the `.exe` extension.
-Also depending of your user permissions you may need to precede the command with the *sudo* directive (e.g, `sudo ykush -d 1`).
+Also depending of your user permissions you may need to precede the command with the *sudo* directive (e.g, `sudo ykushcmd -d 1`).
 
 
 For more information and resources for the YKUSH board please visit the [yepkit website ykush page](https://www.yepkit.com/products/ykush).
