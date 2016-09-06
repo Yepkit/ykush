@@ -163,10 +163,13 @@ int listDevices() {
 
      	int res;
      	unsigned char buf[65];
+        unsigned char buf6[6];
+
      	#define MAX_STR 255
      	wchar_t wstr[MAX_STR];
      	hid_device *handle;
      	int i;
+        bool isLegacy = false;
 
 
      	// Open YKUSH device
@@ -179,30 +182,37 @@ int listDevices() {
             if (handle == NULL){
                 return 0;
             }
-
+            isLegacy = true;
         }
 
         // Set the hid_read() function to be blocking.
      	hid_set_nonblocking(handle, 0);
 
      	// Send an Output report with the desired command
-     	buf[0] = 0; 	// First byte is report number
-     	buf[1] = cmd;	// Command byte
-     	buf[2] = cmd;	// Command confirm byte
-     	res = hid_write(handle, buf, 65);
+        if (isLegacy) {
+	        buf6[0] = 0; 	// First byte is report number
+     	    buf6[1] = cmd;	// Command byte
+     	    buf6[2] = cmd;	// Command confirm byte
+     	    res = hid_write(handle, buf6, 6);
+        } else {
+	        buf[0] = 0; 	// First byte is report number
+     	    buf[1] = cmd;	// Command byte
+     	    buf[2] = cmd;	// Command confirm byte
+     	    res = hid_write(handle, buf, 65);
+        }
+        
+        // Read response
+        if (isLegacy) {
+     	    res = hid_read(handle, buf, 6);
+        } else {
+     	    res = hid_read(handle, buf, 65);
+        }
 
-     	// Read response
-     	res = hid_read(handle, buf, 65);
      	if (res < 0) {
          	printf("Unable to read YKUSH command confirmation\n");
      	}
 
-     	// Print out the returned buffer.
-	/*
-     	for (i = 0; i < res; i++)
-         	printf("buf[%d]: %d\n", i, buf[i]);
-	*/
-        
+         
         if (res >= 1) {
             return buf[1];
         }
@@ -240,11 +250,13 @@ int listDevices() {
  {
 
 	int res;
-     	unsigned char buf[65];
-     	#define MAX_STR 255
-     	wchar_t wstr[MAX_STR];
-     	hid_device *handle;
-     	int i;
+    unsigned char buf[65];
+    unsigned char buf6[6];
+    bool isLegacy = false;
+    #define MAX_STR 255
+    wchar_t wstr[MAX_STR];
+    hid_device *handle;
+    int i;
 	
      
 	// Convert to a wchar_t*
@@ -268,9 +280,12 @@ int listDevices() {
 
             // Limited Legaccy firmware support (does not work in all systems)
             handle = hid_open(VENDOR_ID, OLD_PRODUCT_ID, NULL);
+
             if (handle == NULL){
                 return 0;
             }
+
+            isLegacy = true;
 
         }
 
@@ -278,23 +293,30 @@ int listDevices() {
     	hid_set_nonblocking(handle, 0);
 
      	// Send an Output report with the desired command
-     	buf[0] = 0; 	// First byte is report number
-     	buf[1] = cmd;	// Command byte
-     	buf[2] = cmd;	// Command confirm byte
-     	res = hid_write(handle, buf, 65);
+        if (isLegacy) {
+            buf6[0] = 0; 	// First byte is report number
+     	    buf6[1] = cmd;	// Command byte
+     	    buf6[2] = cmd;	// Command confirm byte
+     	    res = hid_write(handle, buf6, 6);
+        } else {
+            buf[0] = 0; 	// First byte is report number
+     	    buf[1] = cmd;	// Command byte
+     	    buf[2] = cmd;	// Command confirm byte
+     	    res = hid_write(handle, buf, 65);
+        }
+     	
+        // Read response
+        if (isLegacy) {
+     	    res = hid_read(handle, buf, 6);
+        } else {
+     	    res = hid_read(handle, buf, 65);
+        }
 
-     	// Read response
-     	res = hid_read(handle, buf, 65);
      	if (res < 0) {
          	printf("Unable to read YKUSH command response\n");
      	}
 
-     	// Print out the returned buffer.
-     	/*
-	for (i = 0; i < res; i++)
-         	printf("buf[%d]: %d\n", i, buf[i]);
-	*/
-
+     
         if (res >= 1) {
             return buf[1];
         }

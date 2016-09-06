@@ -7,3 +7,4 @@ debug/
 *.bak
 *.o
 .directory
+bin/ykushcmd
