@@ -96,8 +96,10 @@ int listDevices() {
 
     	devs = hid_enumerate(0x0, 0x0);
     	if (devs == NULL) {
+            //APAGAR
             // Limited Legaccy firmware support (does not work in all systems)
-            handle = hid_open(VENDOR_ID, OLD_PRODUCT_ID, NULL);
+            //handle = hid_open(VENDOR_ID, OLD_PRODUCT_ID, NULL);
+            //FIM APAGAR
             if (handle == NULL){
                 // No HID devices found
                 printf("\nNo HID USB devices connected to this Host\n");
@@ -113,7 +115,14 @@ int listDevices() {
             		printf("  Manufacturer: %ls\n", cur_dev->manufacturer_string);
             		printf("  Product:      %ls\n", cur_dev->product_string);
             		printf("\n");
-        	}
+        	} else if ((cur_dev->vendor_id == VENDOR_ID) && (cur_dev->product_id == OLD_PRODUCT_ID)) {
+                    printf("YKUSH device found with Serial Number: %ls", cur_dev->serial_number);
+            		printf("\n");
+            		printf("  Manufacturer: %ls\n", cur_dev->manufacturer_string);
+            		printf("  Product:      %ls\n", cur_dev->product_string);
+                    printf("  NOTE: This is an old version of the firmware. If you have access to a PIC programmer contact Yepkit to get the latest version of the firmware.");
+            		printf("\n");
+            }
 
         	cur_dev = cur_dev->next;
     	}
