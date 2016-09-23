@@ -3,6 +3,6 @@
 
 int commandParser(int argc, char** argv);
 
-int printUsage();
+int printUsage(char*);
 
 #endif // COMMANDPARSER_H

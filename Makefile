@@ -19,5 +19,5 @@ ykushcmd/objs/usbcom.o : ykushcmd/usbcom.cpp ykushcmd/linux/hidapi.h ykushcmd/us
 	$(CPP) $(PREPROCESSOR_DEFS) -c ykushcmd/usbcom.cpp -o ykushcmd/objs/usbcom.o
 
 clean :
-	rm bin/ykushcmd $(OBJS)
+	rm -f bin/ykushcmd $(OBJS)
 

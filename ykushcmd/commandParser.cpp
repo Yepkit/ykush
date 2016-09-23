@@ -81,7 +81,7 @@ int commandParser(int argc, char** argv) {
     char port = 0;
 
   	if ( argc <= 1){
-		printUsage();
+		printUsage(argv[0]);
 		return 0;
     	}
 
@@ -128,7 +128,7 @@ int commandParser(int argc, char** argv) {
 			break;
 
 		default:
-			printUsage();
+			printUsage(argv[0]);
 			break;
 	}
 
@@ -164,7 +164,7 @@ int commandParser(int argc, char** argv) {
                 			break;
 
             			default:
-                			printUsage();
+                			printUsage(argv[0]);
                 			break;
         		}
 		} else {
@@ -194,7 +194,7 @@ int commandParser(int argc, char** argv) {
                 			break;
 
             			default:
-                			printUsage();
+                			printUsage(argv[0]);
                 			break;
         		}
 
@@ -230,7 +230,7 @@ int commandParser(int argc, char** argv) {
                 			break;
 
             			default:
-                			printUsage();
+                			printUsage(argv[0]);
                 			break;
         		}
 		} else {
@@ -260,7 +260,7 @@ int commandParser(int argc, char** argv) {
                 			break;
 
             			default:
-                			printUsage();
+                			printUsage(argv[0]);
                 			break;
         		}
 
@@ -273,7 +273,7 @@ int commandParser(int argc, char** argv) {
     if (action == GET_PORT_STATUS) {
         if (bySerial) {    //target board specified by serial number
             if (port==0) {
-                printUsage();
+                printUsage(argv[0]);
             } else {
                 switch (port) {
                 case '1':
@@ -313,7 +313,7 @@ int commandParser(int argc, char** argv) {
                     }
                     break;
                 default:
-                    printUsage();
+                    printUsage(argv[0]);
                     return -1;
                     break;
                 }
@@ -360,7 +360,7 @@ int commandParser(int argc, char** argv) {
                     }
                     break;
                 default:
-                    printUsage();
+                    printUsage(argv[0]);
                     return -1;
                     break;
                 }
@@ -382,7 +382,7 @@ int commandParser(int argc, char** argv) {
 
 
 	if ( action == PRINT_HELP ) {
-		printUsage();
+		printUsage(argv[0]);
 	}
 
 
@@ -391,18 +391,18 @@ int commandParser(int argc, char** argv) {
 
 
 
-int printUsage(){
+int printUsage(char* execName){
 
     printf("\n-------------------");
     printf("\n\tUsage:\n");
     printf("-------------------\n");
-    printf("\nykush -d downstream_number \t\tTurns DOWN the downstream port with the number downstream_number\n");
-    printf("\nykush -u downstream_number \t\tTurns UP the downstream port with the number downstream_number\n");
-    printf("\nykush -g downstream_number \t\tObtains the switching status of port with the number downstream_number\n");
-    printf("\nykush -l \t\t\t\tLists all currently attached YKUSH boards\n");
-    printf("\nykush -s serial_number -d downstream_number \tTurns DOWN the downstream port with the number downstream_number for the board with the specified serial number\n");
-    printf("\nykush -s serial_number -u downstream_number \tTurns UP the downstream port with the number downstream_number for the board with the specified serial number\n\n\n");
-    printf("\nykush -s serial_number -g downstream_number \tObtains the switching status of port with the number downstream_number for the board with the specified serial number\n\n\n");
+    printf("\n%s -d downstream_number \t\tTurns DOWN the downstream port with the number downstream_number\n", execName);
+    printf("\n%s -u downstream_number \t\tTurns UP the downstream port with the number downstream_number\n", execName);
+    printf("\n%s -g downstream_number \t\tObtains the switching status of port with the number downstream_number\n", execName);
+    printf("\n%s -l \t\t\t\tLists all currently attached YKUSH boards\n", execName);
+    printf("\n%s -s serial_number -d downstream_number \tTurns DOWN the downstream port with the number downstream_number for the board with the specified serial number\n", execName);
+    printf("\n%s -s serial_number -u downstream_number \tTurns UP the downstream port with the number downstream_number for the board with the specified serial number\n\n\n", execName);
+    printf("\n%s -s serial_number -g downstream_number \tObtains the switching status of port with the number downstream_number for the board with the specified serial number\n\n\n", execName);
 
     return 0;
 }
