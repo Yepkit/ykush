@@ -396,7 +396,7 @@ int printUsage(char* execName){
     printf("\n-------------------");
     printf("\n\tUsage:\n");
     printf("-------------------\n");
-    printf("\n%s-d downstream_number \t\tTurns DOWN the downstream port with the number downstream_number\n", execName);
+    printf("\n%s -d downstream_number \t\tTurns DOWN the downstream port with the number downstream_number\n", execName);
     printf("\n%s -u downstream_number \t\tTurns UP the downstream port with the number downstream_number\n", execName);
     printf("\n%s -g downstream_number \t\tObtains the switching status of port with the number downstream_number\n", execName);
     printf("\n%s -l \t\t\t\tLists all currently attached YKUSH boards\n", execName);
