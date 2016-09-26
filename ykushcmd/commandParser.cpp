@@ -178,8 +178,27 @@ int commandParser(int argc, char** argv) {
 			command(cmd);
 	}
 
+	if (action == GET_PORT_STATUS && port == 'a') {
+		char cmds[3] = { 0x21, 0x22, 0x23 };
+		char resps[3];
+		int i;
 
-	if (action == GET_PORT_STATUS) {
+		if (bySerial)
+			commandsBySerial(iSerial, cmds, resps, 3);
+		else
+			commands(cmds, resps, 3);
+
+		for (i = 0; i < 3; i++) {
+			response = resps[i] + 0x20 - cmds[i];
+			if (response == 0x10 + cmd) {
+				printf("Downstream port %d is: UP\n", i);
+			} else if (response == cmd) {
+				printf("Downstream port %d is: DOWN\n", i);
+			} else {
+				printf("Downstream port %d is: UNKNOWN\n", i);
+			}
+		}
+	} else if (action == GET_PORT_STATUS) {
 		switch (port) {
 			case '1':
 				//downstream 1 status
