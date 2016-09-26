@@ -91,12 +91,9 @@ int commandParser(int argc, char** argv) {
 		case 2:
 			if ((argv[1][0]=='-') && (argv[1][1]=='l')) {
 				action = LIST_DEVICES;
-			} else if ((argv[1][0]=='-') && (argv[1][1]=='g')) {
-                action = GET_PORT_STATUS;
-                port = argv[1][2];
-            } else {
-                action = PRINT_HELP;
-            }
+			} else {
+				action = PRINT_HELP;
+			}
 			break;
 		case 3:
 			// Single Option
