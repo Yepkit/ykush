@@ -122,6 +122,9 @@ int commandParser(int argc, char** argv) {
 				action = PORT_DOWN;
 			} else if ((argv[3][0] == '-') && (argv[3][1]=='u')) {
 				action = PORT_UP;
+			} else if ((argv[3][0] == '-') && (argv[3][1]=='g')) {
+				action = GET_PORT_STATUS;
+				port = argv[4][0];
 			} else {
 				action = PRINT_HELP;
 			}
