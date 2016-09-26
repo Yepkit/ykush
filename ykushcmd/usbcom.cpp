@@ -136,92 +136,6 @@ int listDevices() {
 
 
 
- /*******************************************************************************
-  * command(char cmd) - Sends the command to YKUSH board
-  * -----------------------------------------------------------------------------
-  * 
-  * Description:
-  *
-  * 	The command in the variable cmd is sent to YKUSH board. If more than
-  * 	one YKUSH board is connected to the host it will send the command
-  * 	just to the first one that appears in the enumerated list.
-  *
-  * 	If there are more than one YKUSH board connected to the same host
-  * 	the commandBySerial function should be used instead.
-  * 	
-  * Inputs:
-  *
-  * 	cmd	-	Command byte to be sent to YKUSH.
-  *
-  * Outputs:
-  *
-  * 	The function will always return zero.				
-  *
-  ********************************************************************************/
- char command(char cmd)
- {
-
-     	int res;
-     	unsigned char buf[65];
-        unsigned char buf6[6];
-
-     	#define MAX_STR 255
-     	wchar_t wstr[MAX_STR];
-     	hid_device *handle;
-     	int i;
-        bool isLegacy = false;
-
-
-     	// Open YKUSH device
-     	handle = hid_open(VENDOR_ID, PRODUCT_ID, NULL);
-
-     	if (handle == NULL) {
-
-            // Limited Legaccy firmware support (does not work in all systems)
-            handle = hid_open(VENDOR_ID, OLD_PRODUCT_ID, NULL);
-            if (handle == NULL){
-                return 0;
-            }
-            isLegacy = true;
-        }
-
-        // Set the hid_read() function to be blocking.
-     	hid_set_nonblocking(handle, 0);
-
-     	// Send an Output report with the desired command
-        if (isLegacy) {
-	        buf6[0] = 0; 	// First byte is report number
-     	    buf6[1] = cmd;	// Command byte
-     	    buf6[2] = cmd;	// Command confirm byte
-     	    res = hid_write(handle, buf6, 6);
-        } else {
-	        buf[0] = 0; 	// First byte is report number
-     	    buf[1] = cmd;	// Command byte
-     	    buf[2] = cmd;	// Command confirm byte
-     	    res = hid_write(handle, buf, 65);
-        }
-        
-        // Read response
-        if (isLegacy) {
-     	    res = hid_read(handle, buf, 6);
-        } else {
-     	    res = hid_read(handle, buf, 65);
-        }
-
-     	if (res < 0) {
-         	printf("Unable to read YKUSH command confirmation\n");
-     	}
-
-         
-        if (res >= 1) {
-            return buf[1];
-        }
-
-    	return 0;
- }
- 
-
-
 
  /*******************************************************************************
   * commandBySerial(char *iSerial, char cmd) - Sends the command to YKUSH board
@@ -257,23 +171,24 @@ int listDevices() {
     wchar_t wstr[MAX_STR];
     hid_device *handle;
     int i;
+	const size_t newsize = 100;
+	wchar_t serial[newsize];
 	
      
-	// Convert to a wchar_t*
-	size_t origsize = strlen(iSerial) + 1;
-	const size_t newsize = 100;
-	size_t convertedChars = 0;
-	wchar_t serial[newsize];
+	if (iSerial) {
+		// Convert to a wchar_t*
+		size_t origsize = strlen(iSerial) + 1;
+		size_t convertedChars = 0;
 
 #ifndef LINUX
-	mbstowcs_s(&convertedChars, serial, origsize, iSerial, _TRUNCATE);
+		mbstowcs_s(&convertedChars, serial, origsize, iSerial, _TRUNCATE);
 #else
-	mbstowcs(serial, iSerial, newsize);
+		mbstowcs(serial, iSerial, newsize);
 #endif
-
+	}
 
      	// Open the YKUSH device 
-        handle = hid_open(VENDOR_ID, PRODUCT_ID, serial);
+        handle = hid_open(VENDOR_ID, PRODUCT_ID, iSerial ? serial : NULL);
 
     
         if (handle == NULL) {
@@ -324,6 +239,32 @@ int listDevices() {
     	return 0;
  }
  
+/*******************************************************************************
+ * command(char cmd) - Sends the command to YKUSH board
+ * -----------------------------------------------------------------------------
+ *
+ * Description:
+ *
+ * 	The command in the variable cmd is sent to YKUSH board. If more than
+ * 	one YKUSH board is connected to the host it will send the command
+ * 	just to the first one that appears in the enumerated list.
+ *
+ * 	If there are more than one YKUSH board connected to the same host
+ * 	the commandBySerial function should be used instead.
+ *
+ * Inputs:
+ *
+ * 	cmd	-	Command byte to be sent to YKUSH.
+ *
+ * Outputs:
+ *
+ * 	The function will return the response byte.
+ *
+ ********************************************************************************/
+char command(char cmd)
+{
+	return commandBySerial(NULL, cmd);
+}
 
 
 
