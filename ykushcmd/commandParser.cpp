@@ -99,11 +99,13 @@ int commandParser(int argc, char** argv) {
 			// Single Option
 			if ((argv[1][0] == '-') && (argv[1][1]=='d')) {
 				action = PORT_DOWN;
+				port = argv[2][0];
 			} else if ((argv[1][0] == '-') && (argv[1][1]=='u')) {
 				action = PORT_UP;
+				port = argv[2][0];
 			} else if ((argv[1][0] == '-') && (argv[1][1]=='g')) {
-                action = GET_PORT_STATUS;
-                port = argv[2][0];
+				action = GET_PORT_STATUS;
+				port = argv[2][0];
 			} else {
 				action = PRINT_HELP;
 			} 	
@@ -117,8 +119,10 @@ int commandParser(int argc, char** argv) {
 			}
 			if ((argv[3][0] == '-') && (argv[3][1]=='d')) {
 				action = PORT_DOWN;
+				port = argv[4][0];
 			} else if ((argv[3][0] == '-') && (argv[3][1]=='u')) {
 				action = PORT_UP;
+				port = argv[4][0];
 			} else if ((argv[3][0] == '-') && (argv[3][1]=='g')) {
 				action = GET_PORT_STATUS;
 				port = argv[4][0];
@@ -138,7 +142,7 @@ int commandParser(int argc, char** argv) {
 	
 	if ( action == PORT_DOWN ) {
 		if (bySerial) {
-			switch(argv[4][0]) {
+			switch(port) {
             			case '1':
                 			// Downstream 1 down
                 			cmd = 0x01;
@@ -168,7 +172,7 @@ int commandParser(int argc, char** argv) {
                 			break;
         		}
 		} else {
-			switch(argv[2][0]) {
+			switch(port) {
             			case '1':
                 			// Downstream 1 down
                 			cmd = 0x01;
@@ -204,7 +208,7 @@ int commandParser(int argc, char** argv) {
 
 	if ( action == PORT_UP ) {
 		if (bySerial) {
-			switch(argv[4][0]) {
+			switch(port) {
             			case '1':
                 			// Downstream 1 down
                 			cmd = 0x11;
@@ -234,7 +238,7 @@ int commandParser(int argc, char** argv) {
                 			break;
         		}
 		} else {
-			switch(argv[2][0]) {
+			switch(port) {
             			case '1':
                 			// Downstream 1 down
                 			cmd = 0x11;
