@@ -133,35 +133,34 @@ int listDevices() {
 
 
 
-
-
-
-
- /*******************************************************************************
-  * commandBySerial(char *iSerial, char cmd) - Sends the command to YKUSH board
-  * -----------------------------------------------------------------------------
-  * 
-  * Description:
-  *
-  * 	The command in the variable cmd is sent to YKUSH board. If more than
-  * 	one YKUSH board is connected to the host it will send the command
-  * 	just to the first one that appears in the enumerated list.
-  *
-  * 	If there are more than one YKUSH board connected to the same host
-  * 	the commandBySerial function should be used instead.
-  * 	
-  * Inputs:
-  *	
-  *	iSerial	-	Serial number of the YKUSH board to issue the command.
-  * 	cmd	-	Command byte to be sent to YKUSH.
-  *
-  * Outputs:
-  *
-  * 	The function will always return zero.				
-  *
-  ********************************************************************************/
- char commandBySerial(char *iSerial, char cmd)
- {
+/*******************************************************************************
+ * commandsBySerial(char* iSerial, char *cmd, char* resp, int num) - Sends commands to YKUSH board
+ * -----------------------------------------------------------------------------
+ *
+ * Description:
+ *
+ * 	All commands in the cmd array are send to the YKUSH board and the
+ * 	response bytes are stored in the matching resp entry. If more than
+ * 	one YKUSH board is connected to the host it will send the command
+ * 	just to the first one that appears in the enumerated list.
+ *
+ * 	If there are more than one YKUSH board connected to the same host
+ * 	the commandBySerial function should be used instead.
+ *
+ * Inputs:
+ *
+ *	iSerial	-	Serial number of the YKUSH board to issue the command.
+ *	cmds	-	Command bytes to be sent to YKUSH.
+ *	resp	-	Array for storing response bytes
+ *	num	-	Number of entries in cmds and resp
+ *
+ * Outputs:
+ *
+ * 	The function will return the response byte or zero.
+ *
+ ********************************************************************************/
+char commandsBySerial(char *iSerial, char *cmd, char *resp, int num)
+{
 
 	int res;
     unsigned char buf[65];
@@ -207,38 +206,101 @@ int listDevices() {
      	// Set the hid_read() function to be blocking (wait for response from YKUSH).
     	hid_set_nonblocking(handle, 0);
 
-     	// Send an Output report with the desired command
-        if (isLegacy) {
-            buf6[0] = 0; 	// First byte is report number
-     	    buf6[1] = cmd;	// Command byte
-     	    buf6[2] = cmd;	// Command confirm byte
-     	    res = hid_write(handle, buf6, 6);
-        } else {
-            buf[0] = 0; 	// First byte is report number
-     	    buf[1] = cmd;	// Command byte
-     	    buf[2] = cmd;	// Command confirm byte
-     	    res = hid_write(handle, buf, 65);
-        }
-     	
-        // Read response
-        if (isLegacy) {
-     	    res = hid_read(handle, buf, 6);
-        } else {
-     	    res = hid_read(handle, buf, 65);
-        }
+	for (i = 0; i < num; i++) {
+		// Send an Output report with the desired command
+		if (isLegacy) {
+			buf6[0] = 0; 	// First byte is report number
+			buf6[1] = cmd[i];	// Command byte
+			buf6[2] = cmd[i];	// Command confirm byte
+			res = hid_write(handle, buf6, 6);
+		} else {
+			buf[0] = 0; 	// First byte is report number
+			buf[1] = cmd[i];	// Command byte
+			buf[2] = cmd[i];	// Command confirm byte
+			res = hid_write(handle, buf, 65);
+		}
 
-     	if (res < 0) {
-         	printf("Unable to read YKUSH command response\n");
-     	}
+		// Read response
+		if (isLegacy) {
+			res = hid_read(handle, buf, 6);
+		} else {
+			res = hid_read(handle, buf, 65);
+		}
 
-     
-        if (res >= 1) {
-            return buf[1];
-        }
+		if (res < 0) {
+			printf("Unable to read YKUSH command response\n");
+		}
+
+		if (res >= 1) {
+			resp[i] = buf[1];
+		}
+	}
 
     	return 0;
  }
- 
+
+/*******************************************************************************
+ * commands(char *cmd, char* resp, int num) - Sends commands to YKUSH board
+ * -----------------------------------------------------------------------------
+ *
+ * Description:
+ *
+ * 	All commands in the cmd array are send to the YKUSH board and the
+ * 	response bytes are stored in the matching resp entry. If more than
+ * 	one YKUSH board is connected to the host it will send the command
+ * 	just to the first one that appears in the enumerated list.
+ *
+ * 	If there are more than one YKUSH board connected to the same host
+ * 	the commandBySerial function should be used instead.
+ *
+ * Inputs:
+ *
+ *	cmds	-	Command bytes to be sent to YKUSH.
+ *	resp	-	Array for storing response bytes
+ *	num	-	Number of entries in cmds and resp
+ *
+ * Outputs:
+ *
+ * 	The function will return the response byte or zero.
+ *
+ ********************************************************************************/
+char commands(char *cmd, char *resp, int num)
+{
+	return commandsBySerial(NULL, cmd, resp, num);
+}
+
+/*******************************************************************************
+ * commandBySerial(char *iSerial, char cmd) - Sends the command to YKUSH board
+ * -----------------------------------------------------------------------------
+ *
+ * Description:
+ *
+ * 	The command in the variable cmd is sent to YKUSH board. If more than
+ * 	one YKUSH board is connected to the host it will send the command
+ * 	just to the first one that appears in the enumerated list.
+ *
+ * 	If there are more than one YKUSH board connected to the same host
+ * 	the commandBySerial function should be used instead.
+ *
+ * Inputs:
+ *
+ *	iSerial	-	Serial number of the YKUSH board to issue the command.
+ *	cmd	-	Command byte to be sent to YKUSH.
+ *
+ * Outputs:
+ *
+ * 	The function will return the response byte or zero.
+ *
+ ********************************************************************************/
+char commandBySerial(char *iSerial, char cmd)
+{
+	char resp;
+
+	commandsBySerial(iSerial, &cmd, &resp, 1);
+
+	return resp;
+}
+
 /*******************************************************************************
  * command(char cmd) - Sends the command to YKUSH board
  * -----------------------------------------------------------------------------
