@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo installing ykush command...
-sudo cp -f bin/ykush /usr/bin
+sudo cp -f bin/ykushcmd /usr/bin
 
 echo installing shared libraries...
 sudo cp -f ykushcmd/linux/libhidapi-hidraw.so /usr/lib/libhidapi-hidraw.so
