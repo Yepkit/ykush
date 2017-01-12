@@ -191,11 +191,11 @@ int commandParser(int argc, char** argv) {
 		for (i = 0; i < 3; i++) {
 			response = resps[i] + 0x20 - cmds[i];
 			if (response == 0x10 + cmd) {
-				printf("Downstream port %d is: UP\n", i);
+				printf("Downstream port %d is: UP\n", i+1);
 			} else if (response == cmd) {
-				printf("Downstream port %d is: DOWN\n", i);
+				printf("Downstream port %d is: DOWN\n", i+1);
 			} else {
-				printf("Downstream port %d is: UNKNOWN\n", i);
+				printf("Downstream port %d is: UNKNOWN\n", i+1);
 			}
 		}
 	} else if (action == GET_PORT_STATUS) {
