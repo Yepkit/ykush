@@ -1,7 +1,7 @@
 
 #include "platformdefs.h"
 
-#ifndef LINUX
+#ifdef WINDOWS
 #pragma once
 
 #include "targetver.h"
