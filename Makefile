@@ -12,9 +12,10 @@ LIBS = $(shell pkg-config --libs hidapi-libusb) -lusb-1.0 -ludev
 PLATFORM_DEFS = -DLINUX $(shell pkg-config --cflags hidapi-libusb)
 endif
 
-ykushcmd : $(OBJS)
-	$(CPP) -o bin/ykushcmd $(OBJS) $(LIBS)
+all : bin/ykushcmd
 
+bin/ykushcmd : $(OBJS)
+	$(CPP) -o bin/ykushcmd $(OBJS) $(LIBS)
 
 ykushcmd/objs/ykushcmd.o : ykushcmd/ykushcmd.cpp ykushcmd/commandParser.h
 	$(CPP) $(PLATFORM_DEFS) -c ykushcmd/ykushcmd.cpp -o ykushcmd/objs/ykushcmd.o
