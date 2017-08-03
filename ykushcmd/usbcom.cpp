@@ -56,10 +56,10 @@
 
 #include "stdafx.h"
 
-#ifndef LINUX
+#ifdef WINDOWS
 	#include "windows\hidapi.h"
 #else
-	#include "linux/hidapi.h"
+	#include <hidapi.h>
 #endif
 
 #include "usbcom.h"
@@ -179,7 +179,7 @@ char commandsBySerial(char *iSerial, char *cmd, char *resp, int num)
 		size_t origsize = strlen(iSerial) + 1;
 		size_t convertedChars = 0;
 
-#ifndef LINUX
+#ifdef WINDOWS
 		mbstowcs_s(&convertedChars, serial, origsize, iSerial, _TRUNCATE);
 #else
 		mbstowcs(serial, iSerial, newsize);

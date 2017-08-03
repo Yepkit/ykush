@@ -15,7 +15,7 @@ The core of the application is consolidated in two source code files, the *comma
 The first contains the work-flow control and the second the communication functions.
 
 The implementation makes use of hidapi open-source library which is portable across several operating systems.
-We include a Visual Studio solution file for building on Windows. For Linux we include a build and installation script, `build.sh` and `install.sh` respectively, for building and installing the application. 
+We include a Visual Studio solution file for building on Windows. For Linux we include a build and installation script, `build.sh` and `install.sh` respectively, for building and installing the application.
 
 Note that hidapi is not included in the source code package and has to be obtained beforehand. For Linux, if the
 `build.sh` script is used, to build the application, it will take care of downloading and building the hidapi library for you. In Windows this step has to
@@ -25,7 +25,7 @@ be manually performed by the user.
 Licensing
 =========
 
-The source code is licensed under MIT license. 
+The source code is licensed under MIT license.
 Refer to [LICENSE](LICENSE.md) file.
 
 
@@ -38,9 +38,9 @@ Windows
 -------
 
 Before building the application from source on Windows you need to get the [hidapi library](http://www.signal11.us/oss/hidapi/) and build it.
-Follow the instructions in the hidapi documentation for building the library in the several systems. 
+Follow the instructions in the hidapi documentation for building the library in the several systems.
 
-After building the hidapi library you need to include the relevant hidapi files to *ykushcmd* project. 
+After building the hidapi library you need to include the relevant hidapi files to *ykushcmd* project.
 
 Copy to `ykush\ykushcmd\windows\` the following hidapi library files:
 - hidapi.dll
@@ -58,53 +58,49 @@ We can install the `hidapi.dll` in the system or ensure that a copy of the file 
 Linux
 -----
 
-The easiest way to build the application on Linux is to use the `build.sh` script which is in the `ykush/` folder.
-Nonetheless the application can be built running make and using the provided Makefile directly, but it will require
-some prior manual configuration detailed ahead. 
+Before attempting one must install developer package for `libhidapi`. On a Debian
+system it is possible with:
 
-To build the application using the scripts run the following inside the `ykush/` folder.
 ```
-./build.sh
-```
-Note that the script requires Internet connectivity to fetch the latest version of hidapi library.
-
-Some dependencies may not have been satisfied and some additional systems components and utilities may be required.
-If that was the case please install them and re-run the script. 
-
-After a successful build process you can install the ykush command in the system. To do so, in `ykush/` folder run:
-```
-sudo ./install.sh
+# apt-get install libhidapi-dev
 ```
 
-After install, the `ykush` command is ready for use.
+After that build the `ykushcmd`:
 
-
-On the other hand, if you want to build running make directly with the provided Makefile do the following.
-
-First get the [hidapi library](http://www.signal11.us/oss/hidapi/) and build it.
-Please follow the instructions in the hidapi documentation for building the library in the several systems. 
-
-After building the hidapi library include the relevant hidapi files to *ykushcmd* project. 
-
-Copy to `ykush/ykushcmd/linux/` the `libhidapi-hidraw.so` and the `libhidapi-libusb.so` files from hidapi library you
-just built.
-
-Now add the following lines to the `platformdefs.h` file which is in the `ykush/ykushcmd/` folder.
 ```
-#ifndef PLATFORMDEFS_H
-#define PLATFORMDEFS_H
-#define LINUX
-#endif
+$ make
 ```
 
+It can be globally installed as follows:
 
-Next, in the `ykush/` folder run `make` to build the application.
-If the build process is successful the ykush executable will be created in the `ykush/bin/` folder.
+```
+# make install
+```
 
-The next step is to make the shared library accessible to the executable.
-Do this by installing the *libhidapi-hidraw.so* or the *libhidapi-libusb.so*, depending if the hidraw or the libusb back-end is to be used (in doubt install both), in a system folder (e.g., /usr/lib/) or set the environment variable *LD_LIBRARY_PATH* with the path to the library files. 
-Alternatively you can run the script `install.sh` which is located in the `ykush/` folder.
+After install, the `ykushcmd` command is ready for use.
 
+OSX
+---
+
+To build on OS X `hidapi` must be installed. Brew can do it for you:
+
+```
+$ brew install hidapi
+```
+
+**NB!** Build scripts have been tested only against `hidapi` installed with brew.
+
+Build the utility:
+
+```
+$ make
+```
+
+And install it globally:
+
+```
+$ make install
+```
 
 Using it
 ========
@@ -125,8 +121,8 @@ Similarly, if we wanted to turn the downstream 1 back **ON** we would issue the 
 ykushcmd.exe -u 1
 ```
 
-Assuming that two YKUSH boards are connected to our host and we wanted to turn **OFF** the downstream port 1 of one specific board. 
-To accomplish this we need to address the command by the YKUSH board **serial number**. 
+Assuming that two YKUSH boards are connected to our host and we wanted to turn **OFF** the downstream port 1 of one specific board.
+To accomplish this we need to address the command by the YKUSH board **serial number**.
 To find out the boards serial number we can issue the following command.
 ```
 ykushcmd.exe -l
@@ -146,12 +142,3 @@ Also depending of your user permissions you may need to precede the command with
 
 
 For more information and resources for the YKUSH board please visit the [yepkit website ykush page](https://www.yepkit.com/products/ykush).
-
-
-
-
-
-
-
-
-
