@@ -11,5 +11,8 @@ char commandBySerial(char *iSerial, char cmd);
 
 int listDevices();
 
+unsigned int getPID(char *iSerial);
+
+
 
 #endif // USBCOM_H

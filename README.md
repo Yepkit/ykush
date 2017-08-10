@@ -1,13 +1,13 @@
 # YKUSH Command Application
 
 
-Control application for Yepkit YKUSH Switchable USB Hub board.
+Control application for Yepkit YKUSH Switchable USB Hub boards.
 
 
 Description
 ===========
 
-Console application developed to illustrate the programmatic control of YKUSH capabilities.
+Console application developed to illustrate the programmatic control of YKUSH family boards capabilities.
 It executes one command per run, being appropriate to be executed as a console command.
 But it can be easily adapted to execute a work-flow with multiple commands and we encourage you to alter it to best fit your needs.
 
@@ -20,6 +20,12 @@ We include a Visual Studio solution file for building on Windows. For Linux we i
 Note that hidapi is not included in the source code package and has to be obtained beforehand. For Linux, if the
 `build.sh` script is used, to build the application, it will take care of downloading and building the hidapi library for you. In Windows this step has to
 be manually performed by the user.
+
+
+Boards Supported
+================
+- YKUSH
+- YKUSH XS
 
 
 Licensing
@@ -48,7 +54,14 @@ Copy to `ykush\ykushcmd\windows\` the following hidapi library files:
 - hidapi.lib
 
 
-Open the `ykush\ykush.sln` with Microsoft Visual Studio and build the solution.
+To build using MinGW run the following command.
+
+```
+make -f Makefile_win
+```
+
+To build using Microsoft Visual Studio, open the `ykush\ykush.sln` with Microsoft Visual Studio IDE and build the solution.
+
 After a successful build process the executable file will be created in the`ykush\bin\` folder.
 
 The next step is to make the dynamically linked library accessible to executable.

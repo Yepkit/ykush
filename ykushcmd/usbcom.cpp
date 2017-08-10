@@ -73,10 +73,11 @@ using namespace std;
 //-------------------------------------------------------------------------
 #define VERSION "0.1.0"
 #define VENDOR_ID 0x04D8
-#define PRODUCT_ID 0xF2F7
+//#define PRODUCT_ID 0xF2F7
 #define OLD_PRODUCT_ID 0x0042
 
 
+extern unsigned int PRODUCT_ID;
 
 
 /**************************************************************************
@@ -130,6 +131,51 @@ int listDevices() {
     
 	return 0;
 }
+
+
+
+/**************************************************************************
+ * getPID() - Get connected YKUSH PID
+ *-------------------------------------------------------------------------
+ *
+ *
+ **************************************************************************/
+unsigned int getPID(char *iSerial) {
+
+    	// Enumerate and print the YKUSH devices on the system
+        
+        hid_device *handle;
+    	struct hid_device_info *devs, *cur_dev;
+        unsigned int pid = 0;
+        char jump = 0;
+
+    	devs = hid_enumerate(0x0, 0x0);
+    	if (devs == NULL) {
+            //APAGAR
+            // Limited Legaccy firmware support (does not work in all systems)
+            //handle = hid_open(VENDOR_ID, OLD_PRODUCT_ID, NULL);
+            //FIM APAGAR
+            if (handle == NULL){
+                // No HID devices found
+                printf("\nNo HID USB devices connected to this Host\n");
+            }
+
+    	}
+
+    	cur_dev = devs;
+    	while (cur_dev) {
+        	if ((cur_dev->vendor_id == VENDOR_ID) && !jump) {
+                pid = cur_dev->product_id;
+                jump = 1;
+        	}
+        	cur_dev = cur_dev->next;
+    	}
+    	hid_free_enumeration(devs);
+    
+	return pid;
+}
+
+
 
 
 

@@ -53,10 +53,13 @@
 #include "stdafx.h"
 #include "commandParser.h"
 #include "usbcom.h"
+#include <ykushxs.h>
+
+
 
 using namespace std;
 
-
+extern unsigned int PRODUCT_ID;
 
 enum cmdAction {
     PORT_UP,
@@ -66,6 +69,18 @@ enum cmdAction {
     GET_PORT_STATUS,
     PRINT_HELP,
 };
+
+
+enum Board {
+    YKUSH,
+    YKUSHXS,
+    YKUSH2,
+    YKUSH3,
+};
+
+
+
+
 
 bool bySerial = false;
 
@@ -79,11 +94,31 @@ int commandParser(int argc, char** argv) {
 	char *iSerial=NULL;
     char response;
     char port = 0;
+    unsigned int pid;
+    enum Board attachedBoard;
+
+
 
   	if ( argc <= 1){
 		printUsage(argv[0]);
 		return 0;
     	}
+
+
+
+    //Parse input options and define action
+    if(argc >= 2) 
+    {
+        if((argv[1][0] == 'y') && (argv[1][1]=='k') && (argv[1][2]=='u') && (argv[1][3]=='s') && (argv[1][4]=='h') && (argv[1][5]=='x') && (argv[1][6]=='s') ) 
+        {
+            ykushxs_cmd_parser(argc, argv);
+            return 0;
+        } 
+        else
+        {
+            PRODUCT_ID = 0xF2F7;        //YKUSH PID
+        }
+    }
 
 	
   	//Parse input options and define action
@@ -91,6 +126,15 @@ int commandParser(int argc, char** argv) {
 		case 2:
 			if ((argv[1][0]=='-') && (argv[1][1]=='l')) {
 				action = LIST_DEVICES;
+			} else if ((argv[1][0] == '-') && (argv[1][1]=='d')) {
+				action = PORT_DOWN;
+				port = argv[2][0];
+			} else if ((argv[1][0] == '-') && (argv[1][1]=='u')) {
+				action = PORT_UP;
+				port = argv[2][0];
+			} else if ((argv[1][0] == '-') && (argv[1][1]=='g')) {
+				action = GET_PORT_STATUS;
+				port = argv[2][0];
 			} else {
 				action = PRINT_HELP;
 			}
@@ -137,8 +181,46 @@ int commandParser(int argc, char** argv) {
 	}
 
 
+/*
+//Check which board is connected
+//
+    if (bySerial) {
+       pid = getPID(iSerial); 
+    } else {
+        //get pid of connected YKUSH board
+        pid = getPID(NULL);
+    }
+        
+    //printf("\n\nPID=0x%X\n", pid);
+    PRODUCT_ID = pid;
 
-	//Get options values and execute action
+    switch(pid){
+            
+        case 0xEFED:
+            attachedBoard = YKUSH2;
+            break;
+
+        case 0xF2F7:
+            attachedBoard = YKUSH;
+            break;
+
+        case 0xF0CD:
+            attachedBoard = YKUSHXS;
+            break;
+
+        case 0xF11B:
+            attachedBoard = YKUSH3;
+            break;
+
+        default:
+            break;
+        
+    }
+
+*/
+
+
+//Get options values and execute action
 	
 	if ( action == PORT_DOWN || action == PORT_UP ) {
 		switch(port) {
