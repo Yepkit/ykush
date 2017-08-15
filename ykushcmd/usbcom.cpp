@@ -90,22 +90,13 @@ extern unsigned int PRODUCT_ID;
  **************************************************************************/
 int listDevices() {
 
-    	// Enumerate and print the YKUSH devices on the system
-        
-        hid_device *handle;
+
     	struct hid_device_info *devs, *cur_dev;
 
     	devs = hid_enumerate(0x0, 0x0);
-    	if (devs == NULL) {
-            //APAGAR
-            // Limited Legaccy firmware support (does not work in all systems)
-            //handle = hid_open(VENDOR_ID, OLD_PRODUCT_ID, NULL);
-            //FIM APAGAR
-            if (handle == NULL){
-                // No HID devices found
-                printf("\nNo HID USB devices connected to this Host\n");
-            }
-
+    	if (devs == NULL) 
+		{
+			printf("\nNo HID USB devices connected to this Host\n");
     	}
 
     	cur_dev = devs;

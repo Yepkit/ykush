@@ -33,6 +33,12 @@
     <ClInclude Include="usbcom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ykushxs\ykushxs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="yk_usb_device.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -45,6 +51,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="usbcom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ykushxs\ykushxs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yk_usb_device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
