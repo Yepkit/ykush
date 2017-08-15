@@ -122,6 +122,11 @@ Alternatively you can run the script `install.sh` which is located in the `ykush
 Using it
 ========
 
+For YKUSH XS boards refer to the setup guides linked in the [YKUSH XS product page](https://www.yepkit.com/product/300115/YKUSHXS).
+
+For YKUSH boards follow the instructions bellow.
+
+
 Windows
 -------
 Navigate to the `ykush\bin\` folder and run `ykush.exe -h` to print all the available command options a syntax.
