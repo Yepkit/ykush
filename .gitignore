@@ -8,3 +8,5 @@ debug/
 *.o
 .directory
 bin/ykushcmd
+.vs/
+
