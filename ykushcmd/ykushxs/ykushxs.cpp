@@ -63,13 +63,20 @@ void ykushxs_cmd_parser(int argc, char** argv)
     if((argv[2][0]=='-') && (argv[2][1]=='s'))
     {
         bySerialFlag = 1;
-        if(argv[4][0]=='-' && argv[4][1]=='u') {
+        if(argv[4][0]=='-' && argv[4][1]=='u') 
+        {
             action = PORT_UP;
-        } else if(argv[4][0]=='-' && argv[4][1]=='d') {
+        } else if(argv[4][0]=='-' && argv[4][1]=='d') 
+        {
             action = PORT_DOWN;
-        } else if(argv[4][0]=='-' && argv[4][1]=='l') {
+        } else if(argv[4][0]=='-' && argv[4][1]=='l') 
+        {
             action = LIST_BOARDS;
-        } else {
+        } else if(argv[4][0]=='-' && argv[4][1]=='g') 
+        {
+            action = GET_STATUS;
+        } else 
+        {
             ykushxs_help(argv[0]);
             return;
         }
@@ -125,6 +132,31 @@ void ykushxs_cmd_parser(int argc, char** argv)
 
         case LIST_BOARDS:
                 ykushxs_list_attached(); 
+            break;
+
+        case GET_STATUS:
+            if(bySerialFlag)
+            {
+                if(ykushxs->get_port_status(argv[3])==0x11)
+                {
+                    printf("\n\nDownstream port is ON\n\n");
+                } 
+                else 
+                {
+                    printf("\n\nDownstream port is OFF\n\n");
+                }
+            }
+            else
+            {
+                if(ykushxs->get_port_status(NULL)==0x11)
+                {
+                    printf("\n\nDownstream port is ON\n\n");
+                } 
+                else 
+                {
+                    printf("\n\nDownstream port is OFF\n\n");
+                }
+            }   
             break;
 
         default:
@@ -224,7 +256,8 @@ int YkushXs::port_down(char *serial)
  *********************************************************/
 int YkushXs::get_port_status(char *serial)
 {
-    
+    int status;
+
     //Create command msg
     hid_report_out[0] = 0;      //Windows stuff
     hid_report_out[1] = 0x21;   //get status
@@ -233,9 +266,9 @@ int YkushXs::get_port_status(char *serial)
     sendHidReport(serial, hid_report_out, hid_report_in);
 
     //handle board response HID report
-    //TODO
+    status = hid_report_in[1];
 
-    return 0;
+    return status;
 }
 
 
