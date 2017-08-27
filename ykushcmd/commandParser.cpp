@@ -255,11 +255,15 @@ int commandParser(int argc, char** argv) {
 			cmd += 0x10;
 
 		if (bySerial)
+        {
+            printf("\n\n%s\n\n", iSerial);
 			commandBySerial(iSerial, cmd);
+        }
 		else
 			command(cmd);
 	}
 
+    /*
 	if (action == GET_PORT_STATUS && port == 'a') {
 		char cmds[3] = { 0x21, 0x22, 0x23 };
 		char resps[3];
@@ -280,7 +284,8 @@ int commandParser(int argc, char** argv) {
 				printf("Downstream port %d is: UNKNOWN\n", i+1);
 			}
 		}
-	} else if (action == GET_PORT_STATUS) {
+	} else */ 
+    if (action == GET_PORT_STATUS) {
 		switch (port) {
 			case '1':
 				//downstream 1 status
