@@ -196,7 +196,7 @@ unsigned int getPID(char *iSerial) {
  * 	The function will return the response byte or zero.
  *
  ********************************************************************************/
-char commandsBySerial(char *iSerial, char *cmd, char *resp, int num)
+char commandsBySerial(char *iSerial, char cmd, char *resp, int num)
 {
 
 	int res;
@@ -209,7 +209,11 @@ char commandsBySerial(char *iSerial, char *cmd, char *resp, int num)
     int i;
 	const size_t newsize = 100;
 	wchar_t serial[newsize];
-	
+
+
+printf("\n\n%s\n\n", iSerial);
+
+
      
 	if (iSerial) {
 		// Convert to a wchar_t*
@@ -243,17 +247,17 @@ char commandsBySerial(char *iSerial, char *cmd, char *resp, int num)
      	// Set the hid_read() function to be blocking (wait for response from YKUSH).
     	hid_set_nonblocking(handle, 0);
 
-	for (i = 0; i < num; i++) {
+	//for (i = 0; i < num; i++) {
 		// Send an Output report with the desired command
 		if (isLegacy) {
 			buf6[0] = 0; 	// First byte is report number
-			buf6[1] = cmd[i];	// Command byte
-			buf6[2] = cmd[i];	// Command confirm byte
+			buf6[1] = cmd;	// Command byte
+			buf6[2] = cmd;	// Command confirm byte
 			res = hid_write(handle, buf6, 6);
 		} else {
 			buf[0] = 0; 	// First byte is report number
-			buf[1] = cmd[i];	// Command byte
-			buf[2] = cmd[i];	// Command confirm byte
+			buf[1] = cmd;	// Command byte
+			buf[2] = cmd;	// Command confirm byte
 			res = hid_write(handle, buf, 65);
 		}
 
@@ -269,9 +273,9 @@ char commandsBySerial(char *iSerial, char *cmd, char *resp, int num)
 		}
 
 		if (res >= 1) {
-			resp[i] = buf[1];
+			resp[0] = buf[1];
 		}
-	}
+	//}
 
     	return 0;
  }
@@ -301,7 +305,7 @@ char commandsBySerial(char *iSerial, char *cmd, char *resp, int num)
  * 	The function will return the response byte or zero.
  *
  ********************************************************************************/
-char commands(char *cmd, char *resp, int num)
+char commands(char cmd, char *resp, int num)
 {
 	return commandsBySerial(NULL, cmd, resp, num);
 }
@@ -331,9 +335,12 @@ char commands(char *cmd, char *resp, int num)
  ********************************************************************************/
 char commandBySerial(char *iSerial, char cmd)
 {
+
+    printf("\n\n%s\n\n", iSerial);
+
 	char resp;
 
-	commandsBySerial(iSerial, &cmd, &resp, 1);
+	commandsBySerial(iSerial, cmd, &resp, 1);
 
 	return resp;
 }
