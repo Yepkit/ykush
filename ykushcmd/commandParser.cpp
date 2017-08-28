@@ -53,6 +53,7 @@
 #include "stdafx.h"
 #include "commandParser.h"
 #include "usbcom.h"
+#include <ykush.h>
 #include <ykushxs.h>
 
 
@@ -61,6 +62,8 @@ using namespace std;
 
 extern unsigned int PRODUCT_ID;
 
+
+//TODO: APAGAR-----
 enum cmdAction {
     PORT_UP,
     PORT_DOWN,
@@ -69,6 +72,8 @@ enum cmdAction {
     GET_PORT_STATUS,
     PRINT_HELP,
 };
+//-----------
+
 
 
 enum Board {
@@ -82,20 +87,24 @@ enum Board {
 
 
 
-bool bySerial = false;
 
 
 
 int commandParser(int argc, char** argv) {
 
-  	char choice;
+
+    enum Board attachedBoard;
+    
+    
+    bool bySerial = false;
+  	
+    char choice;
   	char cmd = 0x00;
 	enum cmdAction action = PRINT_HELP;
 	char *iSerial=NULL;
     char response;
     char port = 0;
     unsigned int pid;
-    enum Board attachedBoard;
 
 
 
@@ -111,228 +120,29 @@ int commandParser(int argc, char** argv) {
     {
         if((argv[1][0] == 'y') && (argv[1][1]=='k') && (argv[1][2]=='u') && (argv[1][3]=='s') && (argv[1][4]=='h') && (argv[1][5]=='x') && (argv[1][6]=='s') ) 
         {
+            //YKUSHXS
             ykushxs_cmd_parser(argc, argv);
             return 0;
         } 
+        else if ((argv[1][0] == 'y') && (argv[1][1]=='k') && (argv[1][2]=='u') && (argv[1][3]=='s') && (argv[1][4]=='h') && (argv[1][5]=='2'))
+        {
+            //YKUSH2
+            return 0;
+        } 
+        else if ((argv[1][0] == 'y') && (argv[1][1]=='k') && (argv[1][2]=='u') && (argv[1][3]=='s') && (argv[1][4]=='h') && (argv[1][5]=='3'))
+        {
+            //YKUSH3
+            return 0;
+        }
         else
         {
-            PRODUCT_ID = 0xF2F7;        //YKUSH PID
+            //YKUSH
+            ykush_cmd_parser(argc, argv);
+            return 0;
         }
     }
 
-	
-  	//Parse input options and define action
-	switch (argc) {
-		case 2:
-			if ((argv[1][0]=='-') && (argv[1][1]=='l')) {
-				action = LIST_DEVICES;
-			} else if ((argv[1][0] == '-') && (argv[1][1]=='d')) {
-				action = PORT_DOWN;
-				port = argv[2][0];
-			} else if ((argv[1][0] == '-') && (argv[1][1]=='u')) {
-				action = PORT_UP;
-				port = argv[2][0];
-			} else if ((argv[1][0] == '-') && (argv[1][1]=='g')) {
-				action = GET_PORT_STATUS;
-				port = argv[2][0];
-			} else {
-				action = PRINT_HELP;
-			}
-			break;
-		case 3:
-			// Single Option
-			if ((argv[1][0] == '-') && (argv[1][1]=='d')) {
-				action = PORT_DOWN;
-				port = argv[2][0];
-			} else if ((argv[1][0] == '-') && (argv[1][1]=='u')) {
-				action = PORT_UP;
-				port = argv[2][0];
-			} else if ((argv[1][0] == '-') && (argv[1][1]=='g')) {
-				action = GET_PORT_STATUS;
-				port = argv[2][0];
-			} else {
-				action = PRINT_HELP;
-			} 	
-			break;
-
-		case 5:
-			// Two Options
-			if ((argv[1][0] == '-') && (argv[1][1]=='s')) {
-				bySerial = true;
-				iSerial = argv[2];	
-			}
-			if ((argv[3][0] == '-') && (argv[3][1]=='d')) {
-				action = PORT_DOWN;
-				port = argv[4][0];
-			} else if ((argv[3][0] == '-') && (argv[3][1]=='u')) {
-				action = PORT_UP;
-				port = argv[4][0];
-			} else if ((argv[3][0] == '-') && (argv[3][1]=='g')) {
-				action = GET_PORT_STATUS;
-				port = argv[4][0];
-			} else {
-				action = PRINT_HELP;
-			}
-			break;
-
-		default:
-			printUsage(argv[0]);
-			break;
-	}
-
-
-/*
-//Check which board is connected
-//
-    if (bySerial) {
-       pid = getPID(iSerial); 
-    } else {
-        //get pid of connected YKUSH board
-        pid = getPID(NULL);
-    }
-        
-    //printf("\n\nPID=0x%X\n", pid);
-    PRODUCT_ID = pid;
-
-    switch(pid){
-            
-        case 0xEFED:
-            attachedBoard = YKUSH2;
-            break;
-
-        case 0xF2F7:
-            attachedBoard = YKUSH;
-            break;
-
-        case 0xF0CD:
-            attachedBoard = YKUSHXS;
-            break;
-
-        case 0xF11B:
-            attachedBoard = YKUSH3;
-            break;
-
-        default:
-            break;
-        
-    }
-
-*/
-
-
-//Get options values and execute action
-	
-	if ( action == PORT_DOWN || action == PORT_UP ) {
-		switch(port) {
-			case '1':
-				// Downstream 1 down
-				cmd = 0x01;
-				break;
-
-			case '2':
-				// Downstream 2 down
-				cmd = 0x02;
-				break;
-
-			case '3':
-				// Downstream 3 down
-				cmd = 0x03;
-				break;
-
-			case 'a':
-				// All downstreams down
-				cmd = 0x0a;
-				break;
-
-			default:
-				printUsage(argv[0]);
-				return -1;
-				break;
-		}
-
-		// PORT_UP has 0x11 - 0x1a, while PORT_DOWN has 0x01 - 0x0a
-		if ( action == PORT_UP )
-			cmd += 0x10;
-
-		if (bySerial)
-        {
-            printf("\n\n%s\n\n", iSerial);
-			commandBySerial(iSerial, cmd);
-        }
-		else
-			command(cmd);
-	}
-
-    /*
-	if (action == GET_PORT_STATUS && port == 'a') {
-		char cmds[3] = { 0x21, 0x22, 0x23 };
-		char resps[3];
-		int i;
-
-		if (bySerial)
-			commandsBySerial(iSerial, cmds, resps, 3);
-		else
-			commands(cmds, resps, 3);
-
-		for (i = 0; i < 3; i++) {
-			response = resps[i] + 0x20 - cmds[i];
-			if (response == 0x10 + cmd) {
-				printf("Downstream port %d is: UP\n", i+1);
-			} else if (response == cmd) {
-				printf("Downstream port %d is: DOWN\n", i+1);
-			} else {
-				printf("Downstream port %d is: UNKNOWN\n", i+1);
-			}
-		}
-	} else */ 
-    if (action == GET_PORT_STATUS) {
-		switch (port) {
-			case '1':
-				//downstream 1 status
-				cmd = 0x1;
-				break;
-			case '2':
-				//downstream 2 status
-				cmd = 0x2;
-				break;
-			case '3':
-				//downstream 3 status
-				cmd = 0x3;
-				break;
-			default:
-				printUsage(argv[0]);
-				return -1;
-				break;
-		}
-
-		if (bySerial) //target board specified by serial number
-			response = commandBySerial(iSerial,cmd + 0x20);
-		else
-			response = command(cmd + 0x20);
-
-		if (response == 0x10 + cmd) {
-			printf("\nDownstream port %c is: UP\n", port);
-		} else if (response == cmd) {
-			printf("\nDownstream port %c is: DOWN\n", port);
-		} else {
-			printf("\nUnable to get port status for port %c\n", port);
-		}
-	}
-
-
-	
-	if ( action == LIST_DEVICES ) {
-		printf("\nAttached YKUSH Boards\n");
-        	printf("\n---------------------\n");
-        	listDevices();
-	}
-
-
-	if ( action == PRINT_HELP ) {
-		printUsage(argv[0]);
-	}
-
-
+	 
     return 0;
 }
 

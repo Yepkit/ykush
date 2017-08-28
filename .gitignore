@@ -9,4 +9,6 @@ debug/
 .directory
 bin/ykushcmd
 .vs/
+*.exe
+
 
