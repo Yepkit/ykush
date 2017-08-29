@@ -201,7 +201,7 @@ int YkushXs::port_up(char *serial)
     hid_report_out[1] = 0x11;   //port up
 
     //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in);
+    sendHidReport(serial, hid_report_out, hid_report_in, 65);
 
     //handle board response HID report
     //TODO
@@ -230,7 +230,7 @@ int YkushXs::port_down(char *serial)
     hid_report_out[1] = 0x01;   //port down
 
     //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in);
+    sendHidReport(serial, hid_report_out, hid_report_in, 65);
 
     //handle board response HID report
     //TODO
@@ -263,7 +263,7 @@ int YkushXs::get_port_status(char *serial)
     hid_report_out[1] = 0x21;   //get status
 
     //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in);
+    sendHidReport(serial, hid_report_out, hid_report_in, 65);
 
     //handle board response HID report
     status = hid_report_in[1];
@@ -286,7 +286,10 @@ void ykushxs_list_attached()
     int i = 0;
 
     printf("\n\nAttached YKUSH XS Boards:\n");        
-    ykushxs->listConnected();
+    if(ykushxs->listConnected()==0)
+    {
+        printf("\nNo YKUSH XS boards found.");
+    }
     printf("\n\n");
 
 }

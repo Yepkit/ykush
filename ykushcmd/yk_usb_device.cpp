@@ -42,8 +42,9 @@ using namespace std;
  * attached YKUSH devices.
  *
  **************************************************************************/
-void UsbDevice::listConnected() 
+int UsbDevice::listConnected() 
 {
+    int i=0;
 
     struct hid_device_info *devs, *cur_dev;
         
@@ -53,7 +54,7 @@ void UsbDevice::listConnected()
         if (handle == NULL)
         {
             // No HID devices found
-            printf("\nNo devices connected to this Host\n");
+            return 0;
         }
     }
 
@@ -62,11 +63,12 @@ void UsbDevice::listConnected()
     {
         printf("\n%ls\n", cur_dev->serial_number);
         cur_dev = cur_dev->next;
+        i++;
     }
     
     hid_free_enumeration(devs);
 
-    return;
+    return i;
     
 }
 
@@ -120,7 +122,7 @@ UsbDevice::UsbDevice(unsigned int vendor_id, unsigned int product_id) {
  *
  *
  *****************************************************************/
-int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg) {
+int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg, int report_size) {
 	
     const size_t newsize = 100;
 	wchar_t cserial[newsize];
@@ -144,7 +146,7 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
     handle = hid_open(vid, pid, serial ? cserial : NULL);
   
     if (handle == NULL) {
-	    printf("\n\nERROR: Unable to open USB device\n");
+	    //printf("\n\nERROR: Unable to open USB device\n");
         return -1;
     }
 
@@ -153,7 +155,7 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
 
     
     //send HID report
-	res = hid_write(handle, msg, 65);
+	res = hid_write(handle, msg, report_size);
 
     if (res < 0) {
 	    printf("\n\nERROR: Unable to write HID report to USB device\n");
@@ -161,7 +163,7 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
 	}
 
     //read HID report
-    res = hid_read(handle, resp_msg, 65);
+    res = hid_read(handle, resp_msg, report_size);
 
     if (res < 0) {
 	    printf("\n\nERROR: Unable to read HID report to USB device\n");

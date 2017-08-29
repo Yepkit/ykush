@@ -51,9 +51,9 @@ class UsbDevice {
 
         UsbDevice(unsigned int vendor_id, unsigned int product_id);
 
-        int sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg);
+        int sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg, int report_size);
 
-        void listConnected();    //List connected devices
+        int listConnected();    //List connected devices
 
 
     private:

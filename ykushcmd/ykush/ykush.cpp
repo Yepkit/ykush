@@ -51,13 +51,14 @@ void ykush_cmd_parser(int argc, char** argv)
 {
     char bySerialFlag = 0;
     enum ykushAction action = HELP;
-    Ykush *ykush = new Ykush();
+    Ykush *ykush = new Ykush(0xF2F7);
+    Ykush *ykushLegacy = new Ykush(0x0042);
     char port;
     int i=0;
     char status_response = 0;
 
 
-   
+
 
     if((argv[1][0]=='-') && (argv[1][1]=='s'))
     {
@@ -113,27 +114,44 @@ void ykush_cmd_parser(int argc, char** argv)
 
 
 
+
     switch (action)
     {
         case PORT_UP:
             if(bySerialFlag)
             {
-               ykush->port_up(argv[2], port);
+               if(ykush->port_up(argv[2], port)==-1)
+               {
+                   //try legacy
+                    ykushLegacy->port_up(argv[2], port);
+               }
             }
             else
             {
-                ykush->port_up(NULL, port);
+                if(ykush->port_up(NULL, port)==-1)
+                {
+                    //try legacy
+                    ykushLegacy->port_up(NULL, port);
+                }
             }
             break;
 
         case PORT_DOWN:
             if(bySerialFlag)
             {
-                ykush->port_down(argv[2], port);
+                if(ykush->port_down(argv[2], port)==-1)
+                {
+                    //try legacy
+                    ykushLegacy->port_down(argv[2], port);
+                }
             }
             else
             {
-                ykush->port_down(NULL, port);
+                if(ykush->port_down(NULL, port)==-1)
+                {
+                    //try legacy
+                    ykushLegacy->port_down(NULL, port);
+                }
             }
             break;
 
@@ -190,6 +208,7 @@ void ykush_cmd_parser(int argc, char** argv)
 
 
 
+
 /*********************************************************
  * Method: port_up
  *
@@ -232,13 +251,17 @@ int Ykush::port_up(char *serial, char port)
 
     }
     
-      //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in);
+    
+    //send HID report to board
+    if(is_legacy)
+    {
+        return sendHidReport(serial, hid_report_out, hid_report_in, 6);
+    }
+    else
+    {
+        return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    }
 
-    //handle board response HID report
-    //TODO
-
-    return 0;
 }
 
 
@@ -256,6 +279,7 @@ int Ykush::port_up(char *serial, char port)
  *********************************************************/
 int Ykush::port_down(char *serial, char port)
 {
+
     
     //Create command msg
     hid_report_out[0] = 0;      //Windows stuff
@@ -285,12 +309,15 @@ int Ykush::port_down(char *serial, char port)
     }
   
     //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in);
+    if(is_legacy)
+    {
+        return sendHidReport(serial, hid_report_out, hid_report_in, 6);
+    }
+    else
+    {
+        return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    }
 
-    //handle board response HID report
-    //TODO
-
-    return 0;
 }
 
 
@@ -337,7 +364,14 @@ int Ykush::get_port_status(char *serial, char port)
     }
   
     //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in);
+    if(is_legacy)
+    {
+        sendHidReport(serial, hid_report_out, hid_report_in, 6);
+    }
+    else
+    {
+        sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    }
 
     //handle board response HID report
     status = hid_report_in[1];
@@ -355,12 +389,26 @@ int Ykush::get_port_status(char *serial, char port)
  ****************************************************/ 
 void ykush_list_attached()
 {
-    Ykush *ykush = new Ykush();
+    Ykush *ykush = new Ykush(0xF2F7);
+    Ykush *ykushLegacy = new Ykush(0x0042);
     char ** attached_serials;
     int i = 0;
 
     printf("\n\nAttached YKUSH Boards:\n");        
-    ykush->listConnected();
+    if(ykush->listConnected()==0)
+    {
+        //try legacy
+        if(ykushLegacy->listConnected()==0)
+        {
+            printf("\n\nNo YKUSH boards found.");
+        }
+    } 
+    else
+    {
+        //list legacy boards if attached 
+        ykushLegacy->listConnected();
+    }
+
     printf("\n\n");
 
 }

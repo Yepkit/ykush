@@ -33,9 +33,17 @@ class Ykush : public UsbDevice
 {
     public:
 
-        Ykush()
-            : UsbDevice(0x04D8, 0xF2F7)
-        {            
+        Ykush(unsigned int pid)
+            : UsbDevice(0x04D8, pid)
+        {     
+           if(pid=0x0042)
+           {
+               is_legacy=true;
+           }
+           else
+           {
+               is_legacy=false;
+           }
         }
 
         int get_port_status(char *serial, char port);     //get downstream port status
@@ -44,8 +52,9 @@ class Ykush : public UsbDevice
 
         int port_down(char *serial, char port);
 
+    private:
 
-
+        bool is_legacy;
     
 };
 
