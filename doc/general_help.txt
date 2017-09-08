@@ -1,0 +1,118 @@
+--------------------------------------------------------------------------
+
+        YKUSH Boards Command Application Help
+        
+--------------------------------------------------------------------------
+
+
+Command Structure:
+-------------------
+
+ykushcmd <board_prefix> [<options>]
+
+board_prefix            Indexes the scopeboard being commanded. 
+                        Prefixes/board scope mapping:
+                        
+                        -------------------------
+                        | Board     | Prefix    |
+                        -------------------------
+                        | YKUSH     | No prefix |
+                        -------------------------
+                        | YKUSH XS  | ykushxs   |
+                        -------------------------
+                        | YKUSH 2   | ykush2    |
+                        -------------------------
+                        | YKUSH 3   | ykush3    |
+                        -------------------------
+                        
+
+ options                Options specific to each board scope as detailed
+                        bellow.                      
+                        
+
+                        
+1. Available Commands For YKUSH Boards:
+------------------------------------------
+
+ykushcmd -d dn_number                       Turns DOWN the downstream port
+                                            with the number dn_number
+                                            
+
+ykushcmd -d dn_number                       Turns UP the downstream port 
+                                            with the number dn_number
+                                            
+
+ykushcmd -g dn_number                       Obtains the switching status 
+                                            of port with the number dn_number
+                                            
+
+ykushcmd -l                                 Lists all currently attached 
+                                            YKUSH boards
+                                            
+
+ykushcmd -s serial_number -d dn_number      Turns DOWN the downstream port 
+                                            with the number dn_number for
+                                            the board with the specified
+                                            serial number
+                                            
+
+ykushcmd -s serial_number -u dn_number      Turns UP the downstream port
+                                            with the number dn_number for
+                                            the board with the specified
+                                            serial number
+
+
+
+ykushcmd -s serial_number -g dn_number      Obtains the switching status
+                                            of port with the number
+                                            dn_number for the board with
+                                            the specified serial number
+
+
+
+                                            
+NOTE: For Windows operating systems add the .exe extension when calling the ykushcmd command. For example for disconnecting the downstream port 1 the command is as follows.
+
+ykushcmd.exe -d 1                                            
+                                            
+                   
+                   
+
+
+2. Available Commands For YKUSH XS Boards:
+------------------------------------------
+
+ykushcmd ykushxs -d                     Turns DOWN the downstream port
+
+
+ykushcmd ykushxs -u                     Turns UP the downstream port
+
+
+ykushcmd ykushxs -g                     Obtains the switching status of
+                                        the downstream port
+                                        
+
+ykushcmd ykushxs -l                     Lists all currently attached
+                                        YKUSH XS boards
+                                        
+
+ykushcmd ykushxs -s serial_number -d    Turns DOWN the downstream port for
+                                        the board with the specified
+                                        serial number
+                                        
+
+ykushcmd ykushxs -s serial_number -u    Turns UP the downstream port for
+                                        the board with the specified
+                                        serial number
+                                        
+
+ykushcmd ykushxs -s serial_number -g    Obtains the switching status of
+                                        port for the board with the
+                                        specified serial number
+
+                                        
+NOTE: For Windows operating systems add the .exe extension when calling the ykushcmd command. For example for disconnecting the downstream port the command is as follows.
+
+ykushcmd.exe ykushxs -d
+
+

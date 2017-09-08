@@ -17,6 +17,7 @@ limitations under the License.
 #include "stdafx.h"
 #include "ykushxs.h"
 #include <stdio.h>
+#include <ykush_help.h>
 
 
 enum ykushxsAction
@@ -52,11 +53,12 @@ void ykushxs_cmd_parser(int argc, char** argv)
     char bySerialFlag = 0;
     enum ykushxsAction action = HELP;
     YkushXs *ykushxs = new YkushXs();
-
+    Help *help = new Help("../doc/ykushxs_help.txt");
 
     if(argc < 3)
     {
-        ykushxs_help(argv[0]);
+        //ykushxs_help(argv[0]);
+        help->print();
         return;
     }
 
@@ -77,7 +79,7 @@ void ykushxs_cmd_parser(int argc, char** argv)
             action = GET_STATUS;
         } else 
         {
-            ykushxs_help(argv[0]);
+            help->print();
             return;
         }
 
@@ -100,7 +102,7 @@ void ykushxs_cmd_parser(int argc, char** argv)
     }
     else
     {
-        ykushxs_help(argv[0]);
+        help->print(); 
         return;
     }
 
@@ -160,7 +162,7 @@ void ykushxs_cmd_parser(int argc, char** argv)
             break;
 
         default:
-            ykushxs_help(argv[0]);
+            help->print(); 
             break;
 
     }

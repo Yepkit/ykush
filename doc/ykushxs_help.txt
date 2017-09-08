@@ -1,0 +1,49 @@
+--------------------------------------------------------------------------
+
+            YKUSH XS Command Appplication Help
+
+--------------------------------------------------------------------------
+
+
+Available Commands:
+-------------------
+
+ykushcmd ykushxs -d                     Turns DOWN the downstream port
+
+
+ykushcmd ykushxs -u                     Turns UP the downstream port
+
+
+ykushcmd ykushxs -g                     Obtains the switching status of
+                                        the downstream port
+                                        
+
+ykushcmd ykushxs -l                     Lists all currently attached
+                                        YKUSH XS boards
+                                        
+
+ykushcmd ykushxs -s serial_number -d    Turns DOWN the downstream port for
+                                        the board with the specified
+                                        serial number
+                                        
+
+ykushcmd ykushxs -s serial_number -u    Turns UP the downstream port for
+                                        the board with the specified
+                                        serial number
+                                        
+
+ykushcmd ykushxs -s serial_number -g    Obtains the switching status of
+                                        port for the board with the
+                                        specified serial number
+
+                                        
+NOTE: For Windows operating systems add the .exe extension when calling the ykushcmd command. For example for disconnecting the downstream port the command is as follows.
+
+ykushcmd.exe ykushxs -d
+
+
+
+
+
+
+

@@ -17,6 +17,8 @@ limitations under the License.
 #include "stdafx.h"
 #include "ykush.h"
 #include <stdio.h>
+#include <ykush_help.h>
+
 
 
 enum ykushAction
@@ -56,12 +58,18 @@ void ykush_cmd_parser(int argc, char** argv)
     char port;
     int i=0;
     char status_response = 0;
-
+    Help *help = new Help("../doc/general_help.txt");
 
 
 
     if((argv[1][0]=='-') && (argv[1][1]=='s'))
     {
+        if(argc < 5)
+        {
+            //ykush_help(argv[0]);
+            help->print();
+            return;
+        }
         bySerialFlag = 1;
         if(argv[3][0]=='-' && argv[3][1]=='u') 
         {
@@ -81,18 +89,30 @@ void ykush_cmd_parser(int argc, char** argv)
             port = argv[4][0];
         } else 
         {
-            ykush_help(argv[0]);
+            //ykush_help(argv[0]);
+            help->print();
             return;
         }
 
     } 
     else if((argv[1][0]=='-') && (argv[1][1]=='u'))
     {
+        if(argc < 3)
+        {
+            help->print();
+            return;
+        }
+
         action = PORT_UP;
         port = argv[2][0];
     }
     else if((argv[1][0]=='-') && (argv[1][1]=='d'))
     {
+        if(argc < 3)
+        {
+            help->print();
+            return;
+        }
         action = PORT_DOWN;
         port = argv[2][0];
     }
@@ -103,12 +123,18 @@ void ykush_cmd_parser(int argc, char** argv)
     }
     else if((argv[1][0]=='-') && (argv[1][1]=='g'))
     {
+        if(argc < 3)
+        {
+            help->print();
+            return;
+        }
         action = GET_STATUS;
         port = argv[2][0];
     }
     else
     {
-        ykush_help(argv[0]);
+        //ykush_help(argv[0]);
+        help->print();
         return;
     }
 
@@ -187,7 +213,8 @@ void ykush_cmd_parser(int argc, char** argv)
             break;
 
         default:
-            ykush_help(argv[0]);
+            //ykush_help(argv[0]);
+            help->print();
             break;
 
     }

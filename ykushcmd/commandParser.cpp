@@ -52,9 +52,10 @@
 
 #include "stdafx.h"
 #include "commandParser.h"
-#include "usbcom.h"
+//#include "usbcom.h"
 #include <ykush.h>
 #include <ykushxs.h>
+#include <ykush_help.h>
 
 
 
@@ -105,11 +106,14 @@ int commandParser(int argc, char** argv) {
     char response;
     char port = 0;
     unsigned int pid;
+    Help *help = new Help("../doc/general_help.txt");
 
 
 
   	if ( argc <= 1){
-		printUsage(argv[0]);
+
+		//printUsage(argv[0]);
+        help->print();
 		return 0;
     	}
 
