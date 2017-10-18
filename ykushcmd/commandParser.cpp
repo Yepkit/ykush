@@ -52,10 +52,12 @@
 
 #include "stdafx.h"
 #include "commandParser.h"
-//#include "usbcom.h"
 #include <ykush.h>
 #include <ykushxs.h>
 #include <ykush_help.h>
+#include <ykush2.h>
+#include <ykush3.h>
+
 
 
 
@@ -63,17 +65,6 @@ using namespace std;
 
 extern unsigned int PRODUCT_ID;
 
-
-//TODO: APAGAR-----
-enum cmdAction {
-    PORT_UP,
-    PORT_DOWN,
-    LIST_DEVICES,
-    DISPLAY_SERIAL_NUMBER,
-    GET_PORT_STATUS,
-    PRINT_HELP,
-};
-//-----------
 
 
 
@@ -101,7 +92,6 @@ int commandParser(int argc, char** argv) {
   	
     char choice;
   	char cmd = 0x00;
-	enum cmdAction action = PRINT_HELP;
 	char *iSerial=NULL;
     char response;
     char port = 0;
@@ -131,11 +121,13 @@ int commandParser(int argc, char** argv) {
         else if ((argv[1][0] == 'y') && (argv[1][1]=='k') && (argv[1][2]=='u') && (argv[1][3]=='s') && (argv[1][4]=='h') && (argv[1][5]=='2'))
         {
             //YKUSH2
+            ykush2_cmd_parser(argc, argv);
             return 0;
         } 
         else if ((argv[1][0] == 'y') && (argv[1][1]=='k') && (argv[1][2]=='u') && (argv[1][3]=='s') && (argv[1][4]=='h') && (argv[1][5]=='3'))
         {
             //YKUSH3
+            ykush3_cmd_parser(argc, argv);
             return 0;
         }
         else

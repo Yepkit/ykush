@@ -15,7 +15,7 @@ limitations under the License.
 *******************************************************************************/
 
 #include "stdafx.h"
-#include "ykush.h"
+#include "ykush3.h"
 #include <stdio.h>
 #include <ykush_help.h>
 
@@ -28,6 +28,10 @@ enum ykushAction
     PORT_STATUS,
     LIST_BOARDS,
     GET_STATUS,
+    EXT_CTRL_ON,
+    EXT_CTRL_OFF,
+    READ_IO,
+    WRITE_IO,
     HELP
 };
 
@@ -49,91 +53,121 @@ enum ykushAction
  *
  *
  *********************************************************/
-void ykush_cmd_parser(int argc, char** argv)
+void ykush3_cmd_parser(int argc, char** argv)
 {
     char bySerialFlag = 0;
     enum ykushAction action = HELP;
-    Ykush *ykush = new Ykush(0xF2F7);
-    Ykush *ykushLegacy = new Ykush(0x0042);
+    Ykush3 *ykush = new Ykush3();
     char port;
+    char value;
     int i=0;
     char status_response = 0;
-    Help *help = new Help("../doc/general_help.txt");
+    Help *help = new Help("../doc/ykush3_help.txt");
 
 
 
-    if((argv[1][0]=='-') && (argv[1][1]=='s'))
+    if((argv[2][0]=='-') && (argv[2][1]=='s'))
     {
-        if(argc < 6)
-        {
-            //ykush_help(argv[0]);
+        if(argc < 6) {
             help->print();
             return;
         }
         bySerialFlag = 1;
-        if(argv[3][0]=='-' && argv[3][1]=='u') 
-        {
+        if(argv[4][0]=='-' && argv[4][1]=='u') {
             action = PORT_UP;
-            port = argv[4][0];
-
-        } else if(argv[3][0]=='-' && argv[3][1]=='d') 
-        {
+            port = argv[5][0];
+        } else if(argv[4][0]=='-' && argv[4][1]=='d') {
             action = PORT_DOWN;
-            port = argv[4][0];
-        } else if(argv[3][0]=='-' && argv[3][1]=='l') 
-        {
+            port = argv[5][0];
+        } else if(argv[4][0]=='-' && argv[4][1]=='l') {
             action = LIST_BOARDS;
-        } else if(argv[3][0]=='-' && argv[3][1]=='g') 
-        {
+        } else if(argv[4][0]=='-' && argv[4][1]=='g') {
             action = GET_STATUS;
-            port = argv[4][0];
-        } else 
-        {
-            //ykush_help(argv[0]);
+            port = argv[5][0];
+        } else if(argv[4][0]=='-' && argv[4][1]=='o') {
+            if(argv[4][2]=='n') {
+                action = EXT_CTRL_ON;
+            } else if(argv[4][2]=='f' && argv[4][3]=='f') {
+                action = EXT_CTRL_OFF;
+            }
+        } else if(argv[4][0]=='-' && argv[4][1]=='w') {
+            if(argc < 7) {
+                help->print();
+                return;
+            }
+            action = WRITE_IO;
+            port = argv[5][0];
+            value = argv[6][0]; 
+        } else if(argv[4][0]=='-' && argv[4][1]=='r') { 
+            action = READ_IO;
+            port = argv[5][0];
+        } else {
             help->print();
             return;
         }
 
     } 
-    else if((argv[1][0]=='-') && (argv[1][1]=='u'))
+    else if((argv[2][0]=='-') && (argv[2][1]=='u'))
     {
-        if(argc < 3)
-        {
+        if(argc < 4) {
             help->print();
             return;
         }
 
         action = PORT_UP;
-        port = argv[2][0];
+        port = argv[3][0];
     }
-    else if((argv[1][0]=='-') && (argv[1][1]=='d'))
+    else if((argv[2][0]=='-') && (argv[2][1]=='d'))
     {
-        if(argc < 3)
-        {
+        if(argc < 4){
             help->print();
             return;
         }
         action = PORT_DOWN;
-        port = argv[2][0];
+        port = argv[3][0];
     }
-    else if((argv[1][0]=='-') && (argv[1][1]=='l'))
+    else if((argv[2][0]=='-') && (argv[2][1]=='l'))
     {
         action = LIST_BOARDS;
 
     }
-    else if((argv[1][0]=='-') && (argv[1][1]=='g'))
+    else if((argv[2][0]=='-') && (argv[2][1]=='g'))
     {
-        if(argc < 3)
+        if(argc < 4)
         {
             help->print();
             return;
         }
         action = GET_STATUS;
-        port = argv[2][0];
+        port = argv[3][0];
     }
+    else if((argv[2][0]=='-') && (argv[2][1]=='o'))
+    {
+        if(argc < 3)
+        {
+            help->print();
+            return;
+        }
+        if(argv[2][2]=='n') {
+            action = EXT_CTRL_ON;
+        } else if(argv[2][2]=='f' && argv[2][3]=='f') {
+            action = EXT_CTRL_OFF;
+        }
+    }
+    else if((argv[2][0]=='-') && (argv[2][1]=='w'))
+    {
+        if(argc < 5)
+        {
+            help->print();
+            return;
+        }
+        action = WRITE_IO;
+        port = argv[3][0];
+        value = argv[4][0];
+    }
+
     else
     {
-        //ykush_help(argv[0]);
         help->print();
         return;
     }
@@ -146,49 +180,33 @@ void ykush_cmd_parser(int argc, char** argv)
         case PORT_UP:
             if(bySerialFlag)
             {
-               if(ykush->port_up(argv[2], port)==-1)
-               {
-                   //try legacy
-                    ykushLegacy->port_up(argv[2], port);
-               }
+               ykush->port_up(argv[3], port); 
             }
             else
             {
-                if(ykush->port_up(NULL, port)==-1)
-                {
-                    //try legacy
-                    ykushLegacy->port_up(NULL, port);
-                }
+                ykush->port_up(NULL, port); 
             }
             break;
 
         case PORT_DOWN:
             if(bySerialFlag)
             {
-                if(ykush->port_down(argv[2], port)==-1)
-                {
-                    //try legacy
-                    ykushLegacy->port_down(argv[2], port);
-                }
+                ykush->port_down(argv[3], port); 
             }
             else
             {
-                if(ykush->port_down(NULL, port)==-1)
-                {
-                    //try legacy
-                    ykushLegacy->port_down(NULL, port);
-                }
+                ykush->port_down(NULL, port); 
             }
             break;
 
         case LIST_BOARDS:
-            ykush_list_attached(); 
+            ykush3_list_attached(); 
             break;
 
         case GET_STATUS:
             if(bySerialFlag)
             {
-                status_response = ykush->get_port_status(argv[2], port);
+                status_response = ykush->get_port_status(argv[3], port);
                 if (status_response >> 4)
                 {
                     printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F );
@@ -212,8 +230,54 @@ void ykush_cmd_parser(int argc, char** argv)
             }   
             break;
 
+        case EXT_CTRL_ON:
+            if(bySerialFlag)
+            {
+               ykush->port_up(argv[3], '4'); 
+            }
+            else
+            {
+                ykush->port_up(NULL, '4'); 
+            }
+            break;
+
+        case EXT_CTRL_OFF:
+            if(bySerialFlag)
+            {
+                ykush->port_down(argv[3], '4'); 
+            }
+            else
+            {
+                ykush->port_down(NULL, '4'); 
+            }
+            break;
+
+
+        case WRITE_IO:
+            if(bySerialFlag)
+            {
+                ykush->write_io(argv[3], port, value); 
+            }
+            else
+            {
+                ykush->write_io(NULL, port, value); 
+            }
+            break;
+
+
+        case READ_IO:
+            if(bySerialFlag)
+            {
+                printf("\n%d\n", ykush->read_io(argv[3], port)); 
+            }
+            else
+            {
+                printf("\n%d\n", ykush->read_io(NULL, port)); 
+            }
+            break;
+
+
         default:
-            //ykush_help(argv[0]);
             help->print();
             break;
 
@@ -248,10 +312,10 @@ void ykush_cmd_parser(int argc, char** argv)
  *
  *
  *********************************************************/
-int Ykush::port_up(char *serial, char port)
+int Ykush3::port_up(char *serial, char port)
 {  
     //Create command msg
-    hid_report_out[0] = 0;      //Windows stuff
+    hid_report_out[0] = 0;
 
 
     switch(port)
@@ -272,6 +336,10 @@ int Ykush::port_up(char *serial, char port)
             hid_report_out[1] = 0x1a;
             break;
 
+        case '4':     
+            hid_report_out[1] = 0x14;
+            break;
+
         default:
             return 0;
             break;
@@ -280,14 +348,7 @@ int Ykush::port_up(char *serial, char port)
     
     
     //send HID report to board
-    if(is_legacy)
-    {
-        return sendHidReport(serial, hid_report_out, hid_report_in, 6);
-    }
-    else
-    {
-        return sendHidReport(serial, hid_report_out, hid_report_in, 65);
-    }
+    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
 
 }
 
@@ -304,7 +365,7 @@ int Ykush::port_up(char *serial, char port)
  *
  *
  *********************************************************/
-int Ykush::port_down(char *serial, char port)
+int Ykush3::port_down(char *serial, char port)
 {
 
     
@@ -328,6 +389,10 @@ int Ykush::port_down(char *serial, char port)
         case 'a':     
             hid_report_out[1] = 0x0a;
             break;
+        
+        case '4':
+            hid_report_out[1] = 0x04;
+            break;
 
         default:
             return 0;
@@ -336,16 +401,11 @@ int Ykush::port_down(char *serial, char port)
     }
   
     //send HID report to board
-    if(is_legacy)
-    {
-        return sendHidReport(serial, hid_report_out, hid_report_in, 6);
-    }
-    else
-    {
-        return sendHidReport(serial, hid_report_out, hid_report_in, 65);
-    }
+    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+   
 
 }
+
 
 
 
@@ -363,12 +423,12 @@ int Ykush::port_down(char *serial, char port)
  *
  *
  *********************************************************/
-int Ykush::get_port_status(char *serial, char port)
+int Ykush3::get_port_status(char *serial, char port)
 {
     int status;
 
     //Create command msg
-    hid_report_out[0] = 0;      //Windows stuff
+    hid_report_out[0] = 0;      
 
     switch(port)
     {
@@ -384,21 +444,18 @@ int Ykush::get_port_status(char *serial, char port)
             hid_report_out[1] = 0x23;
             break;
 
+        case '4':     
+            hid_report_out[1] = 0x24;
+            break;
+
         default:
             return 0;
             break;
 
     }
   
-    //send HID report to board
-    if(is_legacy)
-    {
-        sendHidReport(serial, hid_report_out, hid_report_in, 6);
-    }
-    else
-    {
-        sendHidReport(serial, hid_report_out, hid_report_in, 65);
-    }
+    //send HID report to board 
+    sendHidReport(serial, hid_report_out, hid_report_in, 65);
 
     //handle board response HID report
     status = hid_report_in[1];
@@ -408,72 +465,135 @@ int Ykush::get_port_status(char *serial, char port)
 
 
 
+
+
+
 /****************************************************
  *
  *
  *
  *
  ****************************************************/ 
-void ykush_list_attached()
+int Ykush3::write_io(char *serial, char port, char value)
 {
-    Ykush *ykush = new Ykush(0xF2F7);
-    Ykush *ykushLegacy = new Ykush(0x0042);
+    //Create command msg
+    hid_report_out[0] = 0;
+
+    
+    hid_report_out[1] = 0x31;
+    hid_report_out[3] = value;
+
+    switch(port)
+    {
+        case '1':
+            hid_report_out[2] = 0x01;
+            break;
+
+        case '2':     
+            hid_report_out[2] = 0x02;
+            break;
+        
+        case '3':     
+            hid_report_out[2] = 0x03;
+            break;
+ 
+        default:
+            return 0;
+            break;
+
+    }
+    
+    
+    //send HID report to board
+    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+
+}
+
+
+
+
+
+
+
+
+/****************************************************
+ *
+ *
+ *
+ *
+ ****************************************************/ 
+int Ykush3::read_io(char *serial, char port)
+{
+    //Create command msg
+    hid_report_out[0] = 0;
+
+    
+    hid_report_out[1] = 0x30;
+
+    switch(port)
+    {
+        case '1':
+            hid_report_out[2] = 0x01;
+            break;
+
+        case '2':     
+            hid_report_out[2] = 0x02;
+            break;
+        
+        case '3':     
+            hid_report_out[2] = 0x03;
+            break;
+ 
+        default:
+            return 0;
+            break;
+
+    }
+    
+    
+    //send HID report to board
+    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    
+    //process response
+    return hid_report_in[4];
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/****************************************************
+ *
+ *
+ *
+ *
+ ****************************************************/ 
+void ykush3_list_attached()
+{
+    Ykush3 *ykush = new Ykush3();
     char ** attached_serials;
     int i = 0;
 
     printf("\n\nAttached YKUSH Boards:\n");        
     if(ykush->listConnected()==0)
     {
-        //try legacy
-        if(ykushLegacy->listConnected()==0)
-        {
-            printf("\n\nNo YKUSH boards found.");
-        }
+        printf("\n\nNo YKUSH boards found.");
     } 
-    else
-    {
-        //list legacy boards if attached 
-        ykushLegacy->listConnected();
-    }
-
+    
     printf("\n\n");
 
 }
 
 
 
-
-
-
-/***************************************************
- * Function: ykush_help
- *
- * Description:
- *
- * Prints to standard output the command usage help
- * information.
- *
- *
- *
- *
- ***************************************************/
-void ykush_help(char * execName)
-{
-
-    printf("\n-------------------");
-    printf("\n\tUsage for YKUSH boards:\n");
-    printf("-------------------\n");
-    printf("\n%s -d downstream_number \t\tTurns DOWN the downstream port with the number downstream_number\n", execName);
-    printf("\n%s -u downstream_number \t\tTurns UP the downstream port with the number downstream_number\n", execName);
-    printf("\n%s -g downstream_number \t\tObtains the switching status of port with the number downstream_number\n", execName);
-    printf("\n%s -l \t\t\t\tLists all currently attached YKUSH boards\n", execName);
-    printf("\n%s -s serial_number -d downstream_number \tTurns DOWN the downstream port with the number downstream_number for the board with the specified serial number\n", execName);
-    printf("\n%s -s serial_number -u downstream_number \tTurns UP the downstream port with the number downstream_number for the board with the specified serial number\n\n\n", execName);
-    printf("\n%s -s serial_number -g downstream_number \tObtains the switching status of port with the number downstream_number for the board with the specified serial number\n\n\n", execName);
-
-
-
-}
 
 
 

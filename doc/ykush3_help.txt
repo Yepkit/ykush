@@ -1,0 +1,136 @@
+--------------------------------------------------------------------------
+
+            YKUSH 3 Command Appplication Help
+
+--------------------------------------------------------------------------
+
+Legend:
+<> Variable 
+[] Optional parameter
+>  Command line
+
+
+
+
+1. Downstream port commands
+---------------------------
+
+The structure of the downstream port commands is as follows.
+
+ykushcmd ykush3 [-s <serial_number>] -<action> <port>
+
+Where:
+
+serial_number               Serial number of a board. This is an optional parameter
+                            useful for when multiple boards are attached to the 
+                            same host.
+                            
+action                      u -> Turn ON/UP the downstream.
+                            d -> Turn OFF/DOWN the downstream.
+                            g -> Get downstream port status.
+                            l -> List boards attached.
+                            
+port                        1, 2 or 3.
+
+
+
+Some examples:
+
+Turn OFF the downstream port 1 (if only one YKUSH3 board is attached).
+
+> ykushcmd ykush3 -d 1
+
+Turn OFF the downstream port 1 of the board with serial number YKB00001.
+
+> ykushcmd ykush3 -s YKB00001 -d 1
+
+Get status of downstream port 2
+
+> ykushcmd ykush3 -g 2
+
+List attached YKUSH3 boards
+
+> ykushcmd ykush3 -l
+
+
+
+
+
+2. 5V output switched port control commands
+-------------------------------------------
+
+The structure of commands.
+
+ykushcmd ykush3 [-s <serial_number>] -<action>
+
+Where:
+
+serial_number               Serial number of a board. This is an optional parameter
+                            useful for when multiple boards are attached to the 
+                            same host.
+                            
+action                      on -> Turn ON.
+                            off -> Turn OFF.
+                            
+
+
+Some examples:
+
+Turn OFF the 5V Out port (if only one YKUSH3 board is attached).
+
+> ykushcmd ykush3 -off
+
+Turn ON the 5V Out port of the board with serial number YKB00001.
+
+> ykushcmd ykush3 -s YKB00001 -on
+
+
+
+
+3. IO control commands
+----------------------
+
+Structure of commands.
+
+ykushcmd ykush3 [-s <serial_numer>] -<action> <port> [<value>]
+
+Where:
+
+serial_number               Serial number of a board. This is an optional parameter
+                            useful for when multiple boards are attached to the 
+                            same host.
+                            
+action                      w -> Write.
+                            r -> Turn OFF. When Read action the command will return
+                            the read value (1/0). Also in this option, the
+                            <value> parameter is not required.
+            
+port                        1, 2 or 3.
+                            
+value                       1 -> Set the I/O to digital High Level
+                            0 -> Set the I/O to digital Low Level
+                            
+
+
+Some examples:
+
+Set GPIO 2 to high (1).
+
+> ykushcmd ykush3 -w 2 1
+
+Read the GPIO 2.
+
+> ykushcmd ykush3 -r 2
+
+
+                                        
+NOTE: For Windows operating systems add the .exe extension when calling the ykushcmd command.
+
+
+
+
+
+
+
+
+
