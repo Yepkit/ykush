@@ -32,6 +32,8 @@ enum ykushAction
     EXT_CTRL_OFF,
     READ_IO,
     WRITE_IO,
+    CONFIG,
+    RESET,
     HELP
 };
 
@@ -101,6 +103,12 @@ void ykush3_cmd_parser(int argc, char** argv)
         } else if(argv[4][0]=='-' && argv[4][1]=='r') { 
             action = READ_IO;
             port = argv[5][0];
+        } else if(argv[4][0]=='-' && argv[4][1]=='c') { 
+            action = CONFIG;
+            port = argv[5][0];
+            value = argv[6][0];
+        } else if(argv[4][0]=='-' && argv[4][1]=='r' && argv[4][2]=='e') { 
+            action = RESET;
         } else {
             help->print();
             return;
@@ -165,7 +173,21 @@ void ykush3_cmd_parser(int argc, char** argv)
         port = argv[3][0];
         value = argv[4][0];
     }
-
+    else if((argv[2][0]=='-') && (argv[2][1]=='c'))
+    {
+        if(argc < 5)
+        {
+            help->print();
+            return;
+        }
+        action = CONFIG;
+        port = argv[3][0];
+        value = argv[4][0];
+    }
+    else if((argv[2][0]=='-') && (argv[2][1]=='r') && (argv[2][2]=='e'))
+    {
+        action = RESET;
+    }
     else
     {
         help->print();
@@ -276,6 +298,29 @@ void ykush3_cmd_parser(int argc, char** argv)
             }
             break;
 
+        case CONFIG:
+            if(bySerialFlag)
+            {
+                ykush->config_port(argv[3], port, value); 
+            }
+            else
+            {
+                ykush->config_port(NULL, port, value); 
+            }
+            break;
+
+        case RESET:
+            if(bySerialFlag)
+            {
+                ykush->reset(argv[3]); 
+            }
+            else
+            {
+                ykush->reset(NULL); 
+            }
+            break;
+
+  
 
         default:
             help->print();
@@ -481,7 +526,12 @@ int Ykush3::write_io(char *serial, char port, char value)
 
     
     hid_report_out[1] = 0x31;
-    hid_report_out[3] = value;
+    if(value=='0'){
+        hid_report_out[3] = 0; 
+    } else {
+        hid_report_out[3] = 1; 
+    }
+
 
     switch(port)
     {
@@ -562,6 +612,77 @@ int Ykush3::read_io(char *serial, char port)
 
 
 
+/****************************************************
+ *
+ *
+ *
+ *
+ ****************************************************/ 
+int Ykush3::config_port(char *serial, char port, char value)
+{
+    //Create command msg
+    hid_report_out[0] = 0;
+
+    
+    hid_report_out[1] = 0x41;
+    if(value=='0'){
+        hid_report_out[3] = 0; 
+    } else {
+        hid_report_out[3] = 1; 
+    }
+    
+
+    switch(port)
+    {
+        case '1':
+            hid_report_out[2] = 0x01;
+            break;
+
+        case '2':     
+            hid_report_out[2] = 0x02;
+            break;
+        
+        case '3':     
+            hid_report_out[2] = 0x03;
+            break;
+ 
+        case 'e':     
+            hid_report_out[2] = 0x04;
+            break;
+ 
+
+        default:
+            return 0;
+            break;
+
+    }
+    
+    
+    //send HID report to board
+    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+
+}
+
+
+
+
+/****************************************************
+ *
+ *
+ *
+ *
+ ****************************************************/ 
+void Ykush3::reset(char *serial)
+{
+    //Create command msg
+    hid_report_out[0] = 0;
+
+    hid_report_out[1] = 0x55;        
+    
+    //send HID report to board
+    sendHidReport(serial, hid_report_out, hid_report_in, 65);
+
+}
 
 
 

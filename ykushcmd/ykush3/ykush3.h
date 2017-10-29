@@ -53,7 +53,12 @@ class Ykush3 : public UsbDevice
 
 
         //Configurations control
-       
+        int config_port(char *serial, char port, char value);
+
+        //Reset
+        void reset(char *serial);
+
+
 };
 
 
