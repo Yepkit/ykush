@@ -38,7 +38,7 @@ ykushcmd -d dn_number                       Turns DOWN the downstream port
                                             with the number dn_number
                                             
 
-ykushcmd -d dn_number                       Turns UP the downstream port 
+ykushcmd -u dn_number                       Turns UP the downstream port 
                                             with the number dn_number
                                             
 
