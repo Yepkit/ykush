@@ -64,7 +64,7 @@ void ykush_cmd_parser(int argc, char** argv)
 
     if((argv[1][0]=='-') && (argv[1][1]=='s'))
     {
-        if(argc < 6)
+        if(argc < 5)
         {
             //ykush_help(argv[0]);
             help->print();
