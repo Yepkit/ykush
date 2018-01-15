@@ -3,7 +3,6 @@ OBJS = $(addprefix ykushcmd/objs/, ykushcmd.o commandParser.o ykushxs.o yk_usb_d
 LIBS = -lhidapi
 LOADPATHS = -L$(CUR_PATH)/ykushcmd/windows
 INCLUDEPATHS= -I$(CUR_PATH)/ykushcmd/linux -I$(CUR_PATH)/ykushcmd/ykushxs -I$(CUR_PATH)/ykushcmd/ykush -I$(CUR_PATH)/ykushcmd -I$(CUR_PATH)/ykushcmd/help -I$(CUR_PATH)/ykushcmd/ykush2 -I$(CUR_PATH)/ykushcmd/ykush3
-PREPROCESSOR_DEFS = -DLINUX
 FLAGS = -static-libgcc -static-libstdc++
 CPP = g++
 
