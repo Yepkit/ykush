@@ -130,11 +130,11 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
 
     
     if (serial) {
+#ifndef LINUX
 		// Convert to a wchar_t*
 		size_t origsize = strlen(serial) + 1;
 		size_t convertedChars = 0;
 
-#ifndef LINUX
 		mbstowcs_s(&convertedChars, cserial, origsize, serial, _TRUNCATE);
 #else
 		mbstowcs(cserial, serial, newsize);

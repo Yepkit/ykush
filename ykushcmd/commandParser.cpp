@@ -85,17 +85,6 @@ enum Board {
 int commandParser(int argc, char** argv) {
 
 
-    enum Board attachedBoard;
-    
-    
-    bool bySerial = false;
-  	
-    char choice;
-  	char cmd = 0x00;
-	char *iSerial=NULL;
-    char response;
-    char port = 0;
-    unsigned int pid;
     Help *help = new Help("../doc/general_help.txt");
 
 
