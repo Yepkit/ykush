@@ -54,9 +54,7 @@ void ykush2_cmd_parser(int argc, char** argv)
     char bySerialFlag = 0;
     enum ykushAction action = HELP;
     Ykush2 *ykush = new Ykush2(0xEFED);
-    Ykush2 *ykushLegacy = new Ykush2(0x0042);
     char port;
-    int i=0;
     char status_response = 0;
     Help *help = new Help("../doc/ykush2_help.txt");
 
@@ -402,8 +400,6 @@ void ykush2_list_attached()
 {
     Ykush2 *ykush = new Ykush2(0xEFED);
     Ykush2 *ykushLegacy = new Ykush2(0x0042);
-    char ** attached_serials;
-    int i = 0;
 
     printf("\n\nAttached YKUSH Boards:\n");        
     if(ykush->listConnected()==0)

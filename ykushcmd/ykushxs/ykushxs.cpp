@@ -284,8 +284,6 @@ int YkushXs::get_port_status(char *serial)
 void ykushxs_list_attached()
 {
     YkushXs *ykushxs = new YkushXs();
-    char ** attached_serials;
-    int i = 0;
 
     printf("\n\nAttached YKUSH XS Boards:\n");        
     if(ykushxs->listConnected()==0)

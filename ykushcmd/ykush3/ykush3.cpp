@@ -62,7 +62,6 @@ void ykush3_cmd_parser(int argc, char** argv)
     Ykush3 *ykush = new Ykush3();
     char port;
     char value;
-    int i=0;
     char status_response = 0;
     Help *help = new Help("../doc/ykush3_help.txt");
 
@@ -700,8 +699,6 @@ void Ykush3::reset(char *serial)
 void ykush3_list_attached()
 {
     Ykush3 *ykush = new Ykush3();
-    char ** attached_serials;
-    int i = 0;
 
     printf("\n\nAttached YKUSH Boards:\n");        
     if(ykush->listConnected()==0)

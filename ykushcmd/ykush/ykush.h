@@ -36,7 +36,7 @@ class Ykush : public UsbDevice
         Ykush(unsigned int pid)
             : UsbDevice(0x04D8, pid)
         {     
-           if(pid=0x0042)
+           if(pid==0x0042)
            {
                is_legacy=true;
            }

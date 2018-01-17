@@ -56,7 +56,6 @@ void ykush_cmd_parser(int argc, char** argv)
     Ykush *ykush = new Ykush(0xF2F7);
     Ykush *ykushLegacy = new Ykush(0x0042);
     char port;
-    int i=0;
     char status_response = 0;
     Help *help = new Help("../doc/general_help.txt");
 
@@ -418,8 +417,6 @@ void ykush_list_attached()
 {
     Ykush *ykush = new Ykush(0xF2F7);
     Ykush *ykushLegacy = new Ykush(0x0042);
-    char ** attached_serials;
-    int i = 0;
 
     printf("\n\nAttached YKUSH Boards:\n");        
     if(ykush->listConnected()==0)
