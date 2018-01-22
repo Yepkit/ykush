@@ -26,6 +26,7 @@ Boards Supported
 ================
 - YKUSH
 - YKUSH XS
+- YKUSH 3
 
 
 Licensing
