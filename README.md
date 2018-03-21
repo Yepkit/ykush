@@ -32,7 +32,7 @@ Boards Supported
 Licensing
 =========
 
-The source code is licensed under MIT license. 
+The source code is licensed Apache License, Version 2.0. 
 Refer to [LICENSE](LICENSE.md) file.
 
 

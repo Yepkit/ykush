@@ -3,6 +3,7 @@
 # YKUSH command application build script
 
 rm -rf hidapi
+make clean
 
 echo "Checking for git..."
 command -v git >/dev/null 2>&1 || { echo >&2 "Git is required and is not installed. Aborting."; exit 1; }
@@ -26,4 +27,5 @@ echo "#endif" >> ykushcmd/platformdefs.h
 
 echo "Building ykush command..."
 make
+
 

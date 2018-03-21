@@ -84,7 +84,7 @@ enum Board {
 
 int commandParser(int argc, char** argv) {
 
-
+	
     Help *help = new Help("../doc/general_help.txt");
 
 
