@@ -619,46 +619,40 @@ int Ykush3::read_io(char *serial, char port)
  ****************************************************/ 
 int Ykush3::config_port(char *serial, char port, char value)
 {
-    //Create command msg
-    hid_report_out[0] = 0;
+	//Create command msg
+	hid_report_out[0] = 0;
 
-    
-    hid_report_out[1] = 0x41;
-    if(value=='0'){
-        hid_report_out[3] = 0; 
-    } else {
-        hid_report_out[3] = 1; 
-    }
-    
 
-    switch(port)
-    {
-        case '1':
-            hid_report_out[2] = 0x01;
-            break;
+	hid_report_out[1] = 0x41;
+	if ( value=='0' )
+		hid_report_out[3] = 0; 
+	else if ( value=='0' )
+		hid_report_out[3] = 1; 
+	else
+		hid_report_out[3] = 2;	//Persist mode
+	
 
-        case '2':     
-            hid_report_out[2] = 0x02;
-            break;
-        
-        case '3':     
-            hid_report_out[2] = 0x03;
-            break;
- 
-        case 'e':     
-            hid_report_out[2] = 0x04;
-            break;
- 
 
-        default:
-            return 0;
-            break;
+	switch ( port ) {
+	case '1':
+		hid_report_out[2] = 0x01;
+		break;
+	case '2':     
+		hid_report_out[2] = 0x02;
+		break;
+	case '3':     
+		hid_report_out[2] = 0x03;
+		break;
+	case 'e':     
+		hid_report_out[2] = 0x04;
+		break;
+	default:
+		return 0;
+		break;
+	}
 
-    }
-    
-    
-    //send HID report to board
-    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+	//send HID report to board
+	return sendHidReport(serial, hid_report_out, hid_report_in, 65);
 
 }
 

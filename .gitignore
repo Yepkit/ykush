@@ -11,4 +11,5 @@ bin/ykushcmd
 .vs/
 *.exe
 nbproject/private/
+*.so
 
