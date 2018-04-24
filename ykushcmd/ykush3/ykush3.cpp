@@ -34,7 +34,10 @@ enum ykushAction
     WRITE_IO,
     CONFIG,
     RESET,
-    HELP
+    HELP,
+    GPIO_EN,
+    GPIO_DIS,
+    ENTER_BOOTLOADER
 };
 
 
@@ -57,275 +60,227 @@ enum ykushAction
  *********************************************************/
 void ykush3_cmd_parser(int argc, char** argv)
 {
-    char bySerialFlag = 0;
-    enum ykushAction action = HELP;
-    Ykush3 *ykush = new Ykush3();
-    char port;
-    char value;
-    char status_response = 0;
-    Help *help = new Help("../doc/ykush3_help.txt");
+	char bySerialFlag = 0;
+	enum ykushAction action = HELP;
+	Ykush3 *ykush = new Ykush3();
+	char port;
+	char value;
+	char status_response = 0;
+	Help *help = new Help("../doc/ykush3_help.txt");
 
 
 
-    if((argv[2][0]=='-') && (argv[2][1]=='s'))
-    {
-        if(argc < 6) {
-            help->print();
-            return;
-        }
-        bySerialFlag = 1;
-        if(argv[4][0]=='-' && argv[4][1]=='u') {
-            action = PORT_UP;
-            port = argv[5][0];
-        } else if(argv[4][0]=='-' && argv[4][1]=='d') {
-            action = PORT_DOWN;
-            port = argv[5][0];
-        } else if(argv[4][0]=='-' && argv[4][1]=='l') {
-            action = LIST_BOARDS;
-        } else if(argv[4][0]=='-' && argv[4][1]=='g') {
-            action = GET_STATUS;
-            port = argv[5][0];
-        } else if(argv[4][0]=='-' && argv[4][1]=='o') {
-            if(argv[4][2]=='n') {
-                action = EXT_CTRL_ON;
-            } else if(argv[4][2]=='f' && argv[4][3]=='f') {
-                action = EXT_CTRL_OFF;
-            }
-        } else if(argv[4][0]=='-' && argv[4][1]=='w') {
-            if(argc < 7) {
-                help->print();
-                return;
-            }
-            action = WRITE_IO;
-            port = argv[5][0];
-            value = argv[6][0]; 
-        } else if(argv[4][0]=='-' && argv[4][1]=='r') { 
-            action = READ_IO;
-            port = argv[5][0];
-        } else if(argv[4][0]=='-' && argv[4][1]=='c') { 
-            action = CONFIG;
-            port = argv[5][0];
-            value = argv[6][0];
-        } else if(argv[4][0]=='-' && argv[4][1]=='r' && argv[4][2]=='e') { 
-            action = RESET;
-        } else {
-            help->print();
-            return;
-        }
-
-    } 
-    else if((argv[2][0]=='-') && (argv[2][1]=='u'))
-    {
-        if(argc < 4) {
-            help->print();
-            return;
-        }
-
-        action = PORT_UP;
-        port = argv[3][0];
-    }
-    else if((argv[2][0]=='-') && (argv[2][1]=='d'))
-    {
-        if(argc < 4){
-            help->print();
-            return;
-        }
-        action = PORT_DOWN;
-        port = argv[3][0];
-    }
-    else if((argv[2][0]=='-') && (argv[2][1]=='l'))
-    {
-        action = LIST_BOARDS;
-
-    }
-    else if((argv[2][0]=='-') && (argv[2][1]=='g'))
-    {
-        if(argc < 4)
-        {
-            help->print();
-            return;
-        }
-        action = GET_STATUS;
-        port = argv[3][0];
-    }
-    else if((argv[2][0]=='-') && (argv[2][1]=='o'))
-    {
-        if(argc < 3)
-        {
-            help->print();
-            return;
-        }
-        if(argv[2][2]=='n') {
-            action = EXT_CTRL_ON;
-        } else if(argv[2][2]=='f' && argv[2][3]=='f') {
-            action = EXT_CTRL_OFF;
-        }
-    }
-    else if((argv[2][0]=='-') && (argv[2][1]=='w'))
-    {
-        if(argc < 5)
-        {
-            help->print();
-            return;
-        }
-        action = WRITE_IO;
-        port = argv[3][0];
-        value = argv[4][0];
-    }
-    else if((argv[2][0]=='-') && (argv[2][1]=='c'))
-    {
-        if(argc < 5)
-        {
-            help->print();
-            return;
-        }
-        action = CONFIG;
-        port = argv[3][0];
-        value = argv[4][0];
-    }
-    else if((argv[2][0]=='-') && (argv[2][1]=='r') && (argv[2][2]=='e'))
-    {
-        action = RESET;
-    }
-    else
-    {
-        help->print();
-        return;
-    }
+	if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 's' ) ) {	//BY SERIAL
+		if ( argc < 5 ) {
+			help->print();
+			return;
+		}
+		bySerialFlag = 1;
+		if ( argv[4][0] == '-' && argv[4][1] == 'u' ) {
+			action = PORT_UP;
+			port = argv[5][0];
+		} else if ( argv[4][0] == '-' && argv[4][1] == 'd' ) {
+			action = PORT_DOWN;
+			port = argv[5][0];
+		} else if ( argv[4][0] == '-' && argv[4][1] == 'l' ) {
+			action = LIST_BOARDS;
+		} else if ( argv[4][0] == '-' && argv[4][1] == 'g' ) {
+			action = GET_STATUS;
+			port = argv[5][0];
+		} else if ( argv[4][0] == '-' && argv[4][1] == 'o' ) {
+			if ( argv[4][2]=='n' )
+				action = EXT_CTRL_ON;
+			else if ( argv[4][2] == 'f' && argv[4][3] == 'f' )
+				action = EXT_CTRL_OFF;
+		} else if ( argv[4][0] == '-' && argv[4][1] == 'w' ) {
+			if ( argc < 7 ) {
+				help->print();
+				return;
+			}
+			action = WRITE_IO;
+			port = argv[5][0];
+			value = argv[6][0]; 
+		} else if ( argv[4][0] == '-' && argv[4][1] == 'r' ) { 
+			action = READ_IO;
+			port = argv[5][0];
+		} else if ( argv[4][0] == '-' && argv[4][1] == 'c' ) { 
+			action = CONFIG;
+			port = argv[5][0];
+			value = argv[6][0];
+		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'r' && argv[4][3] == 'e' ) { 
+			action = RESET;
+		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'g' && argv[4][3] == 'p' && argv[4][4] == 'i' ) {
+			if ( argv[5][0] == 'e' && argv[5][1] == 'n' )
+				action = GPIO_EN;
+                        else if (argv[5][0] == 'd' && argv[5][1] == 'i' && argv[5][2] == 's')
+				action = GPIO_DIS;
+			else
+				help->print();
+		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'b' && argv[4][3] == 'o' && argv[4][4] == 'o' ) { 
+			action = ENTER_BOOTLOADER;		
+		} else {
+			help->print();
+			return;
+		}
+	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'u' ) ) {
+		if ( argc < 3 ) {
+			help->print();
+			return;
+		}
+		action = PORT_UP;
+		port = argv[3][0];
+	} else if ( ( argv[2][0] == '-')  && ( argv[2][1] == 'd' ) ) {
+		if ( argc < 4 ) {
+			help->print();
+			return;
+		}
+		action = PORT_DOWN;
+		port = argv[3][0];
+	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'l' ) ) {
+		action = LIST_BOARDS;
+	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'g' ) ) {
+		if ( argc < 4 ) {
+			help->print();
+			return;
+		}
+		action = GET_STATUS;
+		port = argv[3][0];
+	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'o' ) ) {
+		if ( argc < 3 ) {
+			help->print();
+			return;
+		}
+		if ( argv[2][2] == 'n' )
+			action = EXT_CTRL_ON;
+		else if ( argv[2][2] == 'f' && argv[2][3] == 'f' ) 
+			action = EXT_CTRL_OFF;
+	} else if ( ( argv[2][0] == '-' ) && ( argv [2][1] == 'w' ) ) {
+		if ( argc < 5 ) {
+			help->print();
+			return;
+		}
+		action = WRITE_IO;
+		port = argv[3][0];
+		value = argv[4][0];
+	} else if ( argv[2][0] == '-' && argv[2][1] == 'r' ) { 
+		action = READ_IO;
+		port = argv[3][0];
+	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'c' ) ) {
+		if ( argc < 5 ) {
+			help->print();
+			return;
+		}
+		action = CONFIG;
+		port = argv[3][0];
+		value = argv[4][0];
+	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == '-' ) && ( argv[2][2] == 'r' ) && ( argv[2][3] == 'e' ) ) {
+		action = RESET;
+	} else if ( argv[2][0] == '-' && argv[2][1] == '-' && argv[2][2] == 'b' && argv[2][3] == 'o' && argv[2][4] == 'o' ) { 
+			action = ENTER_BOOTLOADER;
+	} else if ( argv[2][0] == '-' && argv[2][1] == '-' && argv[2][2] == 'g' && argv[2][3] == 'p' && argv[2][4] == 'i' ) {
+			if ( argv[3][0] == 'e' && argv[3][1] == 'n' )
+				action = GPIO_EN;
+                        else if (argv[3][0] == 'd' && argv[3][1] == 'i' && argv[3][2] == 's')
+				action = GPIO_DIS;
+			else
+				help->print();
+		
+	} else {
+		help->print();
+		return;
+	}
 
 
+	switch ( action ) {
+	case PORT_UP:
+		if ( bySerialFlag ) 
+			ykush->port_up(argv[3], port); 
+		else
+			ykush->port_up(NULL, port); 
+		break;
+	case PORT_DOWN:
+		if ( bySerialFlag )
+			ykush->port_down(argv[3], port); 
+		else
+			ykush->port_down(NULL, port); 
+		break;
+	case LIST_BOARDS:
+		ykush3_list_attached(); 
+		break;
+	case GET_STATUS:
+		if ( bySerialFlag ) {
+			status_response = ykush->get_port_status(argv[3], port);
+			if ( status_response >> 4 )
+				 printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F );
+			else 
+				printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
+		} else {
+			status_response = ykush->get_port_status(NULL, port);
+			if ( status_response >> 4 )
+			     printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F);
+			else 
+			     printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
+		}   
+		break;
+	case EXT_CTRL_ON:
+		if ( bySerialFlag )
+			ykush->port_up(argv[3], '4'); 
+		else
+			ykush->port_up(NULL, '4'); 
+		break;
+	case EXT_CTRL_OFF:
+		if ( bySerialFlag )
+			ykush->port_down(argv[3], '4'); 
+		else
+			ykush->port_down(NULL, '4'); 
+		break;
+	case WRITE_IO:
+		if ( bySerialFlag )
+			ykush->write_io(argv[3], port, value); 
+		else
+			ykush->write_io(NULL, port, value); 
+		break;
+	case READ_IO:
+		if ( bySerialFlag )
+			printf("\n%d\n", ykush->read_io(argv[3], port)); 
+		else
+			printf("\n%d\n", ykush->read_io(NULL, port)); 
+		break;
+	case CONFIG:
+		if ( bySerialFlag )
+		    ykush->config_port(argv[3], port, value); 
+		else
+		    ykush->config_port(NULL, port, value); 
+		break;
 
-
-    switch (action)
-    {
-        case PORT_UP:
-            if(bySerialFlag)
-            {
-               ykush->port_up(argv[3], port); 
-            }
-            else
-            {
-                ykush->port_up(NULL, port); 
-            }
-            break;
-
-        case PORT_DOWN:
-            if(bySerialFlag)
-            {
-                ykush->port_down(argv[3], port); 
-            }
-            else
-            {
-                ykush->port_down(NULL, port); 
-            }
-            break;
-
-        case LIST_BOARDS:
-            ykush3_list_attached(); 
-            break;
-
-        case GET_STATUS:
-            if(bySerialFlag)
-            {
-                status_response = ykush->get_port_status(argv[3], port);
-                if (status_response >> 4)
-                {
-                    printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F );
-                } 
-                else 
-                {
-                    printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
-                }
-            }
-            else
-            {
-                status_response = ykush->get_port_status(NULL, port);
-                if (status_response >> 4)
-                {
-                    printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F);
-                } 
-                else 
-                {
-                    printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
-                }
-            }   
-            break;
-
-        case EXT_CTRL_ON:
-            if(bySerialFlag)
-            {
-               ykush->port_up(argv[3], '4'); 
-            }
-            else
-            {
-                ykush->port_up(NULL, '4'); 
-            }
-            break;
-
-        case EXT_CTRL_OFF:
-            if(bySerialFlag)
-            {
-                ykush->port_down(argv[3], '4'); 
-            }
-            else
-            {
-                ykush->port_down(NULL, '4'); 
-            }
-            break;
-
-
-        case WRITE_IO:
-            if(bySerialFlag)
-            {
-                ykush->write_io(argv[3], port, value); 
-            }
-            else
-            {
-                ykush->write_io(NULL, port, value); 
-            }
-            break;
-
-
-        case READ_IO:
-            if(bySerialFlag)
-            {
-                printf("\n%d\n", ykush->read_io(argv[3], port)); 
-            }
-            else
-            {
-                printf("\n%d\n", ykush->read_io(NULL, port)); 
-            }
-            break;
-
-        case CONFIG:
-            if(bySerialFlag)
-            {
-                ykush->config_port(argv[3], port, value); 
-            }
-            else
-            {
-                ykush->config_port(NULL, port, value); 
-            }
-            break;
-
-        case RESET:
-            if(bySerialFlag)
-            {
-                ykush->reset(argv[3]); 
-            }
-            else
-            {
-                ykush->reset(NULL); 
-            }
-            break;
-
-  
-
-        default:
-            help->print();
-            break;
-
-    }
+	case RESET:
+		if ( bySerialFlag )
+			ykush->reset(argv[3]); 
+		else
+			ykush->reset(NULL); 
+		break;
+	case GPIO_EN:
+		if ( bySerialFlag )
+			ykush->gpio_ctrl_enable(argv[3]); 
+		else
+			ykush->gpio_ctrl_enable(NULL); 
+		break;
+	case GPIO_DIS:
+		if ( bySerialFlag )
+			ykush->gpio_ctrl_disable(argv[3]); 
+		else
+			ykush->gpio_ctrl_disable(NULL); 
+		break;
+	case ENTER_BOOTLOADER:
+		if ( bySerialFlag )
+			ykush->enter_bootloader(argv[3]); 
+		else
+			ykush->enter_bootloader(NULL);
+		break;
+	default:
+		help->print();
+		break;
+	}
 
 }
 
@@ -680,7 +635,52 @@ void Ykush3::reset(char *serial)
 
 
 
+/**
+ * 
+ */
+void Ykush3::gpio_ctrl_enable(char *serial)
+{
+    //Create command msg
+    hid_report_out[0] = 0;
+    hid_report_out[1] = 0x32;
+    hid_report_out[2] = 0x01;
+    
+    //send HID report to board
+    sendHidReport(serial, hid_report_out, hid_report_in, 65);
 
+}
+
+
+/**
+ * 
+ */
+void Ykush3::gpio_ctrl_disable(char *serial)
+{
+    //Create command msg
+    hid_report_out[0] = 0;
+    hid_report_out[1] = 0x32;
+    hid_report_out[2] = 0x00;
+    
+    //send HID report to board
+    sendHidReport(serial, hid_report_out, hid_report_in, 65);
+
+}
+
+
+
+/**
+ * 
+ */
+void Ykush3::enter_bootloader(char *serial)
+{
+    //Create command msg
+    hid_report_out[0] = 0;
+    hid_report_out[1] = 0x42;
+    
+    //send HID report to board
+    sendHidReport(serial, hid_report_out, hid_report_in, 65);
+
+}
 
 
 

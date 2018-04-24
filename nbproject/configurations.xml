@@ -51,39 +51,132 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath></executablePath>
-          <ccTool>
-            <incDir>
-              <pElem>ykushcmd/linux</pElem>
-              <pElem>ykushcmd/ykushxs</pElem>
-              <pElem>ykushcmd/ykush</pElem>
-              <pElem>ykushcmd</pElem>
-              <pElem>ykushcmd/help</pElem>
-              <pElem>ykushcmd/ykush2</pElem>
-              <pElem>ykushcmd/ykush3</pElem>
-              <pElem>.</pElem>
-            </incDir>
-          </ccTool>
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="ykushcmd/commandParser.cpp" ex="false" tool="1" flavor2="0">
+      <folder path="0/ykushcmd/help">
+        <ccTool>
+          <incDir>
+            <pElem>ykushcmd/linux</pElem>
+            <pElem>ykushcmd/ykushxs</pElem>
+            <pElem>ykushcmd/ykush</pElem>
+            <pElem>ykushcmd</pElem>
+            <pElem>ykushcmd/help</pElem>
+            <pElem>ykushcmd/ykush2</pElem>
+            <pElem>ykushcmd/ykush3</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/ykushcmd/ykush">
+        <ccTool>
+          <incDir>
+            <pElem>ykushcmd/linux</pElem>
+            <pElem>ykushcmd/ykushxs</pElem>
+            <pElem>ykushcmd/ykush</pElem>
+            <pElem>ykushcmd</pElem>
+            <pElem>ykushcmd/help</pElem>
+            <pElem>ykushcmd/ykush2</pElem>
+            <pElem>ykushcmd/ykush3</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/ykushcmd/ykush2">
+        <ccTool>
+          <incDir>
+            <pElem>ykushcmd/linux</pElem>
+            <pElem>ykushcmd/ykushxs</pElem>
+            <pElem>ykushcmd/ykush</pElem>
+            <pElem>ykushcmd</pElem>
+            <pElem>ykushcmd/help</pElem>
+            <pElem>ykushcmd/ykush2</pElem>
+            <pElem>ykushcmd/ykush3</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/ykushcmd/ykush3">
+        <ccTool>
+          <incDir>
+            <pElem>../../../../../../ykushcmd/linux</pElem>
+            <pElem>../../../../../../ykushcmd/ykushxs</pElem>
+            <pElem>../../../../../../ykushcmd/ykush</pElem>
+            <pElem>.</pElem>
+            <pElem>help</pElem>
+            <pElem>ykush2</pElem>
+            <pElem>ykush3</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/ykushcmd/ykushxs">
+        <ccTool>
+          <incDir>
+            <pElem>ykushcmd/linux</pElem>
+            <pElem>ykushcmd/ykushxs</pElem>
+            <pElem>ykushcmd/ykush</pElem>
+            <pElem>ykushcmd</pElem>
+            <pElem>ykushcmd/help</pElem>
+            <pElem>ykushcmd/ykush2</pElem>
+            <pElem>ykushcmd/ykush3</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <item path="ykushcmd/commandParser.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>ykushcmd/linux</pElem>
+            <pElem>ykushcmd/ykushxs</pElem>
+            <pElem>ykushcmd/ykush</pElem>
+            <pElem>ykushcmd</pElem>
+            <pElem>ykushcmd/help</pElem>
+            <pElem>ykushcmd/ykush2</pElem>
+            <pElem>ykushcmd/ykush3</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="ykushcmd/help/ykush_help.cpp" ex="false" tool="1" flavor2="0">
+      <item path="ykushcmd/help/ykush_help.cpp" ex="false" tool="1" flavor2="4">
       </item>
-      <item path="ykushcmd/yk_usb_device.cpp" ex="false" tool="1" flavor2="0">
+      <item path="ykushcmd/yk_usb_device.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>ykushcmd/linux</pElem>
+            <pElem>ykushcmd/ykushxs</pElem>
+            <pElem>ykushcmd/ykush</pElem>
+            <pElem>ykushcmd</pElem>
+            <pElem>ykushcmd/help</pElem>
+            <pElem>ykushcmd/ykush2</pElem>
+            <pElem>ykushcmd/ykush3</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="ykushcmd/ykush/ykush.cpp" ex="false" tool="1" flavor2="0">
+      <item path="ykushcmd/ykush/ykush.cpp" ex="false" tool="1" flavor2="4">
       </item>
-      <item path="ykushcmd/ykush2/ykush2.cpp" ex="false" tool="1" flavor2="0">
+      <item path="ykushcmd/ykush2/ykush2.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="ykushcmd/ykush3/ykush3.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="ykushcmd/ykushcmd.cpp" ex="false" tool="1" flavor2="0">
+      <item path="ykushcmd/ykushcmd.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>ykushcmd/linux</pElem>
+            <pElem>ykushcmd/ykushxs</pElem>
+            <pElem>ykushcmd/ykush</pElem>
+            <pElem>ykushcmd</pElem>
+            <pElem>ykushcmd/help</pElem>
+            <pElem>ykushcmd/ykush2</pElem>
+            <pElem>ykushcmd/ykush3</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="ykushcmd/ykushxs/ykushxs.cpp" ex="false" tool="1" flavor2="0">
+      <item path="ykushcmd/ykushxs/ykushxs.cpp" ex="false" tool="1" flavor2="4">
       </item>
     </conf>
   </confs>

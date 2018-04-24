@@ -50,6 +50,12 @@ class Ykush3 : public UsbDevice
         int write_io(char *serial, char port, char value);
 
         int read_io(char *serial, char port);
+        
+        void gpio_ctrl_enable(char *serial);
+        
+        void gpio_ctrl_disable(char *serial);
+        
+        void enter_bootloader(char *serial);
 
 
         //Configurations control

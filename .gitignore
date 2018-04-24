@@ -12,4 +12,7 @@ bin/ykushcmd
 *.exe
 nbproject/private/
 *.so
+*.dll
+*.exp
+
 
