@@ -29,12 +29,9 @@ limitations under the License.
 // DEFINES
 //-------------------------------------------------------------------------
 
+#define USB_CMD_NON_BLOCKING	1	//1 -> Set the USB device handle to be non-blocking
+					//0 -> Set the USB device handle to be blocking
 
-//-------------------------------------------------------------------------
-// GLOBALS
-//-------------------------------------------------------------------------
-//unsigned int VID = 0x04D8;      //default to Microchip VID
-//unsigned int PID = 0x0000;
 
 
 

@@ -151,7 +151,7 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
     }
 
     // Set the hid_read() function to be blocking (wait for response from the device).
-    hid_set_nonblocking(handle, 0);
+    hid_set_nonblocking(handle, USB_CMD_NON_BLOCKING);
 
     
     //send HID report
