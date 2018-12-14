@@ -63,7 +63,9 @@ class Ykush3 : public UsbDevice
 
         //Reset
         void reset(char *serial);
-
+	
+	//Help
+	void print_help();
 
 };
 

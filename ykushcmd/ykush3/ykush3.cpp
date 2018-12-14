@@ -71,28 +71,41 @@ void ykush3_cmd_parser(int argc, char** argv)
 
 
 	if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 's' ) ) {	//BY SERIAL
+		
 		if ( argc < 5 ) {
 			help->print();
 			return;
 		}
 		bySerialFlag = 1;
+		
 		if ( argv[4][0] == '-' && argv[4][1] == 'u' ) {
+			
 			action = PORT_UP;
 			port = argv[5][0];
+			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'd' ) {
+			
 			action = PORT_DOWN;
 			port = argv[5][0];
+			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'l' ) {
+			
 			action = LIST_BOARDS;
+			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'g' ) {
+			
 			action = GET_STATUS;
 			port = argv[5][0];
+			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'o' ) {
+			
 			if ( argv[4][2]=='n' )
 				action = EXT_CTRL_ON;
 			else if ( argv[4][2] == 'f' && argv[4][3] == 'f' )
 				action = EXT_CTRL_OFF;
+			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'w' ) {
+			
 			if ( argc < 7 ) {
 				help->print();
 				return;
@@ -100,9 +113,12 @@ void ykush3_cmd_parser(int argc, char** argv)
 			action = WRITE_IO;
 			port = argv[5][0];
 			value = argv[6][0]; 
+			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'r' ) { 
+			
 			action = READ_IO;
 			port = argv[5][0];
+			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'c' ) { 
 			action = CONFIG;
 			port = argv[5][0];
@@ -579,9 +595,9 @@ int Ykush3::config_port(char *serial, char port, char value)
 
 
 	hid_report_out[1] = 0x41;
-	if ( value=='0' )
+	if ( value == '0' )
 		hid_report_out[3] = 0; 
-	else if ( value=='0' )
+	else if ( value == '1' )
 		hid_report_out[3] = 1; 
 	else
 		hid_report_out[3] = 2;	//Persist mode
