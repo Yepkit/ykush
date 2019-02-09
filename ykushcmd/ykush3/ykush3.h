@@ -20,14 +20,22 @@ limitations under the License.
 
 
 #include <yk_usb_device.h>
+#include <command_parser.h>
 
 
 
+class Ykush3UsbDevice : public UsbDevice
+{
+	public:
 
+		Ykush3()
+		: UsbDevice(0x04D8, 0xF11B)
+		{     
+		};
 
-//------------------------------------
-//CLASSES
-//------------------------------------
+	char send_command(unsigned char *out_msg, unsigned char *in_msg);
+}
+
 
 class Ykush3 : public UsbDevice  
 {
@@ -70,6 +78,49 @@ class Ykush3 : public UsbDevice
 };
 
 
+/**
+ * Class that parses the command line and creates the message to be sent by USB
+ */
+class Ykush3Command : CommandParser
+{
+	public:
+		/**
+		 * parses YKUSH3 command line arguments.
+		 * 
+		 * This method will receive as input the command line arguments
+		 * and will set the properties that classify the command to be executed.
+		 * 
+		 */
+		void parse_command(int argc, char **argv);
+
+		
+
+	protected:
+		char i2c_control_config(Ykush3Action action);
+		char i2c_set_address(char *address);
+
+	private:
+		bool flag_with_serial;
+		char *usb_serial_number;
+		struct I2cCommand {
+
+			enum I2CAction {
+				I2C_CONTROL_ENABLE,
+				I2C_CONTROL_DISABLE,
+				I2C_GATEWAY_ENABLE,
+				I2C_GATEWAY_DISABLE,
+				I2C_SET_ADRRESS,
+				I2C_WRITE,
+				I2C_READ	
+			}
+
+			I2cAction action;
+
+		}
+		I2cCommand i2c_command;
+
+		
+};
 
 
 
