@@ -18,28 +18,10 @@ limitations under the License.
 #include "ykush3.h"
 #include <stdio.h>
 #include <ykush_help.h>
-
-
-
-enum ykushAction
-{
-    PORT_UP,
-    PORT_DOWN,
-    PORT_STATUS,
-    LIST_BOARDS,
-    GET_STATUS,
-    EXT_CTRL_ON,
-    EXT_CTRL_OFF,
-    READ_IO,
-    WRITE_IO,
-    CONFIG,
-    RESET,
-    HELP,
-    GPIO_EN,
-    GPIO_DIS,
-    ENTER_BOOTLOADER
-};
-
+#include <command_parser.h>
+#include <iostream>
+#include <string>
+#include <string2val.h>
 
 
 
@@ -67,9 +49,112 @@ void ykush3_cmd_parser(int argc, char** argv)
 	char value;
 	char status_response = 0;
 	Help *help = new Help("../doc/ykush3_help.txt");
+	bool action_taken = false;
 
+	CommandLine *cmd_handler = new CommandLine();
+	
+	if ( cmd_handler->parse(argc, argv) ) {
+		std::cout << "Error parsing command." << std::endl;
+		ykush->print_help("ykush3");
+		return;
+	}
 
+	YkushCommand  user_command = cmd_handler->get_command();
 
+	//verify if board is YKUSH3
+	std::string board_str ("ykush3");
+	if ( board_str.compare(user_command.board) != 0 ) {
+		//board is not YKUSH3
+		ykush->print_help("ykush3");
+		return;
+	}
+
+	//iterate through command options
+	std::string option_str;
+	for (int i = 0; i < user_command.n_options; i++ ) {
+		option_str = user_command.option[i].name;
+		
+		//Option: --i2c-usb-serial
+		if ( option_str.compare("--i2c-usb-serial") ) {	
+			if ( user_command.option[i].n_parameters == 1 ) {
+				ykush->set_usb_serial(user_command.option[i].parameter[0]);
+			}
+		}
+
+		//Option: --i2c-enable-control
+		if ( option_str.compare("--i2c-enable-control") == 0 ) {	
+			ykush->i2c_enable_disable_control(true);
+			action_taken = true;
+		} else if ( option_str.compare("--i2c-disable-control") == 0 ) {
+			ykush->i2c_enable_disable_control(false);
+			action_taken = true;
+		}
+
+		//Option: --i2c-enable-gateway
+		if ( option_str.compare("--i2c-enable-gateway") == 0 ) {	
+			ykush->i2c_enable_disable_control(true);
+			action_taken = true;
+		} else if ( option_str.compare("--i2c-disable-gateway") == 0 ) {
+			ykush->i2c_enable_disable_control(false);
+			action_taken = true;
+		}
+
+		//Option: --i2c-set-address <address>
+		if ( option_str.compare("--i2c-set-address") == 0 ) {
+			//get address parameter
+			if ( user_command.option[i].n_parameters == 1 ) {
+				if ( ykush->i2c_set_address(user_command.option[i].parameter[0]) ) {
+					std::cout << "Error on sending I2C address" << std::endl; 
+				}
+			} else {
+				ykush->print_help("ykush3");
+			}
+			action_taken = true;
+		}
+
+		//Option: --i2c-write <dev_address> <num_bytes> <byte1>...
+		if ( option_str.compare("--i2c-write") == 0 ) {
+			//get data bytes
+			if ( user_command.option[i].n_parameters > 2 ) {
+				if ( ykush->i2c_write(user_command.option[i].parameter[0], &user_command.option[i].parameter[1]) ) {
+					std::cout << "Error on I2C writing" << std::endl;
+					//...
+					//ToDo: Have the handling of all error codes reported by the board firmware.
+					//... 
+				}
+			} else {
+				std::cout << "I2C write command requires at least one byte of data to be sent." << std::endl;
+				ykush->print_help("ykush3");
+			}
+			action_taken = true;
+		}
+
+		//Option: --i2c-read <dev_address> <num_bytes>
+		if ( option_str.compare("--i2c-read") == 0 ) {
+			//get data bytes
+			if ( user_command.option[i].n_parameters > 2 ) {
+				unsigned char data_buffer[64];
+				int bytes_read;
+				if ( ykush->i2c_read(user_command.option[i].parameter[0], data_buffer, &bytes_read) ) {
+					std::cout << "Error on I2C reading" << std::endl;
+					//...
+					//ToDo: Have the handling of all error codes reported by the board firmware.
+					//... 
+				}
+			} else {
+				std::cout << "I2C write command requires at least one byte of data to be sent." << std::endl;
+				ykush->print_help("ykush3");
+			}
+			action_taken = true;
+		}
+
+	}
+	if ( action_taken )
+		return;
+
+	//...
+	//----- LEGACY PARSING SCHEME... ToDo: Update to use of class CommandLine...
+	//...
 	if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 's' ) ) {	//BY SERIAL
 		
 		if ( argc < 5 ) {
@@ -672,13 +757,13 @@ void Ykush3::gpio_ctrl_enable(char *serial)
  */
 void Ykush3::gpio_ctrl_disable(char *serial)
 {
-    //Create command msg
-    hid_report_out[0] = 0;
-    hid_report_out[1] = 0x32;
-    hid_report_out[2] = 0x00;
-    
-    //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in, 65);
+	//Create command msg
+	hid_report_out[0] = 0;
+	hid_report_out[1] = 0x32;
+	hid_report_out[2] = 0x00;
+	
+	//send HID report to board
+	sendHidReport(serial, hid_report_out, hid_report_in, 65);
 
 }
 
@@ -689,14 +774,122 @@ void Ykush3::gpio_ctrl_disable(char *serial)
  */
 void Ykush3::enter_bootloader(char *serial)
 {
-    //Create command msg
-    hid_report_out[0] = 0;
-    hid_report_out[1] = 0x42;
-    
-    //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in, 65);
+	//Create command msg
+	hid_report_out[0] = 0;
+	hid_report_out[1] = 0x42;
+	
+	//send HID report to board
+	sendHidReport(serial, hid_report_out, hid_report_in, 65);
 
 }
+
+
+/**************************************************************
+ * 
+ * 			I2C Methods
+ * 
+ **************************************************************/
+
+int Ykush3::i2c_enable_disable_control(bool enable_flag) 
+{
+	//std::cout << "i2c_enable_disable_control com flag: " << enable_flag << std::endl;
+
+	//Create command msg
+	hid_report_out[0] = 0;
+	hid_report_out[1] = 0x51;
+	hid_report_out[2] = 0x01;
+	
+	if ( enable_flag )
+		hid_report_out[3] = 0x01;
+	else 
+		hid_report_out[3] = 0x00;
+
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+
+	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
+		//command executed with success
+		return 0;
+	} 
+
+	return 1;
+}
+
+
+int Ykush3::i2c_enable_disable_gateway(bool enable_flag)
+{
+	//std::cout << "i2c_enable_disable_gateway com flag: " << enable_flag << std::endl;
+
+	//Create command msg
+	hid_report_out[0] = 0;
+	hid_report_out[1] = 0x51;
+	hid_report_out[2] = 0x02;
+
+	if ( enable_flag )
+		hid_report_out[3] = 0x01;
+	else 
+		hid_report_out[3] = 0x00;
+
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+
+	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
+		//command executed with success
+		return 0;
+	} 
+
+	return 1;
+}
+
+
+int Ykush3::i2c_set_address(char *i2c_address)
+{
+	std::cout << "i2c_set_address com address: " << i2c_address << std::endl;
+	//Create command msg
+	hid_report_out[0] = 0;
+	hid_report_out[1] = 0x51;
+	hid_report_out[2] = 0x03;
+
+	hex2bin(i2c_address + 2, &hid_report_out[3], 2);
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+
+	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
+		//command executed with success
+		return 0;
+	}
+
+	return 1;
+}
+
+
+int Ykush3::i2c_write(char *num_bytes_ASCII, char **data_to_write_ASCII)
+{
+	return 0;
+}
+
+
+int Ykush3::i2c_read(char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read)
+{
+	return 0;
+}
+
+
+
+
+
+
+
+
+int Ykush3::set_usb_serial(char *serial) {
+	usb_serial = serial;
+	return 0;
+}
+
+
+void Ykush3::print_help(const char *help_section) 
+{
+	std::cout << "ToDo: Help print YKUSH3" << std::endl;
+}
+
+
 
 
 

@@ -57,14 +57,13 @@ class UsbDevice {
 
         unsigned short vid;       
         unsigned short pid; 
-
         hid_device *handle;
 
     protected:
 
         unsigned char hid_report_out[65];
         unsigned char hid_report_in[65];
-
+        char *usb_serial = NULL;
 };
 
 

@@ -22,105 +22,95 @@ limitations under the License.
 #include <yk_usb_device.h>
 #include <command_parser.h>
 
+enum ykushAction {
+	PORT_UP,
+	PORT_DOWN,
+	PORT_STATUS,
+	LIST_BOARDS,
+	GET_STATUS,
+	EXT_CTRL_ON,
+	EXT_CTRL_OFF,
+	READ_IO,
+	WRITE_IO,
+	CONFIG,		//ToDo: Validar
+	RESET,
+	GPIO_EN,
+	GPIO_DIS,
+	ENTER_BOOTLOADER,
+	//I2C
+	I2C_CONTROL_ENABLE,
+	I2C_CONTROL_DISABLE,
+	I2C_GATEWAY_ENABLE,
+	I2C_GATEWAY_DISABLE,
+	I2C_SET_ADRRESS,
+	I2C_WRITE,
+	I2C_READ,
+
+	HELP
+};
 
 
-class Ykush3UsbDevice : public UsbDevice
-{
-	public:
 
-		Ykush3()
-		: UsbDevice(0x04D8, 0xF11B)
-		{     
-		};
 
-	char send_command(unsigned char *out_msg, unsigned char *in_msg);
-}
+
+
+
 
 
 class Ykush3 : public UsbDevice  
 {
-    public:
+    	public:
 
-        Ykush3()
-            : UsbDevice(0x04D8, 0xF11B)
-        {     
-        }
-
-        //Downstream ports and 5V EXT port control 
-        int get_port_status(char *serial, char port);     //get downstream port status
-
-        int port_up(char *serial, char port);
-
-        int port_down(char *serial, char port);
-
-
-        //GPIO control
-        int write_io(char *serial, char port, char value);
-
-        int read_io(char *serial, char port);
-        
-        void gpio_ctrl_enable(char *serial);
-        
-        void gpio_ctrl_disable(char *serial);
-        
-        void enter_bootloader(char *serial);
-
-
-        //Configurations control
-        int config_port(char *serial, char port, char value);
-
-        //Reset
-        void reset(char *serial);
-	
-	//Help
-	void print_help();
-
-};
-
-
-/**
- * Class that parses the command line and creates the message to be sent by USB
- */
-class Ykush3Command : CommandParser
-{
-	public:
-		/**
-		 * parses YKUSH3 command line arguments.
-		 * 
-		 * This method will receive as input the command line arguments
-		 * and will set the properties that classify the command to be executed.
-		 * 
-		 */
-		void parse_command(int argc, char **argv);
-
-		
-
-	protected:
-		char i2c_control_config(Ykush3Action action);
-		char i2c_set_address(char *address);
-
-	private:
-		bool flag_with_serial;
-		char *usb_serial_number;
-		struct I2cCommand {
-
-			enum I2CAction {
-				I2C_CONTROL_ENABLE,
-				I2C_CONTROL_DISABLE,
-				I2C_GATEWAY_ENABLE,
-				I2C_GATEWAY_DISABLE,
-				I2C_SET_ADRRESS,
-				I2C_WRITE,
-				I2C_READ	
-			}
-
-			I2cAction action;
-
+		Ykush3()
+		: UsbDevice(0x04D8, 0xF11B)
+		{     
 		}
-		I2cCommand i2c_command;
 
+		//Downstream ports and 5V EXT port control 
+		int get_port_status(char *serial, char port);     //get downstream port status
+
+		int port_up(char *serial, char port);
+
+		int port_down(char *serial, char port);
+
+
+		//GPIO control
+		int write_io(char *serial, char port, char value);
+
+		int read_io(char *serial, char port);
 		
+		void gpio_ctrl_enable(char *serial);
+		
+		void gpio_ctrl_disable(char *serial);
+		
+		void enter_bootloader(char *serial);
+
+
+		//Configurations control
+		int config_port(char *serial, char port, char value);
+
+		//Reset
+		void reset(char *serial);
+		
+		//Help
+		void print_help(const char *help_section);
+
+		//I2C
+
+		int i2c_enable_disable_control(bool enable_flag);		//ToDo
+		int i2c_enable_disable_gateway(bool enable_flag);		//ToDo
+		int i2c_set_address(char *i2c_address);			//ToDo
+		int i2c_write(char *num_bytes_ASCII, char **data_to_write_ASCII);	//ToDo
+		int i2c_read(char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read);	//ToDo
+
+		int set_usb_serial(char *serial);
+	
+	private:
+
+		char *usb_serial;
 };
+
+
 
 
 

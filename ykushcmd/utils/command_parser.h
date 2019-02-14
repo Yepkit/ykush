@@ -19,14 +19,16 @@ limitations under the License.
 #define _COMMAND_PARSER_H_
 
 
-struct cmdOption {
+typedef struct cmdOption {
 	char *name;
-	char **parameters;
+	char *parameter[10];
+	int n_parameters;
 } CommandOption;
 
 typedef struct ykushCmd {
 	char *board;
-	CommandOption *options;
+	CommandOption option[10];
+	int n_options;
 } YkushCommand;
 
 class CommandLine {
@@ -37,7 +39,9 @@ class CommandLine {
 		 * 
 		 * It takes the command line arqguments as input.
 		 */ 
-		CommandLine(int argc, char **argv);
+		CommandLine();
+
+		int parse(int argc, char **argv);
 
 		YkushCommand get_command(void);
 		
@@ -51,16 +55,12 @@ class CommandLine {
 		 */
 		char set_board(char *board);
 
-		char add_option(char *option);
-
-		/**
-		 * Adds a parameter to CommandOption option.
-		 */
-		char add_parameter(char *parameter, CommandOption *option);
+		
 
 	private:
 		bool error;
 		YkushCommand command;
+
 };
 
 

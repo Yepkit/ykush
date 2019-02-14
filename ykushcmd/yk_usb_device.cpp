@@ -142,37 +142,38 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
 	}
 
     
-    // Open the USB device 
-    handle = hid_open(vid, pid, serial ? cserial : NULL);
-  
-    if (handle == NULL) {
-	    //printf("\n\nERROR: Unable to open USB device\n");
-        return -1;
-    }
+	// Open the USB device 
+	handle = hid_open(vid, pid, serial ? cserial : NULL);
+	
+	if (handle == NULL) {
+		//printf("\n\nERROR: Unable to open USB device\n");
+		return -1;
+	}
 
-    // Set the hid_read() function to be blocking (wait for response from the device).
-    hid_set_nonblocking(handle, USB_CMD_NON_BLOCKING);
+	// Set the hid_read() function to be blocking (wait for response from the device).
+	hid_set_nonblocking(handle, USB_CMD_NON_BLOCKING);
 
-    
-    //send HID report
+	
+	//send HID report
 	res = hid_write(handle, msg, report_size);
 
-    if (res < 0) {
-	    printf("\n\nERROR: Unable to write HID report to USB device\n");
-        return -1;
-	}
+	if (res < 0) {
+		printf("\n\nERROR: Unable to write HID report to USB device\n");
+		hid_close(handle);
+		return -1;
+		}
 
-    //read HID report
-    res = hid_read(handle, resp_msg, report_size);
+	//read HID report
+	res = hid_read(handle, resp_msg, report_size);
 
-    if (res < 0) {
-	    printf("\n\nERROR: Unable to read HID report to USB device\n");
-        return -1;
-	}
+	if (res < 0) {
+		printf("\n\nERROR: Unable to read HID report to USB device\n");
+		hid_close(handle);
+		return -1;
+		}
 
-
-   return 0;    //OK 
-
+	hid_close(handle);
+	return 0;    //OK 
 }
 
 

@@ -22,91 +22,103 @@ using namespace std;
 /**
  * CommandLine class constructor
  * 
- * This constructor will parse the command line a 
+ */
+CommandLine::CommandLine() 
+{
+	error = false;
+	command.n_options = 0;
+	for ( int i = 0; i < 10; i++ ) {
+		command.option[i].n_parameters = 0;
+	} 
+}
+
+/**
+ * CommandLine class constructor
+ * 
+ * This method will parse the command line and 
  * set the "command" property.
  * 
  * Inputs:
  * 	Command line arguments
+ * 
+ * Return value:
+ *  	0	- OK
+ * 	1	- Error
  */
-CommandLine::CommandLine(int argc, char **argv)
+int CommandLine::parse(int argc, char **argv)
 {
-	error = false;
+	
 	if (argc < 2) {
 		error = true;
-		return;
+		return 1;
 	}
 	if (set_board(argv[1])) {
 		error = true;
-		return;
+		return 1;
 	}
 	int i = 0;
-	CommandOption option;
-	bool exit_while = false:
-	while (i < (argv - 2)) {
+	bool exit_while;
+	while ( i < (argc - 2) ) {
 		exit_while = false;
-		if (strlen(argv[i+2]) > 2) {
-			if ((argv[i+2][0] == "-") && (argv[i+2][1] == "-")) {
-				option.name = new char[strlen(board)];
-				strcpy(option.name, &argv[i+2][2]);
+		if ( strlen(argv[i+2]) > 2 ) {
+			if ( (argv[i+2][0] == '-') && (argv[i+2][1] == '-') ) {
+				//add new option to command.option
+				command.option[command.n_options].name = argv[i+2];
 				i++;
-				while ((i < (argv - 2)) && !exit_while) {
-					if (argv[i+2][0] == "-") {
+				//get option has parameters if they exist
+				while ( ( i < (argc - 2) ) && !exit_while ) {
+					if ( argv[i+2][0] == '-' ) {
 						i--;
 						exit_while = true;
 					} else {
-						add_parameter(argv[i+2], &option);
+						//add parameter to option
+						command.option[command.n_options].parameter[command.option[command.n_options].n_parameters] = argv[i+2];						
+						command.option[command.n_options].n_parameters++;
+						i++;
 					}
 				}
+				command.n_options++;
 			}
 		}
 	}
-
-}
-
-
-/**
- * Adds a parameter to CommandOption option.
- */
-char add_parameter(char *parameter, CommandOption *option)
-{
-	
+	return 0;
 }
 
 
 char CommandLine::set_board(char *board)
 {
 	string str_board ("ykush");
-	if (str_board.compare(board) == 0 ) {
+	if ( str_board.compare(board) == 0 ) {
 		command.board = new char[strlen(board)];
 		strcpy(command.board, board);
 		return 0;
 	}
 	str_board = "ykush3";
-	if (str_board.compare(board) == 0 ) {
+	if ( str_board.compare(board) == 0 ) {
 		command.board = new char[strlen(board)];
 		strcpy(command.board, board);
 		return 0;
 	}
 	str_board = "ykushxs";
-	if (str_board.compare(board) == 0 ) {
+	if ( str_board.compare(board) == 0 ) {
 		command.board = new char[strlen(board)];
 		strcpy(command.board, board);
 		return 0;
 	}
 	str_board = "ykush2";
-	if (str_board.compare(board) == 0 ) {
+	if ( str_board.compare(board) == 0 ) {
 		command.board = new char[strlen(board)];
 		strcpy(command.board, board);
 		return 0;
 	}
 	str_board = "ykush3xl";
-	if (str_board.compare(board) == 0 ) {
+	if ( str_board.compare(board) == 0 ) {
 		command.board = new char[strlen(board)];
 		strcpy(command.board, board);
 		return 0;
 	}
 	str_board = "ykushxl";
-	if (str_board.compare(board) == 0 ) {
+	if ( str_board.compare(board) == 0 ) {
 		command.board = new char[strlen(board)];
 		strcpy(command.board, board);
 		return 0;
