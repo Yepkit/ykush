@@ -22,6 +22,8 @@ int char2int(char input);
 
 int hex2bin(char* src, unsigned char* output, int size);
 
+int dec2bin(char* src, unsigned char* output, int size);
+
 #endif
 
 

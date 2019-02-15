@@ -100,8 +100,8 @@ class Ykush3 : public UsbDevice
 		int i2c_enable_disable_control(bool enable_flag);		//ToDo
 		int i2c_enable_disable_gateway(bool enable_flag);		//ToDo
 		int i2c_set_address(char *i2c_address);			//ToDo
-		int i2c_write(char *num_bytes_ASCII, char **data_to_write_ASCII);	//ToDo
-		int i2c_read(char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read);	//ToDo
+		int i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **data_to_write_ASCII);	//ToDo
+		int i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read);	//ToDo
 
 		int set_usb_serial(char *serial);
 	

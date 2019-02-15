@@ -22,6 +22,8 @@ limitations under the License.
 #include <iostream>
 #include <string>
 #include <string2val.h>
+#include <cstring>
+
 
 
 
@@ -115,8 +117,8 @@ void ykush3_cmd_parser(int argc, char** argv)
 		//Option: --i2c-write <dev_address> <num_bytes> <byte1>...
 		if ( option_str.compare("--i2c-write") == 0 ) {
 			//get data bytes
-			if ( user_command.option[i].n_parameters > 2 ) {
-				if ( ykush->i2c_write(user_command.option[i].parameter[0], &user_command.option[i].parameter[1]) ) {
+			if ( user_command.option[i].n_parameters > 3 ) {
+				if ( ykush->i2c_write(user_command.option[i].parameter[0], user_command.option[i].parameter[1], &user_command.option[i].parameter[2]) ) {
 					std::cout << "Error on I2C writing" << std::endl;
 					//...
 					//ToDo: Have the handling of all error codes reported by the board firmware.
@@ -135,7 +137,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 			if ( user_command.option[i].n_parameters > 2 ) {
 				unsigned char data_buffer[64];
 				int bytes_read;
-				if ( ykush->i2c_read(user_command.option[i].parameter[0], data_buffer, &bytes_read) ) {
+				if ( ykush->i2c_read(user_command.option[i].parameter[0], user_command.option[i].parameter[1], data_buffer, &bytes_read) ) {
 					std::cout << "Error on I2C reading" << std::endl;
 					//...
 					//ToDo: Have the handling of all error codes reported by the board firmware.
@@ -860,13 +862,35 @@ int Ykush3::i2c_set_address(char *i2c_address)
 }
 
 
-int Ykush3::i2c_write(char *num_bytes_ASCII, char **data_to_write_ASCII)
+int Ykush3::i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **data_to_write_ASCII)
 {
+	hid_report_out[0] = 0;
+	hid_report_out[1] = 0x52;
+	hid_report_out[2] = 0x01;
+	//convert i2c_address_ASCII to binary
+	hex2bin(i2c_address_ASCII + 2, &hid_report_out[3], 2);
+	//convert num_bytes_ASCII to binary
+	int size = strlen(num_bytes_ASCII) - 2;
+	if ( size <= 0 )
+		return 1;
+	hex2bin(num_bytes_ASCII + 2, &hid_report_out[4], size);
+	if ( hid_report_out[4] > 60 ) 
+		return 2;
+	//convert data_to_write_ASCII to binary
+	for ( int i = 0; i < hid_report_out[4]; i++ ) {
+		hex2bin(num_bytes_ASCII + 2, &hid_report_out[i + 5], 2);
+	}
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+
+	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x52) ) {
+		//command executed with success
+		return 0;
+	}
 	return 0;
 }
 
 
-int Ykush3::i2c_read(char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read)
+int Ykush3::i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read)
 {
 	return 0;
 }

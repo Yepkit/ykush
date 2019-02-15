@@ -80,3 +80,22 @@ int hex2bin(char* src, unsigned char* output, int size)
 }
 
 
+int dec2bin(char* src, unsigned char* output, int size)
+{
+	//unsigned char *out = (unsigned char*)malloc(size/2);
+	unsigned char out;
+	int base;
+	for(int i = 0; i < size; i++) {
+		base = 1;
+		for (int j = 1; j < (size - i); j++) {
+			base = base * 10;
+		}
+		*(output++) = char2int(src[0]) * base;
+		src++; 
+	}
+
+	//printf("\nout = 0x%x\n", *out);
+
+	return 0;
+}
+
