@@ -867,19 +867,23 @@ int Ykush3::i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **dat
 	hid_report_out[0] = 0;
 	hid_report_out[1] = 0x52;
 	hid_report_out[2] = 0x01;
+
 	//convert i2c_address_ASCII to binary
 	hex2bin(i2c_address_ASCII + 2, &hid_report_out[3], 2);
+
 	//convert num_bytes_ASCII to binary
-	int size = strlen(num_bytes_ASCII) - 2;
+	int size = strlen(num_bytes_ASCII);
 	if ( size <= 0 )
 		return 1;
-	hex2bin(num_bytes_ASCII + 2, &hid_report_out[4], size);
+	dec2bin(num_bytes_ASCII, &hid_report_out[4], size);
 	if ( hid_report_out[4] > 60 ) 
 		return 2;
+
 	//convert data_to_write_ASCII to binary
 	for ( int i = 0; i < hid_report_out[4]; i++ ) {
 		hex2bin(num_bytes_ASCII + 2, &hid_report_out[i + 5], 2);
 	}
+
 	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
 
 	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x52) ) {
@@ -892,6 +896,35 @@ int Ykush3::i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **dat
 
 int Ykush3::i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read)
 {
+	hid_report_out[0] = 0;
+	hid_report_out[1] = 0x52;
+	hid_report_out[2] = 0x02;
+
+	//convert i2c_address_ASCII to binary
+	hex2bin(i2c_address_ASCII + 2, &hid_report_out[3], 2);
+
+	//convert num_bytes_ASCII to binary
+	int size = strlen(num_bytes_ASCII);
+	if ( size <= 0 )
+		return 1;
+	dec2bin(num_bytes_ASCII, &hid_report_out[4], size);
+
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+
+	//handle response message
+	if ((hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x52)) {
+		//get num_bytes
+		if (hid_report_in[2] < 0)
+			return 1;
+		int i;
+		for (i = 0; (i < hid_report_in[2]) && (i < 60); i++) {
+			data_buffer[i] = hid_report_in[i + 4];
+		}
+		*bytes_read = i; 
+	} else {
+		return 1;
+	}
+
 	return 0;
 }
 
