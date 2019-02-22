@@ -96,12 +96,15 @@ class Ykush3 : public UsbDevice
 		void print_help(const char *help_section);
 
 		//I2C
-
 		int i2c_enable_disable_control(bool enable_flag);		//ToDo
 		int i2c_enable_disable_gateway(bool enable_flag);		//ToDo
 		int i2c_set_address(char *i2c_address);			//ToDo
 		int i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **data_to_write_ASCII);	//ToDo
 		int i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read);	//ToDo
+
+		//Versioning
+		int display_version_bootloader(void);
+		int display_version_firmware(void);
 
 		int set_usb_serial(char *serial);
 	
