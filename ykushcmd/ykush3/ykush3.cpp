@@ -968,7 +968,7 @@ int Ykush3::display_version_firmware(void)
 	if ( ( hid_report_in[0] != 0x01 ) && ( hid_report_in[0] != 0x61 ) ) {
 		std::cout << "Firmware version-1.0.0\n";
 		std::cout << "There is a new version of the firmware available for download in yepkit.com.\n";
-		std::cout << "Please consider updating the boot loader for unlocking the newest board features.\n"
+		std::cout << "Please consider updating the boot loader for unlocking the newest board features.\n";
 		return 0; 
 	}
 	std::cout << "Bootloader version-" << hid_report_in[2] << "." << hid_report_in[3] << "." << hid_report_in[4];
