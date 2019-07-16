@@ -18,24 +18,11 @@ limitations under the License.
 #include "ykush.h"
 #include <stdio.h>
 #include <ykush_help.h>
-
-
-
-enum ykushAction
-{
-    PORT_UP,
-    PORT_DOWN,
-    PORT_STATUS,
-    LIST_BOARDS,
-    GET_STATUS,
-    HELP
-};
-
-
+#include <command_parser.h>
 
 
 /*********************************************************
- *  Function: ykushxs_cmd_parser
+ *  Function: ykush_cmd_parser
  *
  *  Description:
  *
@@ -51,172 +38,202 @@ enum ykushAction
  *********************************************************/
 void ykush_cmd_parser(int argc, char** argv)
 {
-    char bySerialFlag = 0;
-    enum ykushAction action = HELP;
-    Ykush *ykush = new Ykush(0xF2F7);
-    Ykush *ykushLegacy = new Ykush(0x0042);
-    char port;
-    char status_response = 0;
-    Help *help = new Help("../doc/general_help.txt");
+	char bySerialFlag = 0;
+	enum ykushAction action = HELP;
+	Ykush *ykush = new Ykush(0xF2F7);
+	Ykush *ykushLegacy = new Ykush(0x0042);
+	char port;
+	char status_response = 0;
+	Help *help = new Help("../doc/general_help.txt");
+
+	CommandLine *cmd_handler = new CommandLine();
+	if ( cmd_handler->parse(argc, argv) ) {
+		std::cout << "Error parsing command." << std::endl;
+		ykush->print_help(argv[0]);
+		return;
+	}
+	YkushCommand  user_command = cmd_handler->get_command();
+
+	//verify if board is a YKUSH
+	std::string board_str ("ykush");
+	if ( board_str.compare(user_command.board) != 0 ) {
+		//board is not YKUSH
+		ykush->print_help(argv[0]);
+		return;
+	}
+
+	//iterate through command options
+	std::string option_str;
+	for (int i = 0; i < user_command.n_options; i++ ) {
+		option_str = user_command.option[i].name;
+		
+		//Option: --non-blocking
+		if ( option_str.compare("--non-blocking") ) {	
+			if ( user_command.option[i].n_parameters == 1 ) {
+				ykush->set_usb_serial(user_command.option[i].parameter[0]);
+			}
+		}
+	}
 
 
 
-    if((argv[1][0]=='-') && (argv[1][1]=='s'))
-    {
-        if(argc < 5)
-        {
-            //ykush_help(argv[0]);
-            help->print();
-            return;
-        }
-        bySerialFlag = 1;
-        if(argv[3][0]=='-' && argv[3][1]=='u') 
-        {
-            action = PORT_UP;
-            port = argv[4][0];
+	//the old way...
+	if((argv[1][0]=='-') && (argv[1][1]=='s'))
+	{
+		if(argc < 5)
+		{
+		//ykush_help(argv[0]);
+		help->print();
+		return;
+		}
+		bySerialFlag = 1;
+		if(argv[3][0]=='-' && argv[3][1]=='u') 
+		{
+		action = PORT_UP;
+		port = argv[4][0];
 
-        } else if(argv[3][0]=='-' && argv[3][1]=='d') 
-        {
-            action = PORT_DOWN;
-            port = argv[4][0];
-        } else if(argv[3][0]=='-' && argv[3][1]=='l') 
-        {
-            action = LIST_BOARDS;
-        } else if(argv[3][0]=='-' && argv[3][1]=='g') 
-        {
-            action = GET_STATUS;
-            port = argv[4][0];
-        } else 
-        {
-            //ykush_help(argv[0]);
-            help->print();
-            return;
-        }
+		} else if(argv[3][0]=='-' && argv[3][1]=='d') 
+		{
+		action = PORT_DOWN;
+		port = argv[4][0];
+		} else if(argv[3][0]=='-' && argv[3][1]=='l') 
+		{
+		action = LIST_BOARDS;
+		} else if(argv[3][0]=='-' && argv[3][1]=='g') 
+		{
+		action = GET_STATUS;
+		port = argv[4][0];
+		} else 
+		{
+		//ykush_help(argv[0]);
+		help->print();
+		return;
+		}
 
-    } 
-    else if((argv[1][0]=='-') && (argv[1][1]=='u'))
-    {
-        if(argc < 3)
-        {
-            help->print();
-            return;
-        }
+	} 
+	else if((argv[1][0]=='-') && (argv[1][1]=='u'))
+	{
+		if(argc < 3)
+		{
+		help->print();
+		return;
+		}
 
-        action = PORT_UP;
-        port = argv[2][0];
-    }
-    else if((argv[1][0]=='-') && (argv[1][1]=='d'))
-    {
-        if(argc < 3)
-        {
-            help->print();
-            return;
-        }
-        action = PORT_DOWN;
-        port = argv[2][0];
-    }
-    else if((argv[1][0]=='-') && (argv[1][1]=='l'))
-    {
-        action = LIST_BOARDS;
+		action = PORT_UP;
+		port = argv[2][0];
+	}
+	else if((argv[1][0]=='-') && (argv[1][1]=='d'))
+	{
+		if(argc < 3)
+		{
+		help->print();
+		return;
+		}
+		action = PORT_DOWN;
+		port = argv[2][0];
+	}
+	else if((argv[1][0]=='-') && (argv[1][1]=='l'))
+	{
+		action = LIST_BOARDS;
 
-    }
-    else if((argv[1][0]=='-') && (argv[1][1]=='g'))
-    {
-        if(argc < 3)
-        {
-            help->print();
-            return;
-        }
-        action = GET_STATUS;
-        port = argv[2][0];
-    }
-    else
-    {
-        //ykush_help(argv[0]);
-        help->print();
-        return;
-    }
-
-
+	}
+	else if((argv[1][0]=='-') && (argv[1][1]=='g'))
+	{
+		if(argc < 3)
+		{
+		help->print();
+		return;
+		}
+		action = GET_STATUS;
+		port = argv[2][0];
+	}
+	else
+	{
+		//ykush_help(argv[0]);
+		help->print();
+		return;
+	}
 
 
-    switch (action)
-    {
-        case PORT_UP:
-            if(bySerialFlag)
-            {
-               if(ykush->port_up(argv[2], port)==-1)
-               {
-                   //try legacy
-                    ykushLegacy->port_up(argv[2], port);
-               }
-            }
-            else
-            {
-                if(ykush->port_up(NULL, port)==-1)
-                {
-                    //try legacy
-                    ykushLegacy->port_up(NULL, port);
-                }
-            }
-            break;
 
-        case PORT_DOWN:
-            if(bySerialFlag)
-            {
-                if(ykush->port_down(argv[2], port)==-1)
-                {
-                    //try legacy
-                    ykushLegacy->port_down(argv[2], port);
-                }
-            }
-            else
-            {
-                if(ykush->port_down(NULL, port)==-1)
-                {
-                    //try legacy
-                    ykushLegacy->port_down(NULL, port);
-                }
-            }
-            break;
 
-        case LIST_BOARDS:
-            ykush_list_attached(); 
-            break;
+	switch (action)
+	{
+		case PORT_UP:
+		if(bySerialFlag)
+		{
+		if(ykush->port_up(argv[2], port)==-1)
+		{
+			//try legacy
+			ykushLegacy->port_up(argv[2], port);
+		}
+		}
+		else
+		{
+			if(ykush->port_up(NULL, port)==-1)
+			{
+			//try legacy
+			ykushLegacy->port_up(NULL, port);
+			}
+		}
+		break;
 
-        case GET_STATUS:
-            if(bySerialFlag)
-            {
-                status_response = ykush->get_port_status(argv[2], port);
-                if (status_response >> 4)
-                {
-                    printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F );
-                } 
-                else 
-                {
-                    printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
-                }
-            }
-            else
-            {
-                status_response = ykush->get_port_status(NULL, port);
-                if (status_response >> 4)
-                {
-                    printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F);
-                } 
-                else 
-                {
-                    printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
-                }
-            }   
-            break;
+		case PORT_DOWN:
+		if(bySerialFlag)
+		{
+			if(ykush->port_down(argv[2], port)==-1)
+			{
+			//try legacy
+			ykushLegacy->port_down(argv[2], port);
+			}
+		}
+		else
+		{
+			if(ykush->port_down(NULL, port)==-1)
+			{
+			//try legacy
+			ykushLegacy->port_down(NULL, port);
+			}
+		}
+		break;
 
-        default:
-            //ykush_help(argv[0]);
-            help->print();
-            break;
+		case LIST_BOARDS:
+		ykush_list_attached(); 
+		break;
 
-    }
+		case GET_STATUS:
+		if(bySerialFlag)
+		{
+			status_response = ykush->get_port_status(argv[2], port);
+			if (status_response >> 4)
+			{
+			printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F );
+			} 
+			else 
+			{
+			printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
+			}
+		}
+		else
+		{
+			status_response = ykush->get_port_status(NULL, port);
+			if (status_response >> 4)
+			{
+			printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F);
+			} 
+			else 
+			{
+			printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
+			}
+		}   
+		break;
+
+		default:
+		//ykush_help(argv[0]);
+		help->print();
+		break;
+
+	}
 
 }
 
@@ -454,7 +471,7 @@ void ykush_list_attached()
  *
  *
  ***************************************************/
-void ykush_help(char * execName)
+void Ykush::ykush_help(char *exec_name)
 {
 
     printf("\n-------------------");

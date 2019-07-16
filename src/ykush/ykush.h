@@ -14,47 +14,60 @@ See the License for the specific language governing permissions and
 limitations under the License.
 *******************************************************************************/
 
-
 #ifndef _YKUSH_H_
 #define _YKUSH_H_
 
-
 #include <yk_usb_device.h>
+#include <command_parser.h>
 
+/**
+ * \defgroup ykush
+ */
 
+/**
+ * \ingroup ykush
+ * \brief Available options for YKUSH boards.
+ */
+enum ykushAction {
+	PORT_UP,
+	PORT_DOWN,
+	PORT_STATUS,
+	LIST_BOARDS,
+	GET_STATUS,
+	HELP
+};
 
-
-
-//------------------------------------
-//CLASSES
-//------------------------------------
-
+/**
+ * \ingroup ykush
+ * \brief Handles the YKUSH device.
+ */
 class Ykush : public UsbDevice  
 {
-    public:
+	public:
 
-        Ykush(unsigned int pid)
-            : UsbDevice(0x04D8, pid)
-        {     
-           if(pid==0x0042)
-           {
-               is_legacy=true;
-           }
-           else
-           {
-               is_legacy=false;
-           }
-        }
+		Ykush(unsigned int pid)
+		: UsbDevice(0x04D8, pid)
+		{     
+			if( pid == 0x0042 ) {
+				is_legacy = true;
+			} else {
+				is_legacy = false;
+			}
+			non_blocking_usb_comm = false;
+		}
 
-        int get_port_status(char *serial, char port);     //get downstream port status
+		int get_port_status(char *serial, char port);     //get downstream port status
 
-        int port_up(char *serial, char port);
+		int port_up(char *serial, char port);
 
-        int port_down(char *serial, char port);
+		int port_down(char *serial, char port);
 
-    private:
+		void print_help(char *exec_name);
 
-        bool is_legacy;
+	private:
+
+		bool is_legacy;
+		bool non_blocking_usb_comm;
     
 };
 

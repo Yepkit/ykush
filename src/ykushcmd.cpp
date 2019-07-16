@@ -3,6 +3,9 @@
 #include "stdafx.h"
 #include "commandParser.h"
 
+/**
+ * \defgroup ykushcmd_common
+ */
 
 //GLOBALS
 //

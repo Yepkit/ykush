@@ -13,60 +13,48 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 *******************************************************************************/
-
-
 #ifndef _YK_USB_DEVICE_H_
 #define _YK_USB_DEVICE_H_
-
 
 #include <hidapi.h>
 
 
+#define USB_CMD_NON_BLOCKING	1
+#define USB_CMD_BLOCKING	0
 
 
-
-//-------------------------------------------------------------------------
-// DEFINES
-//-------------------------------------------------------------------------
-
-#define USB_CMD_NON_BLOCKING	1	//1 -> Set the USB device handle to be non-blocking
-					//0 -> Set the USB device handle to be blocking
-
-
-
-
-
-
-/**********************************************************
- *
- *                  CLASSES
- *
- **********************************************************/
+/**
+ * \ingroup ykushcmd_common
+ * 
+ * \brief Handles the USB HID for a given PID and VID.
+ */
 class UsbDevice {
 
-    public:
+	public:
 
-        UsbDevice(unsigned int vendor_id, unsigned int product_id);
+		UsbDevice(unsigned int vendor_id, unsigned int product_id);
+		int sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg, int report_size);
 
-        int sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg, int report_size);
+		/**
+		 * Prints to standard output the list of connected devices with PID a VID provided in the class constructor.
+		 * 
+		 * \return Number of attached devices.
+		 */
+		int listConnected(void);    //List connected devices
 
-        int listConnected();    //List connected devices
+	private:
 
+		unsigned short vid;       
+		unsigned short pid; 
+		hid_device *handle;
 
-    private:
+	protected:
 
-        unsigned short vid;       
-        unsigned short pid; 
-        hid_device *handle;
+		unsigned char hid_report_out[65];
+		unsigned char hid_report_in[65];
+		char *usb_serial = NULL;
 
-    protected:
-
-        unsigned char hid_report_out[65];
-        unsigned char hid_report_in[65];
-        char *usb_serial = NULL;
 };
-
-
 
 /*****************************************************************
  * Function: 
@@ -106,16 +94,10 @@ class UsbDevice {
  *
  *****************************************************************/
 int send_usb_msg(char *serial, char *msg, char *resp_msg); 
-
-
-
-
 char commands(char *cmd, char *resp, int num);
 char command(char cmd);
-
 char commandsBySerial(char *iSerial, char *cmd, char *resp, int num);
 char commandBySerial(char *iSerial, char cmd);
-
 int listDevices();
 
 

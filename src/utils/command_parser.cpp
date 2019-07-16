@@ -47,7 +47,6 @@ CommandLine::CommandLine()
  */
 int CommandLine::parse(int argc, char **argv)
 {
-	
 	if (argc < 2) {
 		error = true;
 		return 1;

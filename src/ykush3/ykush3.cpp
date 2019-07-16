@@ -985,13 +985,6 @@ int Ykush3::set_usb_serial(char *serial) {
 }
 
 
-void Ykush3::print_help(const char *help_section) 
-{
-	std::cout << "ToDo: Help print YKUSH3" << std::endl;
-}
-
-
-
 
 
 /****************************************************
@@ -1015,7 +1008,10 @@ void ykush3_list_attached()
 }
 
 
-
+void Ykush3::print_help(const char *help_section) 
+{
+	std::cout << "ToDo: Help print YKUSH3" << std::endl;
+}
 
 
 

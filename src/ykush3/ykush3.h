@@ -50,13 +50,6 @@ enum ykushAction {
 };
 
 
-
-
-
-
-
-
-
 class Ykush3 : public UsbDevice  
 {
     	public:
