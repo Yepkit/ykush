@@ -30,5 +30,5 @@ $(OBJS) : %.o : %.cpp %.h
 	$(CPP) $(PREPROCESSOR_DEFS) $(INCLUDEPATHS) -c $< -o $@
 
 clean :
-	rm -f bin/ykushcmd $(OBJS)
+	rm -f bin/ykushcmd $(OBJS) $(PROG_OBJ)
 

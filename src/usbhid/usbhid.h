@@ -58,6 +58,11 @@ struct hid_device_info {
         struct hid_device_info *next;
 };
 
+struct input_report {
+	uint8_t *data;
+	size_t len;
+	struct input_report *next;
+};
 
 typedef struct hid_device {
 	/* Handle to the actual device. */
@@ -124,7 +129,9 @@ class UsbHid {
                  * \retval 0 Success
                  * \retval -1 Error
                  */
-                int write(const unsigned char *data, size_t length);
+                int write(unsigned char *data, size_t length);
+
+                int read(unsigned char *data, int length);
         
         private:
                 libusb_context *usb_context;

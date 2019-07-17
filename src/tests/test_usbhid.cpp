@@ -11,7 +11,8 @@ int main(int argc, char* argv[])
         int i = 0;
         std::string str2 = "YK21493";
         unsigned char hid_report_out[65];
-        char serialInput[] = "YK17125";
+        unsigned char hid_report_in[65];
+        char serialInput[] = "YK21493";
         int res;
     	
         struct hid_device_info *devs, *cur_dev;
@@ -53,11 +54,14 @@ int main(int argc, char* argv[])
                  std::cout << "Unable to open device";
                  return 0;
         }
-        hid_report_out[0] = 0;      //Windows stuff
-        hid_report_out[1] = 0x01;       //port 1 off
-        std::cout << usbhid->write(hid_report_out, 65);
-        usbhid->close();
 
+        hid_report_out[0] = 0x01;       //port 1 off
+        std::cout << "usbhid->write : " << usbhid->write(hid_report_out, 64) << "\n";
+        std::cout << "usbhid->read : " << usbhid->read(hid_report_in, 64) << "\n";
+        usbhid->close();
+        for (i=0; i < 64; i++)
+                std::cout << " " << std::hex << (int)hid_report_in[i];
+        std::cout << std::endl;
 
     	return 0;
 }
