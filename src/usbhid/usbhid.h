@@ -29,18 +29,18 @@ struct hid_device_info {
         unsigned short product_id;
         /** Serial Number */
         wchar_t *serial_number;
-        unsigned char *serial_number_ascii;
+        char *serial_number_ascii;
         /** Device Release Number in binary-coded decimal,
                  also known as Device Version Number */
         unsigned short release_number;
         /** Manufacturer String */
         wchar_t *manufacturer_string;
-        unsigned char *manufacturer_string_ascii;
+        char *manufacturer_string_ascii;
         /** Product string */
         wchar_t *product_string;
         /** Usage Page for this Device/Interface
                  (Windows/Mac only). */
-        unsigned char *product_string_ascii;
+        char *product_string_ascii;
         unsigned short usage_page;
         /** Usage for this Device/Interface
                  (Windows/Mac only).*/
@@ -59,6 +59,33 @@ struct hid_device_info {
 };
 
 
+typedef struct hid_device {
+	/* Handle to the actual device. */
+	libusb_device_handle *handle;
+
+	/* Endpoint information */
+	int input_endpoint;
+	int output_endpoint;
+	int input_ep_max_packet_size;
+
+	/* The interface number of the HID */
+	int interface;
+
+	/* Indexes of Strings */
+	int manufacturer_index;
+	int product_index;
+	int serial_index;
+
+	/* Whether blocking reads are used */
+	int blocking; /* boolean */
+
+	int cancelled;
+	struct libusb_transfer *transfer;
+
+	/* List of received input reports. */
+	struct input_report *input_reports;
+} HidDevice;
+
 class UsbHid {
         public:
                 /**
@@ -69,9 +96,35 @@ class UsbHid {
                 /**
                  * \brief Enumerates the USB devices with the provided VID and PID.
                  * 
+                 * This method will alloc memory for device structure that must be free when not needed.
+                 * Call free_enumeration() method to free the device structure.
+                 * 
                  * \return List of USB devices currently attached to the system with the provided VID and PID. 
                  */
                 struct hid_device_info *enumerate(unsigned int vendor_id, unsigned int product_id);
+
+                void free_enumeration(struct hid_device_info *devs);
+
+                /**
+                 * \brief Opens the device and sets the open_device property
+                 * 
+                 * \retval 0 Success
+                 * \retval -1 Error
+                 */
+                int open(unsigned int vendor_id, unsigned int product_id, char *serial);
+
+                /**
+                 * \brief Closes de open_device
+                 */
+                void close(void);
+
+                /**
+                 * \brief Writes to the open_device
+                 * 
+                 * \retval 0 Success
+                 * \retval -1 Error
+                 */
+                int write(const unsigned char *data, size_t length);
         
         private:
                 libusb_context *usb_context;
@@ -80,7 +133,11 @@ class UsbHid {
 
                 wchar_t *get_usb_string(libusb_device_handle *dev, uint8_t idx);
 
-                unsigned char *get_usb_string_ascii(libusb_device_handle *dev, uint8_t idx);
+                char *get_usb_string_ascii(libusb_device_handle *dev, uint8_t idx);
+
+                HidDevice open_device;
+
+
                 
 
 
