@@ -30,7 +30,7 @@ using namespace std;
 
 int UsbDevice::listConnected() 
 {
-	int i=0;
+	int i = 0;
 
 	struct hid_device_info *devs, *cur_dev;
 		
