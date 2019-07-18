@@ -29,11 +29,26 @@ limitations under the License.
 
 CommandLine::CommandLine() 
 {
-	error = false;
-	command.n_options = 0;
-	for( int i = 0; i < 10; i++ ) {
-		command.option[i].n_parameters = 0;
-	} 
+
+}
+
+CommandLine::~CommandLine()
+{
+	//free command line structures
+	struct command_option *cur_opt = command.options;
+	while (cur_opt) {
+		struct command_option *next_opt = cur_opt->next;
+		free(cur_opt->name);
+		struct command_parameter *cur_param = cur_opt->parameters;
+		while ( cur_param ) {
+			struct command_parameter *next_param = cur_param->next;
+			free( cur_param->name );
+			free( cur_param );
+			cur_param = next_param;
+		}
+		free( cur_opt );
+		cur_opt = next_opt;
+	}
 }
 
 
@@ -44,8 +59,6 @@ int CommandLine::parse(int argc, char **argv)
 	if ( argc < 2 ) 
 		return -1;
 	
-	if ( set_board(argv[1]) )
-		return -1;
 	
 	int i = 1;
 	struct command_option *cur_opt = NULL;
@@ -104,68 +117,31 @@ int CommandLine::parse(int argc, char **argv)
 }
 
 
-int CommandLine::get_board(char *board_name) 
+int CommandLine::is_board(char *board_name) 
 {
 	int i = 0;
 	std::string str1 ("-b");
 	std::string str2 ("--board");
+	std::string str3 (board_name);
 	//look for -b or --board option
-	while (i < command.n_options) {
-		if ( (str1.compare(command.option[i].name) == 0) || (str2.compare(command.option[i].name) == 0) ) {
+	struct command_option *cur_opt;
+	struct command_parameter *cur_param;
 
+	cur_opt = command.options;
+	while ( cur_opt ) {
+		if ( (str1.compare( cur_opt->name ) == 0) || (str2.compare( cur_opt->name ) == 0) ) {
+			//board option was found.
+			//Now let's check if the board name parameter matches the board_name
+			cur_param = cur_opt->parameters;
+			while ( cur_param ) {
+				if ( str3.compare(cur_param->name) )
+					return 0;			//board match
+				cur_param = cur_param->next;
+			}	
 		}
-			return 0;
-		i++;
+		cur_opt = cur_opt->next;
 	}
 	return -1;
 }
 
 
-
-char CommandLine::set_board(char *board)
-{
-	string str_board ("ykush");
-	if ( str_board.compare(board) == 0 ) {
-		command.board = new char[strlen(board)];
-		strcpy(command.board, board);
-		return 0;
-	}
-	str_board = "ykush3";
-	if ( str_board.compare(board) == 0 ) {
-		command.board = new char[strlen(board)];
-		strcpy(command.board, board);
-		return 0;
-	}
-	str_board = "ykushxs";
-	if ( str_board.compare(board) == 0 ) {
-		command.board = new char[strlen(board)];
-		strcpy(command.board, board);
-		return 0;
-	}
-	str_board = "ykush2";
-	if ( str_board.compare(board) == 0 ) {
-		command.board = new char[strlen(board)];
-		strcpy(command.board, board);
-		return 0;
-	}
-	str_board = "ykush3xl";
-	if ( str_board.compare(board) == 0 ) {
-		command.board = new char[strlen(board)];
-		strcpy(command.board, board);
-		return 0;
-	}
-	str_board = "ykushxl";
-	if ( str_board.compare(board) == 0 ) {
-		command.board = new char[strlen(board)];
-		strcpy(command.board, board);
-		return 0;
-	}
-
-	return 1;
-}
-
-
-YkushCommand CommandLine::get_command(void)
-{
-	return command;
-}

@@ -48,6 +48,7 @@ class CommandLine {
 
 	public:
 		CommandLine();
+		~CommandLine();
 
 		/**
 		 * \brief Processes the command line and sets the command property.
@@ -57,25 +58,18 @@ class CommandLine {
 		/**
 		 * \brief Iterates through the command_line object and looks for a board option.
 		 * 
-		 * \retval 0 board found
-		 * \retval -1 no board option provided
+		 * \param board_name board name.
+		 * 
+		 * \retval 0 board is in options.
+		 * \retval -1 board is not in option.
 		 * 
 		 */
-		int get_board(char *board_name);
+		int is_board(char *board_name);
 
 
-		struct command_line get_command(void);
 		
 	protected:
-		/**
-		 * Sets the board in command property if it is valid.
-		 * 
-		 * Return values:
-		 * 	0	- Board valid and set.
-		 * 	1	- Error, board is not valid.
-		 */
-		char set_board(char *board);
-
+		
 		
 
 	private:
