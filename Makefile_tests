@@ -1,13 +1,4 @@
-PROG_SOURCE = ykushcmd.cpp
-SOURCE += commandParser.cpp
-SOURCE += ykushxs/ykushxs.cpp
-SOURCE += ykush/ykush.cpp
-SOURCE += ykush2/ykush2.cpp
-SOURCE += ykush3/ykush3.cpp
-SOURCE += yk_usb_device.cpp
-SOURCE += help/ykush_help.cpp
-SOURCE += utils/command_parser.cpp
-SOURCE += utils/string2val.cpp
+PROG_SOURCE = tests/test_usbhid.cpp
 SOURCE += usbhid/usbhid.cpp
 
 
@@ -21,6 +12,12 @@ INCLUDEPATHS = $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)))
 LOADPATHS =
 LIBS = -lusb-1.0
 CPP = g++
+
+
+
+#OBJS = $(addprefix src/objs/, ykushcmd.o commandParser.o ykushxs.o yk_usb_device.o ykush.o ykush_help.o ykush2.o ykush3.o command_parser.o string2val.o)
+#LOADPATHS = -L$(CUR_PATH)/src/linux
+#INCLUDEPATHS= -I$(CUR_PATH)/src/linux -I$(CUR_PATH)/src/ykushxs -I$(CUR_PATH)/src/ykush -I$(CUR_PATH)/src -I$(CUR_PATH)/src/help -I$(CUR_PATH)/src/ykush2 -I$(CUR_PATH)/src/ykush3 -I$(CUR_PATH)/src/utils
 
 
 ykushcmd : $(PROG_OBJ) $(OBJS)

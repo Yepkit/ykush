@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 *******************************************************************************/
 
-#include "stdafx.h"
 #include "ykush3.h"
 #include <stdio.h>
 #include <ykush_help.h>
@@ -45,7 +44,7 @@ limitations under the License.
 void ykush3_cmd_parser(int argc, char** argv)
 {
 	char bySerialFlag = 0;
-	enum ykushAction action = HELP;
+	enum ykush3Action action = YKUSH3_HELP;
 	Ykush3 *ykush = new Ykush3();
 	char port;
 	char value;
@@ -177,29 +176,29 @@ void ykush3_cmd_parser(int argc, char** argv)
 		
 		if ( argv[4][0] == '-' && argv[4][1] == 'u' ) {
 			
-			action = PORT_UP;
+			action = YKUSH3_PORT_UP;
 			port = argv[5][0];
 			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'd' ) {
 			
-			action = PORT_DOWN;
+			action = YKUSH3_PORT_DOWN;
 			port = argv[5][0];
 			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'l' ) {
 			
-			action = LIST_BOARDS;
+			action = YKUSH3_LIST_BOARDS;
 			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'g' ) {
 			
-			action = GET_STATUS;
+			action = YKUSH3_GET_STATUS;
 			port = argv[5][0];
 			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'o' ) {
 			
 			if ( argv[4][2]=='n' )
-				action = EXT_CTRL_ON;
+				action = YKUSH3_EXT_CTRL_ON;
 			else if ( argv[4][2] == 'f' && argv[4][3] == 'f' )
-				action = EXT_CTRL_OFF;
+				action = YKUSH3_EXT_CTRL_OFF;
 			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'w' ) {
 			
@@ -207,30 +206,30 @@ void ykush3_cmd_parser(int argc, char** argv)
 				help->print();
 				return;
 			}
-			action = WRITE_IO;
+			action = YKUSH3_WRITE_IO;
 			port = argv[5][0];
 			value = argv[6][0]; 
 			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'r' ) { 
 			
-			action = READ_IO;
+			action = YKUSH3_READ_IO;
 			port = argv[5][0];
 			
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'c' ) { 
-			action = CONFIG;
+			action = YKUSH3_CONFIG;
 			port = argv[5][0];
 			value = argv[6][0];
 		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'r' && argv[4][3] == 'e' ) { 
-			action = RESET;
+			action = YKUSH3_RESET;
 		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'g' && argv[4][3] == 'p' && argv[4][4] == 'i' ) {
 			if ( argv[5][0] == 'e' && argv[5][1] == 'n' )
-				action = GPIO_EN;
+				action = YKUSH3_GPIO_EN;
                         else if (argv[5][0] == 'd' && argv[5][1] == 'i' && argv[5][2] == 's')
-				action = GPIO_DIS;
+				action = YKUSH3_GPIO_DIS;
 			else
 				help->print();
 		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'b' && argv[4][3] == 'o' && argv[4][4] == 'o' ) { 
-			action = ENTER_BOOTLOADER;		
+			action = YKUSH3_ENTER_BOOTLOADER;		
 		} else {
 			help->print();
 			return;
@@ -240,23 +239,23 @@ void ykush3_cmd_parser(int argc, char** argv)
 			help->print();
 			return;
 		}
-		action = PORT_UP;
+		action = YKUSH3_PORT_UP;
 		port = argv[3][0];
 	} else if ( ( argv[2][0] == '-')  && ( argv[2][1] == 'd' ) ) {
 		if ( argc < 4 ) {
 			help->print();
 			return;
 		}
-		action = PORT_DOWN;
+		action = YKUSH3_PORT_DOWN;
 		port = argv[3][0];
 	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'l' ) ) {
-		action = LIST_BOARDS;
+		action = YKUSH3_LIST_BOARDS;
 	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'g' ) ) {
 		if ( argc < 4 ) {
 			help->print();
 			return;
 		}
-		action = GET_STATUS;
+		action = YKUSH3_GET_STATUS;
 		port = argv[3][0];
 	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'o' ) ) {
 		if ( argc < 3 ) {
@@ -264,37 +263,37 @@ void ykush3_cmd_parser(int argc, char** argv)
 			return;
 		}
 		if ( argv[2][2] == 'n' )
-			action = EXT_CTRL_ON;
+			action = YKUSH3_EXT_CTRL_ON;
 		else if ( argv[2][2] == 'f' && argv[2][3] == 'f' ) 
-			action = EXT_CTRL_OFF;
+			action = YKUSH3_EXT_CTRL_OFF;
 	} else if ( ( argv[2][0] == '-' ) && ( argv [2][1] == 'w' ) ) {
 		if ( argc < 5 ) {
 			help->print();
 			return;
 		}
-		action = WRITE_IO;
+		action = YKUSH3_WRITE_IO;
 		port = argv[3][0];
 		value = argv[4][0];
 	} else if ( argv[2][0] == '-' && argv[2][1] == 'r' ) { 
-		action = READ_IO;
+		action = YKUSH3_READ_IO;
 		port = argv[3][0];
 	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'c' ) ) {
 		if ( argc < 5 ) {
 			help->print();
 			return;
 		}
-		action = CONFIG;
+		action = YKUSH3_CONFIG;
 		port = argv[3][0];
 		value = argv[4][0];
 	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == '-' ) && ( argv[2][2] == 'r' ) && ( argv[2][3] == 'e' ) ) {
-		action = RESET;
+		action = YKUSH3_RESET;
 	} else if ( argv[2][0] == '-' && argv[2][1] == '-' && argv[2][2] == 'b' && argv[2][3] == 'o' && argv[2][4] == 'o' ) { 
-			action = ENTER_BOOTLOADER;
+			action = YKUSH3_ENTER_BOOTLOADER;
 	} else if ( argv[2][0] == '-' && argv[2][1] == '-' && argv[2][2] == 'g' && argv[2][3] == 'p' && argv[2][4] == 'i' ) {
 			if ( argv[3][0] == 'e' && argv[3][1] == 'n' )
-				action = GPIO_EN;
+				action = YKUSH3_GPIO_EN;
                         else if (argv[3][0] == 'd' && argv[3][1] == 'i' && argv[3][2] == 's')
-				action = GPIO_DIS;
+				action = YKUSH3_GPIO_DIS;
 			else
 				help->print();
 		
@@ -305,22 +304,22 @@ void ykush3_cmd_parser(int argc, char** argv)
 
 
 	switch ( action ) {
-	case PORT_UP:
+	case YKUSH3_PORT_UP:
 		if ( bySerialFlag ) 
 			ykush->port_up(argv[3], port); 
 		else
 			ykush->port_up(NULL, port); 
 		break;
-	case PORT_DOWN:
+	case YKUSH3_PORT_DOWN:
 		if ( bySerialFlag )
 			ykush->port_down(argv[3], port); 
 		else
 			ykush->port_down(NULL, port); 
 		break;
-	case LIST_BOARDS:
+	case YKUSH3_LIST_BOARDS:
 		ykush3_list_attached(); 
 		break;
-	case GET_STATUS:
+	case YKUSH3_GET_STATUS:
 		if ( bySerialFlag ) {
 			status_response = ykush->get_port_status(argv[3], port);
 			if ( status_response >> 4 )
@@ -335,56 +334,56 @@ void ykush3_cmd_parser(int argc, char** argv)
 			     printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
 		}   
 		break;
-	case EXT_CTRL_ON:
+	case YKUSH3_EXT_CTRL_ON:
 		if ( bySerialFlag )
 			ykush->port_up(argv[3], '4'); 
 		else
 			ykush->port_up(NULL, '4'); 
 		break;
-	case EXT_CTRL_OFF:
+	case YKUSH3_EXT_CTRL_OFF:
 		if ( bySerialFlag )
 			ykush->port_down(argv[3], '4'); 
 		else
 			ykush->port_down(NULL, '4'); 
 		break;
-	case WRITE_IO:
+	case YKUSH3_WRITE_IO:
 		if ( bySerialFlag )
 			ykush->write_io(argv[3], port, value); 
 		else
 			ykush->write_io(NULL, port, value); 
 		break;
-	case READ_IO:
+	case YKUSH3_READ_IO:
 		if ( bySerialFlag )
 			printf("\n%d\n", ykush->read_io(argv[3], port)); 
 		else
 			printf("\n%d\n", ykush->read_io(NULL, port)); 
 		break;
-	case CONFIG:
+	case YKUSH3_CONFIG:
 		if ( bySerialFlag )
 		    ykush->config_port(argv[3], port, value); 
 		else
 		    ykush->config_port(NULL, port, value); 
 		break;
 
-	case RESET:
+	case YKUSH3_RESET:
 		if ( bySerialFlag )
 			ykush->reset(argv[3]); 
 		else
 			ykush->reset(NULL); 
 		break;
-	case GPIO_EN:
+	case YKUSH3_GPIO_EN:
 		if ( bySerialFlag )
 			ykush->gpio_ctrl_enable(argv[3]); 
 		else
 			ykush->gpio_ctrl_enable(NULL); 
 		break;
-	case GPIO_DIS:
+	case YKUSH3_GPIO_DIS:
 		if ( bySerialFlag )
 			ykush->gpio_ctrl_disable(argv[3]); 
 		else
 			ykush->gpio_ctrl_disable(NULL); 
 		break;
-	case ENTER_BOOTLOADER:
+	case YKUSH3_ENTER_BOOTLOADER:
 		if ( bySerialFlag )
 			ykush->enter_bootloader(argv[3]); 
 		else
@@ -426,30 +425,26 @@ void ykush3_cmd_parser(int argc, char** argv)
  *********************************************************/
 int Ykush3::port_up(char *serial, char port)
 {  
-    //Create command msg
-    hid_report_out[0] = 0;
-
-
     switch(port)
     {
         case '1':
-            hid_report_out[1] = 0x11;
+            hid_report_out[0] = 0x11;
             break;
 
         case '2':     
-            hid_report_out[1] = 0x12;
+            hid_report_out[0] = 0x12;
             break;
         
         case '3':     
-            hid_report_out[1] = 0x13;
+            hid_report_out[0] = 0x13;
             break;
 
         case 'a':     
-            hid_report_out[1] = 0x1a;
+            hid_report_out[0] = 0x1a;
             break;
 
         case '4':     
-            hid_report_out[1] = 0x14;
+            hid_report_out[0] = 0x14;
             break;
 
         default:
@@ -460,7 +455,7 @@ int Ykush3::port_up(char *serial, char port)
     
     
     //send HID report to board
-    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    return sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
 }
 
@@ -479,31 +474,26 @@ int Ykush3::port_up(char *serial, char port)
  *********************************************************/
 int Ykush3::port_down(char *serial, char port)
 {
-
-    
-    //Create command msg
-    hid_report_out[0] = 0;      //Windows stuff
-
     switch(port)
     {
         case '1':
-            hid_report_out[1] = 0x01;
+            hid_report_out[0] = 0x01;
             break;
 
         case '2':     
-            hid_report_out[1] = 0x02;
+            hid_report_out[0] = 0x02;
             break;
         
         case '3':     
-            hid_report_out[1] = 0x03;
+            hid_report_out[0] = 0x03;
             break;
 
         case 'a':     
-            hid_report_out[1] = 0x0a;
+            hid_report_out[0] = 0x0a;
             break;
         
         case '4':
-            hid_report_out[1] = 0x04;
+            hid_report_out[0] = 0x04;
             break;
 
         default:
@@ -513,7 +503,7 @@ int Ykush3::port_down(char *serial, char port)
     }
   
     //send HID report to board
-    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    return sendHidReport(serial, hid_report_out, hid_report_in, 64);
    
 
 }
@@ -537,27 +527,24 @@ int Ykush3::port_down(char *serial, char port)
  *********************************************************/
 int Ykush3::get_port_status(char *serial, char port)
 {
-    int status;
-
-    //Create command msg
-    hid_report_out[0] = 0;      
+    int status;      
 
     switch(port)
     {
         case '1':
-            hid_report_out[1] = 0x21;
+            hid_report_out[0] = 0x21;
             break;
 
         case '2':     
-            hid_report_out[1] = 0x22;
+            hid_report_out[0] = 0x22;
             break;
         
         case '3':     
-            hid_report_out[1] = 0x23;
+            hid_report_out[0] = 0x23;
             break;
 
         case '4':     
-            hid_report_out[1] = 0x24;
+            hid_report_out[0] = 0x24;
             break;
 
         default:
@@ -567,7 +554,7 @@ int Ykush3::get_port_status(char *serial, char port)
     }
   
     //send HID report to board 
-    sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
     //handle board response HID report
     status = hid_report_in[1];
@@ -588,30 +575,27 @@ int Ykush3::get_port_status(char *serial, char port)
  ****************************************************/ 
 int Ykush3::write_io(char *serial, char port, char value)
 {
-    //Create command msg
-    hid_report_out[0] = 0;
 
-    
-    hid_report_out[1] = 0x31;
+    hid_report_out[0] = 0x31;
     if(value=='0'){
-        hid_report_out[3] = 0; 
+        hid_report_out[2] = 0; 
     } else {
-        hid_report_out[3] = 1; 
+        hid_report_out[2] = 1; 
     }
 
 
     switch(port)
     {
         case '1':
-            hid_report_out[2] = 0x01;
+            hid_report_out[1] = 0x01;
             break;
 
         case '2':     
-            hid_report_out[2] = 0x02;
+            hid_report_out[1] = 0x02;
             break;
         
         case '3':     
-            hid_report_out[2] = 0x03;
+            hid_report_out[1] = 0x03;
             break;
  
         default:
@@ -620,9 +604,8 @@ int Ykush3::write_io(char *serial, char port, char value)
 
     }
     
-    
     //send HID report to board
-    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    return sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
 }
 
@@ -641,24 +624,21 @@ int Ykush3::write_io(char *serial, char port, char value)
  ****************************************************/ 
 int Ykush3::read_io(char *serial, char port)
 {
-    //Create command msg
-    hid_report_out[0] = 0;
-
     
-    hid_report_out[1] = 0x30;
+    hid_report_out[0] = 0x30;
 
     switch(port)
     {
         case '1':
-            hid_report_out[2] = 0x01;
+            hid_report_out[1] = 0x01;
             break;
 
         case '2':     
-            hid_report_out[2] = 0x02;
+            hid_report_out[1] = 0x02;
             break;
         
         case '3':     
-            hid_report_out[2] = 0x03;
+            hid_report_out[1] = 0x03;
             break;
  
         default:
@@ -669,7 +649,7 @@ int Ykush3::read_io(char *serial, char port)
     
     
     //send HID report to board
-    return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    return sendHidReport(serial, hid_report_out, hid_report_in, 64);
     
     //process response
     return hid_report_in[4];
@@ -687,32 +667,28 @@ int Ykush3::read_io(char *serial, char port)
  ****************************************************/ 
 int Ykush3::config_port(char *serial, char port, char value)
 {
-	//Create command msg
-	hid_report_out[0] = 0;
-
-
-	hid_report_out[1] = 0x41;
+	hid_report_out[0] = 0x41;
 	if ( value == '0' )
-		hid_report_out[3] = 0; 
+		hid_report_out[2] = 0; 
 	else if ( value == '1' )
-		hid_report_out[3] = 1; 
+		hid_report_out[2] = 1; 
 	else
-		hid_report_out[3] = 2;	//Persist mode
+		hid_report_out[2] = 2;	//Persist mode
 	
 
 
 	switch ( port ) {
 	case '1':
-		hid_report_out[2] = 0x01;
+		hid_report_out[1] = 0x01;
 		break;
 	case '2':     
-		hid_report_out[2] = 0x02;
+		hid_report_out[1] = 0x02;
 		break;
 	case '3':     
-		hid_report_out[2] = 0x03;
+		hid_report_out[1] = 0x03;
 		break;
 	case 'e':     
-		hid_report_out[2] = 0x04;
+		hid_report_out[1] = 0x04;
 		break;
 	default:
 		return 0;
@@ -720,7 +696,7 @@ int Ykush3::config_port(char *serial, char port, char value)
 	}
 
 	//send HID report to board
-	return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+	return sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
 }
 
@@ -735,13 +711,11 @@ int Ykush3::config_port(char *serial, char port, char value)
  ****************************************************/ 
 void Ykush3::reset(char *serial)
 {
-    //Create command msg
-    hid_report_out[0] = 0;
 
-    hid_report_out[1] = 0x55;        
+    hid_report_out[0] = 0x55;        
     
     //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
 }
 
@@ -753,13 +727,11 @@ void Ykush3::reset(char *serial)
  */
 void Ykush3::gpio_ctrl_enable(char *serial)
 {
-    //Create command msg
-    hid_report_out[0] = 0;
-    hid_report_out[1] = 0x32;
-    hid_report_out[2] = 0x01;
+    hid_report_out[0] = 0x32;
+    hid_report_out[1] = 0x01;
     
     //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in, 65);
+    sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
 }
 
@@ -769,13 +741,11 @@ void Ykush3::gpio_ctrl_enable(char *serial)
  */
 void Ykush3::gpio_ctrl_disable(char *serial)
 {
-	//Create command msg
-	hid_report_out[0] = 0;
-	hid_report_out[1] = 0x32;
-	hid_report_out[2] = 0x00;
+	hid_report_out[0] = 0x32;
+	hid_report_out[1] = 0x00;
 	
 	//send HID report to board
-	sendHidReport(serial, hid_report_out, hid_report_in, 65);
+	sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
 }
 
@@ -786,12 +756,10 @@ void Ykush3::gpio_ctrl_disable(char *serial)
  */
 void Ykush3::enter_bootloader(char *serial)
 {
-	//Create command msg
-	hid_report_out[0] = 0;
-	hid_report_out[1] = 0x42;
+	hid_report_out[0] = 0x42;
 	
 	//send HID report to board
-	sendHidReport(serial, hid_report_out, hid_report_in, 65);
+	sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
 }
 
@@ -806,17 +774,15 @@ int Ykush3::i2c_enable_disable_control(bool enable_flag)
 {
 	//std::cout << "i2c_enable_disable_control com flag: " << enable_flag << std::endl;
 
-	//Create command msg
-	hid_report_out[0] = 0;
-	hid_report_out[1] = 0x51;
-	hid_report_out[2] = 0x01;
+	hid_report_out[0] = 0x51;
+	hid_report_out[1] = 0x01;
 	
 	if ( enable_flag )
-		hid_report_out[3] = 0x01;
+		hid_report_out[2] = 0x01;
 	else 
-		hid_report_out[3] = 0x00;
+		hid_report_out[2] = 0x00;
 
-	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 
 	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
 		//command executed with success
@@ -830,18 +796,15 @@ int Ykush3::i2c_enable_disable_control(bool enable_flag)
 int Ykush3::i2c_enable_disable_gateway(bool enable_flag)
 {
 	//std::cout << "i2c_enable_disable_gateway com flag: " << enable_flag << std::endl;
-
-	//Create command msg
-	hid_report_out[0] = 0;
-	hid_report_out[1] = 0x51;
-	hid_report_out[2] = 0x02;
+	hid_report_out[0] = 0x51;
+	hid_report_out[1] = 0x02;
 
 	if ( enable_flag )
-		hid_report_out[3] = 0x01;
+		hid_report_out[2] = 0x01;
 	else 
-		hid_report_out[3] = 0x00;
+		hid_report_out[2] = 0x00;
 
-	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 
 	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
 		//command executed with success
@@ -855,13 +818,12 @@ int Ykush3::i2c_enable_disable_gateway(bool enable_flag)
 int Ykush3::i2c_set_address(char *i2c_address)
 {
 	std::cout << "i2c_set_address com address: " << i2c_address << std::endl;
-	//Create command msg
-	hid_report_out[0] = 0;
-	hid_report_out[1] = 0x51;
-	hid_report_out[2] = 0x03;
 
-	hex2bin(i2c_address + 2, &hid_report_out[3], 2);
-	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+	hid_report_out[0] = 0x51;
+	hid_report_out[1] = 0x03;
+
+	hex2bin(i2c_address + 2, &hid_report_out[2], 2);
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 
 	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
 		//command executed with success
@@ -874,27 +836,26 @@ int Ykush3::i2c_set_address(char *i2c_address)
 
 int Ykush3::i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **data_to_write_ASCII)
 {
-	hid_report_out[0] = 0;
-	hid_report_out[1] = 0x52;
-	hid_report_out[2] = 0x01;
+	hid_report_out[0] = 0x52;
+	hid_report_out[1] = 0x01;
 
 	//convert i2c_address_ASCII to binary
-	hex2bin(i2c_address_ASCII + 2, &hid_report_out[3], 2);
+	hex2bin(i2c_address_ASCII + 2, &hid_report_out[2], 2);
 
 	//convert num_bytes_ASCII to binary
 	int size = strlen(num_bytes_ASCII);
 	if ( size <= 0 )
 		return 1;
-	dec2bin(num_bytes_ASCII, &hid_report_out[4], size);
-	if ( hid_report_out[4] > 60 ) 
+	dec2bin(num_bytes_ASCII, &hid_report_out[3], size);
+	if ( hid_report_out[3] > 60 ) 
 		return 2;
 
 	//convert data_to_write_ASCII to binary
-	for ( int i = 0; i < hid_report_out[4]; i++ ) {
-		hex2bin(num_bytes_ASCII + 2, &hid_report_out[i + 5], 2);
+	for ( int i = 0; i < hid_report_out[3]; i++ ) {
+		hex2bin(num_bytes_ASCII + 2, &hid_report_out[i + 4], 2);
 	}
 
-	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 
 	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x52) ) {
 		//command executed with success
@@ -906,20 +867,19 @@ int Ykush3::i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **dat
 
 int Ykush3::i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read)
 {
-	hid_report_out[0] = 0;
-	hid_report_out[1] = 0x52;
-	hid_report_out[2] = 0x02;
+	hid_report_out[0] = 0x52;
+	hid_report_out[1] = 0x02;
 
 	//convert i2c_address_ASCII to binary
-	hex2bin(i2c_address_ASCII + 2, &hid_report_out[3], 2);
+	hex2bin(i2c_address_ASCII + 2, &hid_report_out[2], 2);
 
 	//convert num_bytes_ASCII to binary
 	int size = strlen(num_bytes_ASCII);
 	if ( size <= 0 )
 		return 1;
-	dec2bin(num_bytes_ASCII, &hid_report_out[4], size);
+	dec2bin(num_bytes_ASCII, &hid_report_out[3], size);
 
-	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 
 	//handle response message
 	if ((hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x52)) {
@@ -941,10 +901,9 @@ int Ykush3::i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned ch
 
 int Ykush3::display_version_bootloader(void)
 {
-	hid_report_out[0] = 0;
-	hid_report_out[1] = 0x61;
-	hid_report_out[2] = 0x01;
-	if ( sendHidReport(usb_serial, hid_report_out, hid_report_in, 65) != 0 ) {
+	hid_report_out[0] = 0x61;
+	hid_report_out[1] = 0x01;
+	if ( sendHidReport(usb_serial, hid_report_out, hid_report_in, 64) != 0 ) {
 		std::cout << "Unable to get bootloader version \n";
 		return 1; 
 	}
@@ -960,10 +919,9 @@ int Ykush3::display_version_bootloader(void)
 
 int Ykush3::display_version_firmware(void)
 {
-	hid_report_out[0] = 0;
-	hid_report_out[1] = 0x61;
-	hid_report_out[2] = 0x02;
-	sendHidReport(usb_serial, hid_report_out, hid_report_in, 65);
+	hid_report_out[0] = 0x61;
+	hid_report_out[1] = 0x02;
+	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 	//print response
 	if ( ( hid_report_in[0] != 0x01 ) && ( hid_report_in[0] != 0x61 ) ) {
 		std::cout << "Firmware version-1.0.0\n";

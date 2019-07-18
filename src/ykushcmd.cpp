@@ -1,6 +1,6 @@
 // Program entry point
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "commandParser.h"
 
 /**

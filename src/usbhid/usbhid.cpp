@@ -137,7 +137,8 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
 
         std::string str1, str2;
 
-        str1 = serial;
+        if (serial != NULL)
+                str1 = serial;
 
         if(init() < 0)
                 return -1;
@@ -155,11 +156,85 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
                         res = libusb_open(dev, &open_device.handle);
                         std::cout << "res = libusb_open = " << res << "\n";
                         if (res >= 0) {
-                                /* Serial Number */
-                                if (desc.iSerialNumber > 0) {
+                                if (serial == NULL) {   // Without serial number
+                                        struct libusb_device_descriptor desc;
+                                        struct libusb_config_descriptor *conf_desc = NULL;
+                                        int f,j,k;
+
+                                        libusb_get_device_descriptor(dev, &desc);
+                                        if (libusb_get_active_config_descriptor(dev, &conf_desc) < 0) {
+                                                std::cout << "cannot get active descriptor\n";
+                                                libusb_free_device_list(devs, 1);
+                                                libusb_close(open_device.handle);
+                                                return -1; 
+                                        }
+                                        std::cout << "conf_desc->bNumInterfaces = " << (unsigned int)conf_desc->bNumInterfaces << "\n";
+                                        for (j = 0; j < conf_desc->bNumInterfaces; j++) {
+                                                const struct libusb_interface *intf = &conf_desc->interface[j];
+                                                for (k = 0; k < intf->num_altsetting; k++) {
+                                                        const struct libusb_interface_descriptor *intf_desc;
+                                                        intf_desc = &intf->altsetting[k];
+                                                        if (intf_desc->bInterfaceClass == LIBUSB_CLASS_HID) {
+                                                                std::cout << "intf_desc->bInterfaceNumber = " << (unsigned int)intf_desc->bInterfaceNumber << "\n";
+                                                                open_device.interface = intf_desc->bInterfaceNumber;
+                                                                std::cout << "intf_desc->bNumEndpoints = " << (unsigned int)intf_desc->bNumEndpoints << "\n";
+                                                                // Find the INPUT and OUTPUT endpoints. An OUTPUT endpoint is not required. 
+                                                                for (f = 0; f < intf_desc->bNumEndpoints; f++) {
+                                                                        std::cout << "f = " << f << "\n";
+                                                                        const struct libusb_endpoint_descriptor *ep = &intf_desc->endpoint[f];
+
+                                                                        /* Determine the type and direction of this
+                                                                        endpoint. */
+                                                                        int is_interrupt =
+                                                                                (ep->bmAttributes & LIBUSB_TRANSFER_TYPE_MASK)
+                                                                        == LIBUSB_TRANSFER_TYPE_INTERRUPT;
+                                                                        int is_output =
+                                                                                (ep->bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK)
+                                                                        == LIBUSB_ENDPOINT_OUT;
+                                                                        int is_input =
+                                                                                (ep->bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK)
+                                                                        == LIBUSB_ENDPOINT_IN;
+
+                                                                        /* Decide whether to use it for input or output. */
+                                                                        if (open_device.input_endpoint == 0 &&
+                                                                        is_interrupt && is_input) {
+                                                                                /* Use this endpoint for INPUT */
+                                                                                open_device.input_endpoint = ep->bEndpointAddress;
+                                                                                open_device.input_ep_max_packet_size = ep->wMaxPacketSize;
+                                                                        }
+                                                                        if (open_device.output_endpoint == 0 &&
+                                                                        is_interrupt && is_output) {
+                                                                                /* Use this endpoint for OUTPUT */
+                                                                                open_device.output_endpoint = ep->bEndpointAddress;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+
+
+                                        res = libusb_claim_interface(open_device.handle, 0x0);
+                                        if (res < 0) {
+                                                std::cout << "cannot claim interface\n";
+                                                libusb_free_device_list(devs, 1);
+                                                libusb_free_config_descriptor(conf_desc);
+                                                libusb_close(open_device.handle);
+                                                return -1;
+                                        }
+                                        std::cout << "debug claim interface: " << res << "\n";
+
+                                        /* Store off the string descriptor indexes */
+                                        open_device.manufacturer_index = desc.iManufacturer;
+                                        open_device.product_index      = desc.iProduct;
+                                        open_device.serial_index       = desc.iSerialNumber;
+
+                                        libusb_free_device_list(devs, 1);
+                                        libusb_free_config_descriptor(conf_desc);
+                                        return 0;       //Success
+                                } else if (desc.iSerialNumber > 0) {    // With serial number
                                         str2 = get_usb_string_ascii(open_device.handle, desc.iSerialNumber);
                                         if ( str1.compare(str2) == 0 ) {
-                                                 std::cout << "Serial found\n";
+                                                std::cout << "Serial found\n";
                                                 struct libusb_device_descriptor desc;
                                                 struct libusb_config_descriptor *conf_desc = NULL;
                                                 int f,j,k;
@@ -230,9 +305,6 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
 						open_device.manufacturer_index = desc.iManufacturer;
 						open_device.product_index      = desc.iProduct;
 						open_device.serial_index       = desc.iSerialNumber;
-
-						
-                                                
                                                 
                                                 libusb_free_device_list(devs, 1);
                                                 libusb_free_config_descriptor(conf_desc);

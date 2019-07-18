@@ -21,7 +21,7 @@ limitations under the License.
 #include <command_parser.h>
 
 /**
- * \defgroup ykush
+ * \defgroup ykush YKUSH boards
  */
 
 /**
@@ -29,12 +29,12 @@ limitations under the License.
  * \brief Available options for YKUSH boards.
  */
 enum ykushAction {
-	PORT_UP,
-	PORT_DOWN,
-	PORT_STATUS,
-	LIST_BOARDS,
-	GET_STATUS,
-	HELP
+	YKUSH_PORT_UP,
+	YKUSH_PORT_DOWN,
+	YKUSH_PORT_STATUS,
+	YKUSH_LIST_BOARDS,
+	YKUSH_GET_STATUS,
+	YKUSH_HELP
 };
 
 /**
@@ -58,6 +58,10 @@ class Ykush : public UsbDevice
 
 		int get_port_status(char *serial, char port);     //get downstream port status
 
+		/**
+		 * \brief Switch ON YKUSH downstream(s).
+		 * 
+		 */
 		int port_up(char *serial, char port);
 
 		int port_down(char *serial, char port);
