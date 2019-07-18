@@ -15,11 +15,20 @@ limitations under the License.
 *******************************************************************************/
 
 #include "yk_usb_device.h"
+
+#ifdef _LIBUSB_
 #include <usbhid.h>
+#else
+#include <hidapi.h>
+#include <string.h>
+#endif
+
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 
-
+#ifdef _LIBUSB_
+// Uses libusb directly
 int UsbDevice::listConnected() 
 {
 	UsbHid *usbhid = new UsbHid();
@@ -41,7 +50,32 @@ int UsbDevice::listConnected()
 
 	return i;
 }
+#else
+// Uses hidapi
+int UsbDevice::listConnected() 
+{
+	int i=0;
 
+	struct hid_device_info *devs, *cur_dev;
+		
+	devs = hid_enumerate(vid, pid);
+	if (devs == NULL) {
+		std::cout << "No devices found.\n";
+		return 0;
+	}
+
+	cur_dev = devs;
+	while (cur_dev) {
+		std::cout << i << ". Board found with serial number: " << cur_dev->serial_number << "\n"; 
+		cur_dev = cur_dev->next;
+		i++;
+	}
+	
+	hid_free_enumeration(devs);
+
+	return i;
+}
+#endif
 
 UsbDevice::UsbDevice(unsigned int vendor_id, unsigned int product_id) {
 	pid = product_id;
@@ -72,6 +106,7 @@ UsbDevice::UsbDevice(unsigned int vendor_id, unsigned int product_id) {
  *
  *
  *****************************************************************/
+#ifdef _LIBUSB_
 int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg, int report_size) 
 {
 	UsbHid *usbhid = new UsbHid();
@@ -99,7 +134,65 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
 
 	return 0;
 }
+#else
+int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg, int report_size) 
+{	
+	const size_t newsize = 100;
+	wchar_t cserial[newsize];
+	int res, i;
+	unsigned char out_buf[65];
+	unsigned char in_buf[65];
 
+	if (report_size <= 64) {
+		out_buf[0] = 0;
+		for (i = 0; i < report_size; i++) {
+			out_buf[i+1] = msg[i]; 
+		}
+	} else {
+		std::cout << "Invalid report size\n";
+		return -1;
+	}
+	
+	if (serial) {
+			// Convert to a wchar_t*
+			size_t origsize = strlen(serial) + 1;
+			size_t convertedChars = 0;
+
+			mbstowcs_s(&convertedChars, cserial, origsize, serial, _TRUNCATE);
+
+		}
+
+	// Open the USB device 
+	handle = hid_open(vid, pid, serial ? cserial : NULL);
+	
+	if (handle == NULL) {
+		//printf("\n\nERROR: Unable to open USB device\n");
+		return -1;
+	}
+
+	// Set the hid_read() function to be blocking (wait for response from the device).
+	hid_set_nonblocking(handle, USB_CMD_NON_BLOCKING);
+
+	//send HID report
+	res = hid_write(handle, out_buf, report_size++);
+	if (res < 0) {
+		std::cout << "Unable to write HID report to USB device\n";
+		return -1;
+	}
+
+	//read HID report
+	res = hid_read(handle, in_buf, report_size++);
+	if (res < 0) {
+		std::cout << "Unable to read HID report from USB device\n";
+		return -1;
+	}
+	for (i = 0; i < report_size; i++) {
+		resp_msg[i] = in_buf[i];
+	}
+
+	return 0; 
+}
+#endif
 
 
 

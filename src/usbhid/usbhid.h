@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef _USBHID_H_
 #define _USBHID_H_
 
-#include "libusb.h"
+#include <libusb.h>
 
 
 /** hidapi info structure */

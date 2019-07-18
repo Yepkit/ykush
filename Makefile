@@ -16,21 +16,28 @@ PROG_SOURCE_FULL = $(addprefix src/, $(PROG_SOURCE))
 OBJS = $(SOURCE_FULL:.cpp=.o)
 PROG_OBJ = $(PROG_SOURCE_FULL:.cpp=.o)
 
+DEFINES += _LINUX_
+DEFINES += _LIBUSB_
+
+COMPILE_FLAGS += $(addprefix -D, $(DEFINES))
+
 CUR_PATH = $(shell echo $(PWD))
-INCLUDEPATHS = $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)))
-LOADPATHS =
+INCLUDEPATHS = $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)) libusb )
+LOADPATHS = 
 LIBS = -lusb-1.0
 CPP = g++
+ 
 
 
 ykushcmd : $(PROG_OBJ) $(OBJS)
-	$(CPP) $(LOADPATHS) -o bin/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
+	$(CPP) -o bin/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
 
 $(PROG_OBJ) :  %.o : %.cpp
-	$(CPP) $(PREPROCESSOR_DEFS) $(INCLUDEPATHS) -c $< -o $@
+	$(CPP) $(COMPILE_FLAGS) $(INCLUDEPATHS) -c $< -o $@
 
 $(OBJS) : %.o : %.cpp %.h
-	$(CPP) $(PREPROCESSOR_DEFS) $(INCLUDEPATHS) -c $< -o $@
+	$(CPP) $(COMPILE_FLAGS) $(INCLUDEPATHS) -c $< -o $@
+
 
 clean :
 	rm -f bin/ykushcmd $(OBJS) $(PROG_OBJ)

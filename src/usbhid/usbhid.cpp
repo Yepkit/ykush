@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 *******************************************************************************/
 #include "usbhid.h"
-#include "libusb.h"
+#include <libusb.h>
 #include <cstdlib>
 #include <string.h>
 #include <string>
@@ -213,7 +213,7 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
                                         }
 
 
-                                        res = libusb_claim_interface(open_device.handle, 0x0);
+                                        res = libusb_claim_interface(open_device.handle, open_device.interface);
                                         if (res < 0) {
                                                 std::cout << "cannot claim interface\n";
                                                 libusb_free_device_list(devs, 1);
@@ -290,8 +290,19 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
                                                         }
                                                 }
 
+                                                /* 
+                                                int detached = 0;
+                                                res = libusb_kernel_driver_active(open_device.handle, open_device.interface);
+                                                if (res == 1) {
+                                                        res = libusb_detach_kernel_driver(open_device.handle, open_device.interface);
+                                                        if (res < 0)
+                                                                std::cout << "Couldn't detach kernel driver, even though a kernel driver was attached.\n";
+                                                        else
+                                                                detached = 1;
+                                                }
+                                                */
 
-                                                res = libusb_claim_interface(open_device.handle, 0x0);
+                                                res = libusb_claim_interface(open_device.handle, open_device.interface);
 						if (res < 0) {
 							std::cout << "cannot claim interface\n";
                                                         libusb_free_device_list(devs, 1);

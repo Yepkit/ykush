@@ -16,13 +16,20 @@ limitations under the License.
 #ifndef _YK_USB_DEVICE_H_
 #define _YK_USB_DEVICE_H_
 
+#ifdef _LIBUSB_
 #include <usbhid.h>
-
+#else
+#include <hidapi.h>
+#endif
+#include <stdlib.h>
 
 /**
  * \defgroup yepkit_usb_device_handler Yepkit USB device handling
  */
 
+#ifndef _LIBUSB_
+#define USB_CMD_NON_BLOCKING	1	//1 -> Set the USB device handle to be non-blocking
+#endif
 
 /**
  * \ingroup yepkit_usb_device_handler
@@ -47,6 +54,9 @@ class UsbDevice {
 
 		unsigned short vid;       
 		unsigned short pid; 
+#ifndef _LIBUSB_
+		hid_device *handle;
+#endif
 
 	protected:
 
