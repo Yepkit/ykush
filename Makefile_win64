@@ -1,4 +1,4 @@
-PROG_SOURCE = ykushcmd.cpp
+PROG_SOURCE = yktrl.cpp
 SOURCE += commandParser.cpp
 SOURCE += ykushxs/ykushxs.cpp
 SOURCE += ykush/ykush.cpp
@@ -25,7 +25,7 @@ CPP = x86_64-w64-mingw32-g++
 #CPP_WIN64 =  x86_64-w64-mingw32-g++ 
 
 
-ykushcmd_win64.exe : $(PROG_OBJ) $(OBJS)
+yktrl_win64.exe : $(PROG_OBJ) $(OBJS)
 	$(CPP) $(FLAGS) $(LOADPATHS) -o bin/Win64/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
 
 $(PROG_OBJ) :  %.o : %.cpp
@@ -35,5 +35,5 @@ $(OBJS) : %.o : %.cpp %.h
 	$(CPP) $(FLAGS) $(PREPROCESSOR_DEFS) $(INCLUDEPATHS) -c $< -o $@
 
 clean :
-	rm -f bin/Win64/ykushcmd_win64.exe $(OBJS) $(PROG_OBJ)
+	rm -f bin/Win64/yktrl_win64.exe $(OBJS) $(PROG_OBJ)
 

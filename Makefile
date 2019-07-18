@@ -1,4 +1,4 @@
-PROG_SOURCE = ykushcmd.cpp
+PROG_SOURCE = yktrl.cpp
 SOURCE += commandParser.cpp
 SOURCE += ykushxs/ykushxs.cpp
 SOURCE += ykush/ykush.cpp
@@ -29,7 +29,7 @@ CPP = g++
  
 
 
-ykushcmd : $(PROG_OBJ) $(OBJS)
+yktrl : $(PROG_OBJ) $(OBJS)
 	$(CPP) -o bin/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
 
 $(PROG_OBJ) :  %.o : %.cpp
@@ -40,5 +40,5 @@ $(OBJS) : %.o : %.cpp %.h
 
 
 clean :
-	rm -f bin/ykushcmd $(OBJS) $(PROG_OBJ)
+	rm -f bin/yktrl $(OBJS) $(PROG_OBJ)
 

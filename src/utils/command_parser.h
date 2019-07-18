@@ -19,16 +19,20 @@ limitations under the License.
 #define _COMMAND_PARSER_H_
 
 
-struct cmd_option {
+struct command_parameter {
 	char *name;
-	char *parameter[10];
-	int n_parameters;
+	struct command_parameter *next;
+};
+
+struct command_option {
+	char *name;
+	struct command_parameter *parameters;
+	struct command_option *next;
 };
 
 struct command_line {
 	char *app_name;
-	struct cmd_option option[10];
-	int n_options;
+	struct command_option *options;
 };
 
 /**
@@ -55,7 +59,6 @@ class CommandLine {
 		 * 
 		 * \retval 0 board found
 		 * \retval -1 no board option provided
-		 * \retval -2 board option but no board parameter
 		 * 
 		 */
 		int get_board(char *board_name);
