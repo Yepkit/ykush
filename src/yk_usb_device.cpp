@@ -59,16 +59,14 @@ int UsbDevice::listConnected()
 	struct hid_device_info *devs, *cur_dev;
 		
 	devs = hid_enumerate(vid, pid);
-	if (devs == NULL) {
-		std::cout << "No devices found.\n";
+	if (devs == NULL)
 		return 0;
-	}
 
 	cur_dev = devs;
 	while (cur_dev) {
-		std::cout << i << ". Board found with serial number: " << cur_dev->serial_number << "\n"; 
-		cur_dev = cur_dev->next;
 		i++;
+		printf("%d. Board found with serial number: %ls\n", i, cur_dev->serial_number); 
+		cur_dev = cur_dev->next;
 	}
 	
 	hid_free_enumeration(devs);

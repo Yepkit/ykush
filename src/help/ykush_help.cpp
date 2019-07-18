@@ -14,50 +14,40 @@ See the License for the specific language governing permissions and
 limitations under the License.
 *******************************************************************************/
 
-#include "stdafx.h"
 #include "ykush_help.h"
+#include <iostream>
+
 #include <stdio.h>
 
 
 
 
-Help::Help(const char *input_file_name)
+Help::Help(char *exec_name)
 {
-    file_name = input_file_name;
+	app_name = exec_name;
 }
 
-
-void Help::print(void)
+void Help::print_usage(void)
 {
-    FILE *fp;
-    char line[150];
+	std::cout << "Usage:\t" << app_name << " [board_name] [OPTION]...\n";
+	std::cout << "Control Yepkit YKUSH family boards.\n\n";
+}
 
-    //open text file
-#ifndef LINUX
-	fopen_s(&fp, file_name, "r");
-#else
-    fp = fopen(file_name, "r");
-#endif
+void Help::print_board_names(void)
+{
+	std::cout << "Board names:\n";
+	std::cout << " ykush\t\tYKUSH board.\n";
+	std::cout << " ykush3\t\tYKUSH3 board.\n";
+	std::cout << " ykushxs\tYKUSHXS board.\n";
+	std::cout << "The [board_name] must be provided for commands addressed for a specific board.";
+	std::cout << "For general or common commands, applicable to all board models, the [board_name] is to ommited from the command.";
+}
 
-    if(fp==NULL)
-    {
-        printf("\n\nHelp file not found.\n\n");
-        return;
-    }
+void Help::print_common_options(void)
+{
+	
 
-    //print line by line
-    while(!feof(fp))
-    {
-        if(fgets(line, 150, fp)!=NULL)
-        {
-            printf("%s",line);
-        }
-    }
-
-    printf("\n\n");
-    fclose(fp);
-    return;
-
+	
 }
 
 

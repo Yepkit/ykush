@@ -17,61 +17,54 @@ limitations under the License.
 #include <command_parser.h>
 #include <string>
 #include <cstring>
-using namespace std;
+#include <ykush_help.h>
+
+
 
 /**
  * CommandLine class constructor
  * 
  */
+
 CommandLine::CommandLine() 
 {
 	error = false;
 	command.n_options = 0;
-	for ( int i = 0; i < 10; i++ ) {
+	for( int i = 0; i < 10; i++ ) {
 		command.option[i].n_parameters = 0;
 	} 
 }
 
-/**
- * CommandLine class constructor
- * 
- * This method will parse the command line and 
- * set the "command" property.
- * 
- * Inputs:
- * 	Command line arguments
- * 
- * Return value:
- *  	0	- OK
- * 	1	- Error
- */
+
 int CommandLine::parse(int argc, char **argv)
 {
-	if (argc < 2) {
-		error = true;
-		return 1;
-	}
-	if (set_board(argv[1])) {
-		error = true;
-		return 1;
-	}
-	int i = 0;
+	command.app_name = argv[0];
+	
+	if ( argc < 2 ) 
+		return -1;
+	
+	if ( set_board(argv[1]) )
+		return -1;
+	
+	int i = 1;
 	bool exit_while;
-	while ( i < (argc - 2) ) {
+	while ( i < ( argc - 1 ) ) {
+
 		exit_while = false;
-		if ( strlen(argv[i+2]) > 2 ) {
-			if ( (argv[i+2][0] == '-') && (argv[i+2][1] == '-') ) {
+
+		if ( strlen(argv[i]) > 1 ) {
+			if ( argv[i][0] == '-') { //is an option
 				//add new option to command.option
-				command.option[command.n_options].name = argv[i+2];
+				command.option[command.n_options].name = argv[i];
 				i++;
 				//get option has parameters if they exist
-				while ( ( i < (argc - 2) ) && !exit_while ) {
-					if ( argv[i+2][0] == '-' ) {
+				while ( ( i < ( argc - 1 ) ) && !exit_while ) {
+					if ( argv[i][0] == '-' ) { //is another option
 						i--;
 						exit_while = true;
-					} else {
+					} else { //is a parameter
 						//add parameter to option
-						command.option[command.n_options].parameter[command.option[command.n_options].n_parameters] = argv[i+2];						
+						command.option[command.n_options].parameter[command.option[command.n_options].n_parameters] = argv[i];						
 						command.option[command.n_options].n_parameters++;
 						i++;
 					}

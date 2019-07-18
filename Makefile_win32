@@ -26,7 +26,7 @@ CPP = i686-w64-mingw32-g++
 
 
 ykushcmd_win32.exe : $(PROG_OBJ) $(OBJS)
-	$(CPP) $(FLAGS) $(LOADPATHS) -o bin/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
+	$(CPP) $(FLAGS) $(LOADPATHS) -o bin/Win32/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
 
 $(PROG_OBJ) :  %.o : %.cpp
 	$(CPP) $(FLAGS) $(PREPROCESSOR_DEFS) $(INCLUDEPATHS) -c $< -o $@
@@ -36,5 +36,5 @@ $(OBJS) : %.o : %.cpp %.h
 
 
 clean :
-	rm -f bin/ykushcmd_win32.exe $(OBJS) $(PROG_OBJ)
+	rm -f bin/Win32/ykushcmd_win32.exe $(OBJS) $(PROG_OBJ)
 

@@ -20,21 +20,22 @@ limitations under the License.
 #define _YKUSHCMD_HELP_H_
 
 
-#include <stdio.h>
-
-
 class Help
 {
+	public:
 
-    public:
+		Help(char *exec_name);
 
-        Help(const char *input_file_name);
+		void print_usage(void);
+		void print_board_names(void);
+		void print_common_options(void);
 
-        void print(void);
 
-    private:
+		void print_all(void);
 
-        const char *file_name;
+	private:
+
+		char *app_name;
 };
 
 

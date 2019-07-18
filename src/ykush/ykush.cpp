@@ -44,7 +44,6 @@ void ykush_cmd_parser(int argc, char** argv)
 	Ykush *ykushLegacy = new Ykush(0x0042);
 	char port;
 	char status_response = 0;
-	Help *help = new Help("../doc/general_help.txt");
 
 	/* 
 	CommandLine *cmd_handler = new CommandLine();
@@ -86,7 +85,7 @@ void ykush_cmd_parser(int argc, char** argv)
 		if(argc < 5)
 		{
 		//ykush_help(argv[0]);
-		help->print();
+		ykush->print_help(argv[0]);
 		return;
 		}
 		bySerialFlag = 1;
@@ -109,7 +108,7 @@ void ykush_cmd_parser(int argc, char** argv)
 		} else 
 		{
 		//ykush_help(argv[0]);
-		help->print();
+		ykush->print_help(argv[0]);
 		return;
 		}
 
@@ -118,7 +117,7 @@ void ykush_cmd_parser(int argc, char** argv)
 	{
 		if(argc < 3)
 		{
-		help->print();
+		ykush->print_help(argv[0]);
 		return;
 		}
 
@@ -129,7 +128,7 @@ void ykush_cmd_parser(int argc, char** argv)
 	{
 		if(argc < 3)
 		{
-		help->print();
+		ykush->print_help(argv[0]);
 		return;
 		}
 		action = YKUSH_PORT_DOWN;
@@ -144,7 +143,7 @@ void ykush_cmd_parser(int argc, char** argv)
 	{
 		if(argc < 3)
 		{
-		help->print();
+		ykush->print_help(argv[0]);
 		return;
 		}
 		action = YKUSH_GET_STATUS;
@@ -153,7 +152,7 @@ void ykush_cmd_parser(int argc, char** argv)
 	else
 	{
 		//ykush_help(argv[0]);
-		help->print();
+		ykush->print_help(argv[0]);
 		return;
 	}
 
@@ -233,7 +232,7 @@ void ykush_cmd_parser(int argc, char** argv)
 
 		default:
 		//ykush_help(argv[0]);
-		help->print();
+		ykush->print_help(argv[0]);
 		break;
 
 	}
@@ -385,25 +384,25 @@ int Ykush::get_port_status(char *serial, char port)
  ****************************************************/ 
 void ykush_list_attached()
 {
-    Ykush *ykush = new Ykush(0xF2F7);
-    Ykush *ykushLegacy = new Ykush(0x0042);
+	Ykush *ykush = new Ykush(0xF2F7);
+	Ykush *ykushLegacy = new Ykush(0x0042);
 
-    printf("\n\nAttached YKUSH Boards:\n");        
-    if(ykush->listConnected()==0)
-    {
-        //try legacy
-        if(ykushLegacy->listConnected()==0)
-        {
-            printf("\n\nNo YKUSH boards found.");
-        }
-    } 
-    else
-    {
-        //list legacy boards if attached 
-        ykushLegacy->listConnected();
-    }
+	printf("\n\nAttached YKUSH Boards:\n");        
+	if(ykush->listConnected()==0)
+	{
+		//try legacy
+		if(ykushLegacy->listConnected()==0)
+		{
+		printf("\n\nNo YKUSH boards found.");
+		}
+	} 
+	else
+	{
+		//list legacy boards if attached 
+		ykushLegacy->listConnected();
+	}
 
-    printf("\n\n");
+	printf("\n\n");
 
 }
 
@@ -426,6 +425,15 @@ void ykush_list_attached()
  ***************************************************/
 void Ykush::print_help(char *exec_name)
 {
+	Help *help = new Help(exec_name);
+
+	help->print_usage();
+	help->print_board_names();
+
+
+
+	
+
 
     printf("\n-------------------");
     printf("\n\tUsage for YKUSH boards:\n");

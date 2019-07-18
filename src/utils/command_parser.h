@@ -19,31 +19,49 @@ limitations under the License.
 #define _COMMAND_PARSER_H_
 
 
-typedef struct cmdOption {
+struct cmd_option {
 	char *name;
 	char *parameter[10];
 	int n_parameters;
-} CommandOption;
+};
 
-typedef struct ykushCmd {
-	char *board;
-	CommandOption option[10];
+struct command_line {
+	char *app_name;
+	struct cmd_option option[10];
 	int n_options;
-} YkushCommand;
+};
 
+/**
+ * \defgroup command_line Command line
+ */
+
+/**
+ * \ingroup command_line
+ * \brief Parses the command line and sets the command object.
+ * 
+ */
 class CommandLine {
 
 	public:
-		/**
-		 * CommandParser class constructor
-		 * 
-		 * It takes the command line arqguments as input.
-		 */ 
 		CommandLine();
 
+		/**
+		 * \brief Processes the command line and sets the command property.
+		 */
 		int parse(int argc, char **argv);
 
-		YkushCommand get_command(void);
+		/**
+		 * \brief Iterates through the command_line object and looks for a board option.
+		 * 
+		 * \retval 0 board found
+		 * \retval -1 no board option provided
+		 * \retval -2 board option but no board parameter
+		 * 
+		 */
+		int get_board(char *board_name);
+
+
+		struct command_line get_command(void);
 		
 	protected:
 		/**
@@ -58,8 +76,7 @@ class CommandLine {
 		
 
 	private:
-		bool error;
-		YkushCommand command;
+		struct command_line command;
 
 };
 

@@ -31,20 +31,20 @@ limitations under the License.
 
 class YkushXs : public UsbDevice  
 {
-    public:
+        public:
 
-        YkushXs()
-            : UsbDevice(0x04D8, 0xF0CD)
-        {            
-        }
+            YkushXs()
+                : UsbDevice(0x04D8, 0xF0CD)
+            {            
+            }
 
-        int get_port_status(char *serial);     //get downstream port status
+            int get_port_status(char *serial);     //get downstream port status
 
-        int port_up(char *serial);
+            int port_up(char *serial);
 
-        int port_down(char *serial);
+            int port_down(char *serial);
 
-
+            void ykushxs_help(char * execName);
 
     
 };
