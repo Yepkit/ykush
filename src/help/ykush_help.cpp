@@ -35,6 +35,8 @@ void Help::print_usage(void)
 
 void Help::print_board_names(void)
 {
+	std::cout << "The board_name specifies the board model being addressed.";
+	std::cout << "If no board_name is provided the board is assumed to be a YKUSH board (board_name = ykush).\n";
 	std::cout << "Board names:\n";
 	std::cout << " ykush\t\tYKUSH board.\n";
 	std::cout << " ykush3\t\tYKUSH3 board.\n";
@@ -48,6 +50,33 @@ void Help::print_common_options(void)
 	
 
 	
+}
+
+void Help::print_ykush(void)
+{
+
+}
+
+void Help::print_ykush2(void)
+{
+
+}
+
+void Help::print_ykush3(void)
+{
+
+}
+
+void Help::print_ykushxs(void)
+{
+
+}
+
+
+void Help::print_all(void) 
+{
+	print_usage();
+	print_board_names();
 }
 
 

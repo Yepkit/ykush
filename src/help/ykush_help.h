@@ -29,8 +29,10 @@ class Help
 		void print_usage(void);
 		void print_board_names(void);
 		void print_common_options(void);
-
-
+		void print_ykush(void);
+		void print_ykush2(void);
+		void print_ykush3(void);
+		void print_ykushxs(void);
 		void print_all(void);
 
 	private:

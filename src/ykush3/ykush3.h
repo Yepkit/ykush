@@ -86,7 +86,7 @@ class Ykush3 : public UsbDevice
 		void reset(char *serial);
 		
 		//Help
-		void print_help(const char *help_section);
+		void print_help(void);
 
 		//I2C
 		int i2c_enable_disable_control(bool enable_flag);		//ToDo

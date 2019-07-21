@@ -76,23 +76,17 @@ enum Board {
 };
 
 
-
-
-
-
-
-
 int commandParser(int argc, char** argv) {
 
 	
-    Help *help = new Help("../doc/general_help.txt");
+    Help *help = new Help(argv[0]);
 
 
 
   	if ( argc <= 1){
 
 		//printUsage(argv[0]);
-        help->print();
+        help->print_all();
 		return 0;
     	}
 

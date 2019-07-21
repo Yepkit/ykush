@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 *******************************************************************************/
 
-#include "ykush3.h"
+#include <ykush3.h>
 #include <stdio.h>
 #include <ykush_help.h>
 #include <command_parser.h>
@@ -24,7 +24,7 @@ limitations under the License.
 #include <cstring>
 
 
-
+extern char *app_exc_name;
 
 /*********************************************************
  *  Function: ykushxs_cmd_parser
@@ -49,17 +49,18 @@ void ykush3_cmd_parser(int argc, char** argv)
 	char port;
 	char value;
 	char status_response = 0;
-	Help *help = new Help("../doc/ykush3_help.txt");
+	
 	bool action_taken = false;
 
 	CommandLine *cmd_handler = new CommandLine();
 	
 	if ( cmd_handler->parse(argc, argv) ) {
 		std::cout << "Error parsing command." << std::endl;
-		ykush->print_help("ykush3");
+		ykush->print_help();
 		return;
 	}
 
+	/*
 	YkushCommand  user_command = cmd_handler->get_command();
 
 	//verify if board is YKUSH3
@@ -163,13 +164,15 @@ void ykush3_cmd_parser(int argc, char** argv)
 	if ( action_taken )
 		return;
 
+	*/
+
 	//...
-	//----- LEGACY PARSING SCHEME... ToDo: Update to use of class CommandLine...
+	//----- LEGACY PARSING SCHEME. Keep in ykushcmd but will be replaced in the yktrl app.
 	//...
 	if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 's' ) ) {	//BY SERIAL
 		
 		if ( argc < 5 ) {
-			help->print();
+			ykush->print_help();
 			return;
 		}
 		bySerialFlag = 1;
@@ -203,7 +206,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 		} else if ( argv[4][0] == '-' && argv[4][1] == 'w' ) {
 			
 			if ( argc < 7 ) {
-				help->print();
+				ykush->print_help();
 				return;
 			}
 			action = YKUSH3_WRITE_IO;
@@ -227,23 +230,23 @@ void ykush3_cmd_parser(int argc, char** argv)
                         else if (argv[5][0] == 'd' && argv[5][1] == 'i' && argv[5][2] == 's')
 				action = YKUSH3_GPIO_DIS;
 			else
-				help->print();
+				ykush->print_help();
 		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'b' && argv[4][3] == 'o' && argv[4][4] == 'o' ) { 
 			action = YKUSH3_ENTER_BOOTLOADER;		
 		} else {
-			help->print();
+			ykush->print_help();
 			return;
 		}
 	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'u' ) ) {
 		if ( argc < 3 ) {
-			help->print();
+			ykush->print_help();
 			return;
 		}
 		action = YKUSH3_PORT_UP;
 		port = argv[3][0];
 	} else if ( ( argv[2][0] == '-')  && ( argv[2][1] == 'd' ) ) {
 		if ( argc < 4 ) {
-			help->print();
+			ykush->print_help();
 			return;
 		}
 		action = YKUSH3_PORT_DOWN;
@@ -252,14 +255,14 @@ void ykush3_cmd_parser(int argc, char** argv)
 		action = YKUSH3_LIST_BOARDS;
 	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'g' ) ) {
 		if ( argc < 4 ) {
-			help->print();
+			ykush->print_help();
 			return;
 		}
 		action = YKUSH3_GET_STATUS;
 		port = argv[3][0];
 	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'o' ) ) {
 		if ( argc < 3 ) {
-			help->print();
+			ykush->print_help();
 			return;
 		}
 		if ( argv[2][2] == 'n' )
@@ -268,7 +271,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 			action = YKUSH3_EXT_CTRL_OFF;
 	} else if ( ( argv[2][0] == '-' ) && ( argv [2][1] == 'w' ) ) {
 		if ( argc < 5 ) {
-			help->print();
+			ykush->print_help();
 			return;
 		}
 		action = YKUSH3_WRITE_IO;
@@ -279,7 +282,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 		port = argv[3][0];
 	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'c' ) ) {
 		if ( argc < 5 ) {
-			help->print();
+			ykush->print_help();
 			return;
 		}
 		action = YKUSH3_CONFIG;
@@ -295,10 +298,10 @@ void ykush3_cmd_parser(int argc, char** argv)
                         else if (argv[3][0] == 'd' && argv[3][1] == 'i' && argv[3][2] == 's')
 				action = YKUSH3_GPIO_DIS;
 			else
-				help->print();
+				ykush->print_help();
 		
 	} else {
-		help->print();
+		ykush->print_help();
 		return;
 	}
 
@@ -390,7 +393,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 			ykush->enter_bootloader(NULL);
 		break;
 	default:
-		help->print();
+		ykush->print_help();
 		break;
 	}
 
@@ -966,9 +969,12 @@ void ykush3_list_attached()
 }
 
 
-void Ykush3::print_help(const char *help_section) 
+void Ykush3::print_help(void) 
 {
-	std::cout << "ToDo: Help print YKUSH3" << std::endl;
+	Help *help = new Help(app_exc_name);
+
+	help->print_usage();
+	help->print_ykush3();
 }
 
 

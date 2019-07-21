@@ -21,7 +21,7 @@ limitations under the License.
 
 
 
-enum ykushAction
+enum ykush2Action
 {
     PORT_UP,
     PORT_DOWN,
@@ -52,11 +52,11 @@ enum ykushAction
 void ykush2_cmd_parser(int argc, char** argv)
 {
     char bySerialFlag = 0;
-    enum ykushAction action = HELP;
+    enum ykush2Action action = HELP;
     Ykush2 *ykush = new Ykush2(0xEFED);
     char port;
     char status_response = 0;
-    Help *help = new Help("../doc/ykush2_help.txt");
+    Help *help = new Help(argv[0]);
 
 
 
@@ -65,7 +65,7 @@ void ykush2_cmd_parser(int argc, char** argv)
         if(argc < 6)
         {
             //ykush_help(argv[0]);
-            help->print();
+            help->print_ykush2();
             return;
         }
         bySerialFlag = 1;
@@ -88,7 +88,7 @@ void ykush2_cmd_parser(int argc, char** argv)
         } else 
         {
             //ykush_help(argv[0]);
-            help->print();
+            help->print_ykush2();
             return;
         }
 
@@ -97,7 +97,7 @@ void ykush2_cmd_parser(int argc, char** argv)
     {
         if(argc < 4)
         {
-            help->print();
+            help->print_ykush2();
             return;
         }
 
@@ -108,7 +108,7 @@ void ykush2_cmd_parser(int argc, char** argv)
     {
         if(argc < 4)
         {
-            help->print();
+            help->print_ykush2();
             return;
         }
         action = PORT_DOWN;
@@ -123,7 +123,7 @@ void ykush2_cmd_parser(int argc, char** argv)
     {
         if(argc < 4)
         {
-            help->print();
+            help->print_ykush2();
             return;
         }
         action = GET_STATUS;
@@ -132,7 +132,7 @@ void ykush2_cmd_parser(int argc, char** argv)
     else
     {
         //ykush_help(argv[0]);
-        help->print();
+        help->print_ykush2();
         return;
     }
 
@@ -196,7 +196,7 @@ void ykush2_cmd_parser(int argc, char** argv)
 
         default:
             //ykush_help(argv[0]);
-            help->print();
+            help->print_ykush2();
             break;
 
     }
@@ -232,26 +232,22 @@ void ykush2_cmd_parser(int argc, char** argv)
  *********************************************************/
 int Ykush2::port_up(char *serial, char port)
 {  
-    //Create command msg
-    hid_report_out[0] = 0;      //Windows stuff
-
-
     switch(port)
     {
         case '1':
-            hid_report_out[1] = 0x11;
+            hid_report_out[0] = 0x11;
             break;
 
         case '2':     
-            hid_report_out[1] = 0x12;
+            hid_report_out[0] = 0x12;
             break;
         
         case '3':     
-            hid_report_out[1] = 0x13;
+            hid_report_out[0] = 0x13;
             break;
 
         case 'a':     
-            hid_report_out[1] = 0x1a;
+            hid_report_out[0] = 0x1a;
             break;
 
         default:
@@ -288,27 +284,22 @@ int Ykush2::port_up(char *serial, char port)
  *********************************************************/
 int Ykush2::port_down(char *serial, char port)
 {
-
-    
-    //Create command msg
-    hid_report_out[0] = 0;      //Windows stuff
-
     switch(port)
     {
         case '1':
-            hid_report_out[1] = 0x01;
+            hid_report_out[0] = 0x01;
             break;
 
         case '2':     
-            hid_report_out[1] = 0x02;
+            hid_report_out[0] = 0x02;
             break;
         
         case '3':     
-            hid_report_out[1] = 0x03;
+            hid_report_out[0] = 0x03;
             break;
 
         case 'a':     
-            hid_report_out[1] = 0x0a;
+            hid_report_out[0] = 0x0a;
             break;
 
         default:
@@ -324,7 +315,7 @@ int Ykush2::port_down(char *serial, char port)
     }
     else
     {
-        return sendHidReport(serial, hid_report_out, hid_report_in, 65);
+        return sendHidReport(serial, hid_report_out, hid_report_in, 64);
     }
 
 }
@@ -349,21 +340,18 @@ int Ykush2::get_port_status(char *serial, char port)
 {
     int status;
 
-    //Create command msg
-    hid_report_out[0] = 0;      //Windows stuff
-
     switch(port)
     {
         case '1':
-            hid_report_out[1] = 0x21;
+            hid_report_out[0] = 0x21;
             break;
 
         case '2':     
-            hid_report_out[1] = 0x22;
+            hid_report_out[0] = 0x22;
             break;
         
         case '3':     
-            hid_report_out[1] = 0x23;
+            hid_report_out[0] = 0x23;
             break;
 
         default:
@@ -379,7 +367,7 @@ int Ykush2::get_port_status(char *serial, char port)
     }
     else
     {
-        sendHidReport(serial, hid_report_out, hid_report_in, 65);
+        sendHidReport(serial, hid_report_out, hid_report_in, 64);
     }
 
     //handle board response HID report

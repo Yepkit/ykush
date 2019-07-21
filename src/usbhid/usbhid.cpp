@@ -59,7 +59,7 @@ struct hid_device_info *UsbHid::enumerate(unsigned int vendor_id, unsigned int p
                         else
                                 root = tmp;
                         cur_dev = tmp;
-
+                        
                         // Fill out the record.
                         cur_dev->next = NULL;
 
