@@ -1,0 +1,90 @@
+<h1>YKUSH Board Commands</h1>
+
+<div class="reference_page_toc">
+        <ul>
+                <li><a href="#command_overview">Command overview</a></li>
+                <li><a href="#switch_command_example">Downstream port On/Off switching</a></li>
+                <li><a href="#switch_state_command_example">Port switching state</a></li>
+                <li><a href="#list_attached_example">List attached boards</a></li>
+        </ul>
+</div>
+
+<h2 id="command_overview">Command overview</h2>
+<p>YKUSH board commands have the following structure.</p>
+<p class="command_line">ykushcmd ykush [-s serial_number] [OPTION]</p>
+<p>Where:</p>
+<table>
+        <tr>
+                <td>-s serial_number</td>
+                <td>
+                        Board serial number to which the command is addressed.
+                        When multiple YKUSH boards are connected to a host, this option should be used
+                        to specify the board. If more than one board is connected and this option is not
+                        provided the command will be sent to the first board in the USB enumeration list.
+                </td>
+        </tr>
+        <tr>
+                <td>-d 1|2|3|a</td>
+                <td>
+                        Power Down/Off downstream port with the number provided.
+                        If <i>a</i> is provided as the port number then all ports will be switched.
+                </td>
+        </tr>
+        <tr>
+                <td>-u 1|2|3|a</td>
+                <td>
+                        Power Up/On downstream port with the number provided.
+                        If <i>a</i> is provided as the port number then all ports will be switched.
+                </td>
+        </tr>
+</table>
+
+
+<h2 id="switch_command_example">Downstream port On/Off switching</h2>
+<p>
+        When only one YKUSH board is attached to the host the <i>-s</i> option is not required.
+        Bellow are some examples.
+</p>
+<pre>
+<code class="languade-bash">
+#powerdown downstream port 1
+$ ykushcmd ykush -d 1
+
+#powerdown downstream port 2
+$ ykushcmd ykush -d 2
+
+#powerdown downstream port 3
+$ ykushcmd ykush -d 3
+
+#powerdown all three downstream ports
+$ ykushcmd ykush -d a
+</code>
+</pre>
+
+<p>
+        If more than one YKUSH board is attached to the host the <i>-s</i> option should be used.
+        Bellow are some examples.
+</p>
+<pre>
+<code class="languade-bash">
+#list the serial number for each of the attached YKUSH boards
+$ ykushcmd ykush -l
+
+Attached YKUSH Boards:
+1. Board found with serial number: YK17125
+2. Board found with serial number: YK21493
+
+#powerdown downstream port 1 of the board with serial number YK17125
+$ ykushcmd ykush -s YK17125 -d 1
+
+#powerdown downstream port 1 of the board with serial number YK21493
+$ ykushcmd ykush -s YK21493 -d 1
+
+#powerdown downstream port 3
+$ ykushcmd ykush -d 3
+
+#powerdown all three downstream ports of the board with serial number YK21493
+$ ykushcmd ykush -s YK21493 -d a
+</code>
+</pre>
+

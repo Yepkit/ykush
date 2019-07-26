@@ -57,88 +57,64 @@
 #include <ykush_help.h>
 #include <ykush2.h>
 #include <ykush3.h>
+#include <string>
 
-
-
-
-using namespace std;
 
 extern unsigned int PRODUCT_ID;
 
-
-
-
 enum Board {
-    YKUSH,
-    YKUSHXS,
-    YKUSH2,
-    YKUSH3,
+	YKUSH,
+	YKUSHXS,
+	YKUSH2,
+	YKUSH3,
 };
 
 
-int commandParser(int argc, char** argv) {
+int commandParser(int argc, char** argv) 
+{	
+    	Help *help = new Help(argv[0]);
+	std::string str_ykush ("ykush");
+	std::string str_ykush3 ("ykush3");
+	std::string str_ykush2 ("ykush2");
+	std::string str_ykushxs ("ykushxs");
 
-	
-    Help *help = new Help(argv[0]);
-
-
-
-  	if ( argc <= 1){
-
-		//printUsage(argv[0]);
-        help->print_all();
+  	if ( argc <= 1) {
+        	help->print_all();
 		return 0;
     	}
 
-
-
-    //Parse input options and define action
-    if(argc >= 2) 
-    {
-        if((argv[1][0] == 'y') && (argv[1][1]=='k') && (argv[1][2]=='u') && (argv[1][3]=='s') && (argv[1][4]=='h') && (argv[1][5]=='x') && (argv[1][6]=='s') ) 
-        {
-            //YKUSHXS
-            ykushxs_cmd_parser(argc, argv);
-            return 0;
-        } 
-        else if ((argv[1][0] == 'y') && (argv[1][1]=='k') && (argv[1][2]=='u') && (argv[1][3]=='s') && (argv[1][4]=='h') && (argv[1][5]=='2'))
-        {
-            //YKUSH2
-            ykush2_cmd_parser(argc, argv);
-            return 0;
-        } 
-        else if ((argv[1][0] == 'y') && (argv[1][1]=='k') && (argv[1][2]=='u') && (argv[1][3]=='s') && (argv[1][4]=='h') && (argv[1][5]=='3'))
-        {
-            //YKUSH3
-            ykush3_cmd_parser(argc, argv);
-            return 0;
-        }
-        else
-        {
-            //YKUSH
-            ykush_cmd_parser(argc, argv);
-            return 0;
-        }
-    }
-
-	 
-    return 0;
+	//Parse input options and define action
+	if( argc >= 2) {
+		if ( str_ykushxs.compare( argv[1]) == 0 ) 
+		{
+			//YKUSHXS
+			ykushxs_cmd_parser(argc, argv);
+			return 0;
+		} else if ( str_ykush2.compare( argv[1]) == 0 ) {
+			//YKUSH2
+			ykush2_cmd_parser(argc, argv);
+			return 0;
+		} else if ( str_ykush3.compare( argv[1]) == 0) {
+			//YKUSH3
+			ykush3_cmd_parser(argc, argv);
+			return 0;
+		} else if ( str_ykush.compare( argv[1]) == 0 ) {
+			//YKUSH
+			if ( argc >= 3 )
+				ykush_cmd_parser(argc - 1 , &argv[1]);
+			else
+				help->print_all();
+			
+			return 0;
+		} else {
+			//YKUSH
+			ykush_cmd_parser(argc, argv);
+			return 0;
+		}
+	}
+	
+	return 0;
 }
 
 
 
-int printUsage(char* execName){
-
-    printf("\n-------------------");
-    printf("\n\tUsage:\n");
-    printf("-------------------\n");
-    printf("\n%s -d downstream_number \t\tTurns DOWN the downstream port with the number downstream_number\n", execName);
-    printf("\n%s -u downstream_number \t\tTurns UP the downstream port with the number downstream_number\n", execName);
-    printf("\n%s -g downstream_number \t\tObtains the switching status of port with the number downstream_number\n", execName);
-    printf("\n%s -l \t\t\t\tLists all currently attached YKUSH boards\n", execName);
-    printf("\n%s -s serial_number -d downstream_number \tTurns DOWN the downstream port with the number downstream_number for the board with the specified serial number\n", execName);
-    printf("\n%s -s serial_number -u downstream_number \tTurns UP the downstream port with the number downstream_number for the board with the specified serial number\n\n\n", execName);
-    printf("\n%s -s serial_number -g downstream_number \tObtains the switching status of port with the number downstream_number for the board with the specified serial number\n\n\n", execName);
-
-    return 0;
-}

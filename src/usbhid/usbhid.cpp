@@ -146,7 +146,7 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
         num_devs = libusb_get_device_list(usb_context, &devs);
 	if (num_devs < 0)
                 return -1;
-        std::cout << "num_devs = " << num_devs << "\n";
+        //std::cout << "num_devs = " << num_devs << "\n";
         while ((dev = devs[i++]) != NULL) {
                 struct libusb_device_descriptor desc;
 
@@ -154,7 +154,7 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
                 if ((desc.idVendor == vendor_id) && (desc.idProduct == product_id)) {
 
                         res = libusb_open(dev, &open_device.handle);
-                        std::cout << "res = libusb_open = " << res << "\n";
+                        //std::cout << "res = libusb_open = " << res << "\n";
                         if (res >= 0) {
                                 if (serial == NULL) {   // Without serial number
                                         struct libusb_device_descriptor desc;
@@ -168,19 +168,19 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
                                                 libusb_close(open_device.handle);
                                                 return -1; 
                                         }
-                                        std::cout << "conf_desc->bNumInterfaces = " << (unsigned int)conf_desc->bNumInterfaces << "\n";
+                                        //std::cout << "conf_desc->bNumInterfaces = " << (unsigned int)conf_desc->bNumInterfaces << "\n";
                                         for (j = 0; j < conf_desc->bNumInterfaces; j++) {
                                                 const struct libusb_interface *intf = &conf_desc->interface[j];
                                                 for (k = 0; k < intf->num_altsetting; k++) {
                                                         const struct libusb_interface_descriptor *intf_desc;
                                                         intf_desc = &intf->altsetting[k];
                                                         if (intf_desc->bInterfaceClass == LIBUSB_CLASS_HID) {
-                                                                std::cout << "intf_desc->bInterfaceNumber = " << (unsigned int)intf_desc->bInterfaceNumber << "\n";
+                                                                //std::cout << "intf_desc->bInterfaceNumber = " << (unsigned int)intf_desc->bInterfaceNumber << "\n";
                                                                 open_device.interface = intf_desc->bInterfaceNumber;
-                                                                std::cout << "intf_desc->bNumEndpoints = " << (unsigned int)intf_desc->bNumEndpoints << "\n";
+                                                                //std::cout << "intf_desc->bNumEndpoints = " << (unsigned int)intf_desc->bNumEndpoints << "\n";
                                                                 // Find the INPUT and OUTPUT endpoints. An OUTPUT endpoint is not required. 
                                                                 for (f = 0; f < intf_desc->bNumEndpoints; f++) {
-                                                                        std::cout << "f = " << f << "\n";
+                                                                        //std::cout << "f = " << f << "\n";
                                                                         const struct libusb_endpoint_descriptor *ep = &intf_desc->endpoint[f];
 
                                                                         /* Determine the type and direction of this
@@ -221,7 +221,7 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
                                                 libusb_close(open_device.handle);
                                                 return -1;
                                         }
-                                        std::cout << "debug claim interface: " << res << "\n";
+                                        //std::cout << "debug claim interface: " << res << "\n";
 
                                         /* Store off the string descriptor indexes */
                                         open_device.manufacturer_index = desc.iManufacturer;
@@ -234,7 +234,7 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
                                 } else if (desc.iSerialNumber > 0) {    // With serial number
                                         str2 = get_usb_string_ascii(open_device.handle, desc.iSerialNumber);
                                         if ( str1.compare(str2) == 0 ) {
-                                                std::cout << "Serial found\n";
+                                                //std::cout << "Serial found\n";
                                                 struct libusb_device_descriptor desc;
                                                 struct libusb_config_descriptor *conf_desc = NULL;
                                                 int f,j,k;
@@ -246,19 +246,19 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
 							libusb_close(open_device.handle);
 							return -1; 
                                                 }
-                                                std::cout << "conf_desc->bNumInterfaces = " << (unsigned int)conf_desc->bNumInterfaces << "\n";
+                                                //std::cout << "conf_desc->bNumInterfaces = " << (unsigned int)conf_desc->bNumInterfaces << "\n";
                                                 for (j = 0; j < conf_desc->bNumInterfaces; j++) {
                                                         const struct libusb_interface *intf = &conf_desc->interface[j];
                                                         for (k = 0; k < intf->num_altsetting; k++) {
                                                                 const struct libusb_interface_descriptor *intf_desc;
                                                                 intf_desc = &intf->altsetting[k];
                                                                 if (intf_desc->bInterfaceClass == LIBUSB_CLASS_HID) {
-                                                                        std::cout << "intf_desc->bInterfaceNumber = " << (unsigned int)intf_desc->bInterfaceNumber << "\n";
+                                                                        //std::cout << "intf_desc->bInterfaceNumber = " << (unsigned int)intf_desc->bInterfaceNumber << "\n";
                                                                         open_device.interface = intf_desc->bInterfaceNumber;
-                                                                        std::cout << "intf_desc->bNumEndpoints = " << (unsigned int)intf_desc->bNumEndpoints << "\n";
+                                                                        //std::cout << "intf_desc->bNumEndpoints = " << (unsigned int)intf_desc->bNumEndpoints << "\n";
                                                                         // Find the INPUT and OUTPUT endpoints. An OUTPUT endpoint is not required. 
                                                                         for (f = 0; f < intf_desc->bNumEndpoints; f++) {
-                                                                                std::cout << "f = " << f << "\n";
+                                                                                //std::cout << "f = " << f << "\n";
                                                                                 const struct libusb_endpoint_descriptor *ep = &intf_desc->endpoint[f];
 
                                                                                 /* Determine the type and direction of this
@@ -310,7 +310,7 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
 							libusb_close(open_device.handle);
 							return -1;
                                                 }
-                                                std::cout << "debug claim interface: " << res << "\n";
+                                                //std::cout << "debug claim interface: " << res << "\n";
 
                                                 /* Store off the string descriptor indexes */
 						open_device.manufacturer_index = desc.iManufacturer;
@@ -349,7 +349,7 @@ int UsbHid::write(unsigned char *data, size_t length)
                 (unsigned char*)data,
                 length,
                 &actual_length, 1000);
-        std::cout << "Interrupt transfer used\n";
+        //std::cout << "Interrupt transfer used\n";
         if (res < 0)
                 return -1;
 
@@ -370,7 +370,7 @@ int UsbHid::read(unsigned char *data, int length)
                 length,
                 &actual_length, 5000);
         
-        std::cout << "read res = " << res << "\n";
+        //std::cout << "read res = " << res << "\n";
 
         if (res < 0)
                 return -1;

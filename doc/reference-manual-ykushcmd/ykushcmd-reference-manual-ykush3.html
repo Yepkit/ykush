@@ -1,0 +1,435 @@
+<div class="reference_software_manual_version">
+	This manual page refers to software version <b>v1.2.0</b>.
+</div>
+
+<div class="reference_software_manual_index">
+	<ul>
+		<li><a href="#command_list">Command list</a></li>
+		<li><a href="#ykush3_man_important_links">Important links</a></li>
+		
+	</ul>
+</div>
+
+<div class="reference_software_manual_body">
+
+	<!-- 
+		COMMAND LIST 
+	-->
+	<h1 id="command_list">Command list</h1>
+	<div>
+		<ul>
+			<li><a href="#downstream_port_commands">Downstream port commands</a></li>
+			<li><a href="#5V_output_port_commands">5V output switched port control commands</a></li>
+			<li><a href="#gpio_ctrl_config_commands">GPIO control configuration commands</a></li>
+			<li><a href="#gpio_read_write_commands">GPIO Read/Write commands</a></li>
+			<li><a href="#ykush3_downstream_port_config_commands">Downstream ports configuration commands</a></li>
+			<li><a href="#ykush3_i2c_commands">I2C interface commands</a></li>
+			<li><a href="#ykush3_uart_commands">UART interface commands</a></li>
+			<li><a href="#ykush3_reset_commands">Reset command</a></li>
+			<li><a href="#ykush3_versioning_commands">Versioning commands</a></li>
+		</ul>
+	</div>
+	<div>
+		<p>Legend:</p>
+		<p>
+			&lt;&gt; Variable<br> 
+			[] Optional parameter<br>
+			&gt;  Command line
+		</p>
+	</div>
+	<div>
+		<!-- 1. Downstream port commands -->
+		<h2 id="downstream_port_commands">Downstream port commands</h2>
+		
+		<p>The structure of the downstream port commands is as follows.</p>
+
+		<p class="command_line">ykushcmd ykush3 [-s &lt;serial_number&gt;] -&lt;action&gt; &lt;port&gt;</p>
+
+		<p>Where:</p>
+		<table>
+			<tr>
+				<td>serial_number</td>
+				<td>Serial number of a board. This is an optional parameter useful for when multiple boards are attached to the same host.</td>
+			</tr>
+			<tr>
+				<td>action</td>
+				<td>
+					u &rarr; Turn ON/UP the downstream<br>
+					d &rarr; Turn OFF/DOWN the downstream<br>
+					g &rarr; Get downstream port status<br>
+					l &rarr; List boards attached<br>
+				</td>
+			</tr>
+			<tr>
+				<td>port</td>
+				<td>1, 2 or 3.</td>
+			</tr>
+		</table>
+
+
+		<p>Some examples:</p>
+
+		<p>Turn OFF the downstream port 1 (if only one YKUSH3 board is attached).</p>
+
+		<p class="command_line">ykushcmd ykush3 -d 1<p>
+
+		<p>Turn OFF the downstream port 1 of the board with serial number YKB00001.</p>
+
+		<p class="command_line">ykushcmd ykush3 -s YKB00001 -d 1</p>
+
+		<p>Get status of downstream port 2</p>
+
+		<p class="command_line">ykushcmd ykush3 -g 2<p>
+
+		<p>List attached YKUSH3 boards</p>
+
+		<p class="command_line">ykushcmd ykush3 -l</p>
+		
+		
+		
+		<!-- 2. 5V output switched port control commands -->
+		<h2 id="5V_output_port_commands">5V output switched port control commands</h2>
+
+		<p>The structure of commands:</p>
+
+		<p class="command_line">ykushcmd ykush3 [-s &lt;serial_number&gt;] -&lt;action&gt;</p>
+
+		<p>Where:</p>
+		<table>
+			<tr>
+				<td>serial_number</td>
+				<td>
+					Serial number of a board. 
+					This is an optional parameter useful for when multiple boards are attached to the same host.
+				</td>
+			</tr>
+			<tr>
+				<td>action</td>
+				<td>
+					on &rarr; Turn ON.<br>
+					off &rarr; Turn OFF.
+				</td>
+			</tr>
+		</table>
+
+		<p>Some examples:</p>
+
+		<p>Turn OFF the 5V Out port (if only one YKUSH3 board is attached).</p>
+
+		<p class="command_line">ykushcmd ykush3 -off</p>
+
+		<p>Turn ON the 5V Out port of the board with serial number YKB00001.</p>
+
+		<p class="command_line">ykushcmd ykush3 -s YKB00001 -on</p>
+
+		
+		
+
+		<!-- GPIO control configuration commands -->
+		<h2 id="gpio_ctrl_config_commands">GPIO control configuration commands</h2>
+		<p>
+			Commands to enable/disable the ability to control the downstream ports using the inputs of the board GPIO pins.
+		</p>
+
+		<p>Structure of commands:</p>
+		<p class="command_line">ykushcmd ykush3 [-s &lt;serial_number&gt;] --gpio &lt;action&gt;</p>
+
+		<p>Where:</p>
+		<table>
+			<tr>
+				<td>serial_number</td>
+				<td>
+					Serial number of a board. This is an optional parameter
+					useful for when multiple boards are attached to the 
+					same host.
+				</td>
+			</tr>
+			<tr>
+				<td>action</td>
+				<td>
+					enable &rarr; Enable the GPIO control of the downstream ports.<br>
+					disable &rarr; Disable the GPIO control of the downstream ports.
+				</td>
+			</tr>			
+		</table>
+
+		
+		
+		
+		
+		
+		<!-- GPIO Read/Write commands -->
+		<h2 id="gpio_read_write_commands">GPIO Read/Write commands</h2>
+		<p>
+			Commands to read/write the logical value of the GPIO pins.
+		</p>
+		<p>Structure of commands:</p>
+		<p class="command_line">ykushcmd ykush3 [-s &lt;serial_number&gt;] -&lt;action&gt; &lt;gpio&gt; &lt;value&gt;</p>
+
+		<p>Where:</p>
+		<table>
+			<tr>
+				<td>serial_number</td>
+				<td>
+					Serial number of a board. This is an optional parameter
+					useful for when multiple boards are attached to the 
+					same host.
+				</td>
+			</tr>
+			<tr>
+				<td>action</td>
+				<td>
+					w &rarr; Write to GPIO.<br>
+					r &rarr; Read from GPIO.
+				</td>
+			</tr>
+			<tr>
+				<td>gpio</td>
+				<td>
+					1 &rarr; GPIO 1.<br>
+					2 &rarr; GPIO 2.<br>
+					3 &rarr; GPIO 3.<br>
+				</td>
+			</tr>
+			<tr>
+				<td>value</td>
+				<td>
+					1 &rarr; Set GPIO to High.<br>
+					0 &rarr; Set GPIO to Low.
+				</td>
+			</tr>
+		</table>
+		
+		<p>Some examples:</p>
+
+		<p>Set GPIO 2 to high (1).</p>
+
+		<p class="command_line">ykushcmd ykush3 -w 2 1<p>
+
+		<p>Read the GPIO 2.<p>
+
+		<p class="command_line">ykushcmd ykush3 -r 2<p>
+                      
+		<p>NOTE: For Windows operating systems add the .exe extension when calling the ykushcmd command.</p>
+		
+		
+		
+		
+		
+		<!-- 4. Downstream ports configuration commands -->
+		<h2 id="ykush3_downstream_port_config_commands">Downstream ports configuration commands</h2>
+		<p>
+			Sets the default state of the downstream ports on power-on.
+		</p>
+		<p>Structure of commands:</p>
+		<p class="command_line">ykushcmd ykush3 [-s &lt;serial_number&gt;] -c &lt;port&gt; &lt;value&gt;</p>
+		<p>Where:</p>
+		<table>
+			<tr>
+				<td>serial_number</td>
+				<td>
+					Serial number of a board. This is an optional parameter
+					useful for when multiple boards are attached to the 
+					same host.
+				</td>
+			</tr>
+			<tr>
+				<td>port</td>
+				<td>1, 2 or 3.</td>
+			</tr>
+			<tr>
+				<td>value</td>
+				<td>
+					1 &rarr; ON state.
+					0 &rarr; OFF state.
+				</td>
+			</tr>
+		</table>
+		
+		<p>Some examples:</p>
+
+		<p>Set default state of downstream port 2 at power-on to ON.</p>
+		<p class="command_line">ykushcmd ykush3 -c 2 1<p>
+
+		<p>Set default state of downstream port 2 at power-on to OFF.</p>
+		<p class="command_line">ykushcmd ykush3 -c 2 0<p>
+
+		
+		
+		
+		
+		<!-- I2C control interface commands -->
+		<h2 id="ykush3_i2c_commands">I2C interface commands</h2>
+		<p>
+			YKUSH3 boards have an I2C interface alowing them to be connected to a
+			I2C bus and communicate to other devices in that bus.
+			The board can be configured in I2C slave mode, for other I2C devices to be
+			able to control the switching of the downstream ports, or in master mode
+			to be able to control other I2C devices.
+		</p>
+		<p>
+			To configure the board to operate I2C in slave mode and be controlable
+			by a master I2C device the user must enable the 
+			<i>i2C control interface</i> feature.
+		</p>
+		<p>
+			When the board is configure with I2C in master mode it provides a
+			USB to I2C gateway funcionality.
+			With this USB to I2C gateway functionality a user can communicate with
+			a slave I2C device, connected in the same I2C bus than YKUSH3 board,
+			from the command line of the PC using <i>ykushcmd</i> application.
+		</p>
+
+		<h3>Command usage</h3>
+		<p class="command_line">
+			ykushcmd ykush3 [OPTION]... 
+		</p>
+		<p>The following options are available:</p>
+		<table>
+			<tr>
+				<td>--i2c-enable-control</td>
+				<td>
+					Enables I2C as a control interface.
+					This will configure I2C in slave mode.
+				</td>
+			</tr>
+			<tr>
+				<td>--i2c-disable-control</td>
+				<td>
+					Disables I2C as a control interface.
+				</td>
+			</tr>
+			<tr>
+				<td>--i2c-enable-gateway</td>
+				<td>
+					Enables USB to I2C gateway functionality.
+					This will configure I2C in master mode.
+				</td>
+			</tr>
+			<tr>
+				<td>--i2c-disable-gateway</td>
+				<td>
+					Disables USB to I2C gateway functionality.
+				</td>
+			</tr>
+			<tr>
+				<td>--i2c-set-address &lt;address&gt;</td>
+				<td>
+					Set the board I2C address. 
+					The <i>address</i> should be in hexadecimal representation
+					with a <b>0x</b> prefix.
+					Example: 0x1F for 7-bit address 0011111.
+					This address is only used when the board is configured
+					with I2C in slave mode.
+				</td>
+			</tr>
+			<tr>
+				<td>--i2c-write &lt;dev_address&gt; &lt;num_bytes&gt; &lt;byte1&gt;...</td>
+				<td>
+					Writes <i>num_bytes</i> (byte1...) to the I2C
+					slave device with address <i>dev_address</i>.
+					<i>dev_address</i> is in hexadecimal representation 
+					with a <b>0x</b> prefix.
+					<i>num_bytes</i> is in decimal representation.
+					<i>byte1...byteN</i> is in hexadecimal representation 
+					with a <b>0x</b> prefix. 
+				</td>
+			</tr>
+			<tr>
+				<td>--i2c-read &lt;dev_address&gt; &lt;num_bytes&gt;</td>
+				<td>
+					Reads <i>num_bytes</i>from the I2C
+					slave device with address <i>dev_address</i>.  
+				</td>
+			</tr>
+			<tr>
+				<td>--i2c-usb-serial &lt;serial_number&gt;</td>
+				<td>
+					Serial number of the YKUSH3 board. 
+					This is an optional parameter useful for when multiple 
+					YKUSH3 boards are attached to the same host. 
+				</td>
+			</tr>
+		</table>
+
+		
+		<h3>Examples</h3>
+
+		<p>Enable I2C control interface:</p>
+		<p class="command_line">ykushcmd ykush3 --i2c-enable-control<p>
+
+		<p>Set the board I2C address to 0x1A:</p>
+		<p class="command_line">ykushcmd ykush3 --i2c-set-address 0x1A<p>
+		
+		<p>Write bytes 0x12 0xAA 0x2F to I2C device with address 0x07:</p>
+		<p class="command_line">ykushcmd ykush3 --i2c-write 0x07 3 0x12 0xAA 0x2F<p>
+		
+		
+		
+		
+		<!-- Reset command -->
+		<h2 id="ykush3_reset_commands">Reset command</h2>
+		<p>
+			Triggers a reset of the board.
+		</p>
+		<p>Structure of command:</p>
+		<p class="command_line">ykushcmd ykush3 [-s &lt;serial_number&gt;] --reset</p>
+		
+		<p>Examples:</p>
+
+		<p>Reset the attached board.</p>
+		<p class="command_line">ykushcmd ykush3 --reset<p>
+		
+		<p>Reset the attached board with serial number YK00001.</p>
+		<p class="command_line">ykushcmd ykush3 -s YK00001 --reset<p>
+		
+		
+		
+		
+		<!-- Versioning commands -->
+		<h2 id="ykush3_versioning_commands">Versioning commands</h2>
+		<p>
+			Get version of the firmware loaded in the board.
+		</p>
+		<h3>Command usage</h3>
+		<p class="command_line">
+			ykushcmd ykush3 [OPTION]
+		</p>
+		<p>The following options are available:</p>
+		<table>
+			<tr>
+				<td>--version-bootloader</td>
+				<td>Get bootloader version from board.</td>
+			</tr>
+			<tr>
+				<td>--version-firmware</td>
+				<td>Get firmware version from board.</td>
+			</tr>
+		</table>
+
+		<h3>Examples</h3>
+
+		<p>Get bootloader version:</p>
+		<p class="command_line">ykushcmd ykush3 --version-bootloader<p>
+		
+		<p>Get firmware version:</p>
+		<p class="command_line">ykushcmd ykush3 --version-firmware<p>
+
+	</div>
+	
+	
+	<!--
+		#ykush3_man_important_links
+	-->
+	<h1 id="ykush3_man_important_links">Important links</h1>
+	<div>
+		<ul>
+			<li><a class="inlineLink" href="https://www.yepkit.com/product/300110/YKUSH3" target="_blank">YKUSH3 product page</a></li>
+			<li><a class="inlineLink" href="https://www.yepkit.com/learn/tutorial/setup_guide/ykush3-i2c-control-interface" target="_blank">How to control the YKUSH3 boards using the I2C interface</a></li>
+		</ul>
+	</div>
+	
+	
+	
+</div>
+

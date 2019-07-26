@@ -52,6 +52,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 	
 	bool action_taken = false;
 
+	/*
 	CommandLine *cmd_handler = new CommandLine();
 	
 	if ( cmd_handler->parse(argc, argv) ) {
@@ -60,7 +61,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 		return;
 	}
 
-	/*
+	
 	YkushCommand  user_command = cmd_handler->get_command();
 
 	//verify if board is YKUSH3
@@ -169,41 +170,42 @@ void ykush3_cmd_parser(int argc, char** argv)
 	//...
 	//----- LEGACY PARSING SCHEME. Keep in ykushcmd but will be replaced in the yktrl app.
 	//...
-	if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 's' ) ) {	//BY SERIAL
+
+	if ( argc < 3 ) {
+		ykush->print_help();
+		return;
+	}
+
+	std::string str = argv[2];
+
+	if ( str.compare( "-s" ) == 0 ) {	//BY SERIAL
 		
-		if ( argc < 5 ) {
+		if ( argc < 6 ) {
 			ykush->print_help();
 			return;
 		}
+		str = argv[4];
 		bySerialFlag = 1;
-		
-		if ( argv[4][0] == '-' && argv[4][1] == 'u' ) {
-			
+
+		if ( str.compare( "-u" ) == 0 ) {
 			action = YKUSH3_PORT_UP;
 			port = argv[5][0];
 			
-		} else if ( argv[4][0] == '-' && argv[4][1] == 'd' ) {
+		} else if ( str.compare( "-d" ) == 0 ) {
 			
 			action = YKUSH3_PORT_DOWN;
 			port = argv[5][0];
 			
-		} else if ( argv[4][0] == '-' && argv[4][1] == 'l' ) {
-			
-			action = YKUSH3_LIST_BOARDS;
-			
-		} else if ( argv[4][0] == '-' && argv[4][1] == 'g' ) {
+		} else if ( str.compare( "-g" ) == 0 ) {
 			
 			action = YKUSH3_GET_STATUS;
 			port = argv[5][0];
 			
-		} else if ( argv[4][0] == '-' && argv[4][1] == 'o' ) {
-			
-			if ( argv[4][2]=='n' )
-				action = YKUSH3_EXT_CTRL_ON;
-			else if ( argv[4][2] == 'f' && argv[4][3] == 'f' )
-				action = YKUSH3_EXT_CTRL_OFF;
-			
-		} else if ( argv[4][0] == '-' && argv[4][1] == 'w' ) {
+		} else if ( str.compare( "-on" ) == 0 ) {
+			action = YKUSH3_EXT_CTRL_ON;
+		} else if ( str.compare( "-off" ) == 0 ) {
+			action = YKUSH3_EXT_CTRL_OFF;
+		} else if ( str.compare( "-w" ) == 0 ) {
 			
 			if ( argc < 7 ) {
 				ykush->print_help();
@@ -213,63 +215,60 @@ void ykush3_cmd_parser(int argc, char** argv)
 			port = argv[5][0];
 			value = argv[6][0]; 
 			
-		} else if ( argv[4][0] == '-' && argv[4][1] == 'r' ) { 
+		} else if ( str.compare( "-r" ) == 0 ) { 
 			
 			action = YKUSH3_READ_IO;
 			port = argv[5][0];
 			
-		} else if ( argv[4][0] == '-' && argv[4][1] == 'c' ) { 
+		} else if ( str.compare( "-c" ) == 0 ) { 
 			action = YKUSH3_CONFIG;
 			port = argv[5][0];
 			value = argv[6][0];
-		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'r' && argv[4][3] == 'e' ) { 
+		} else if ( str.compare( "--reset" ) == 0 ) { 
 			action = YKUSH3_RESET;
-		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'g' && argv[4][3] == 'p' && argv[4][4] == 'i' ) {
-			if ( argv[5][0] == 'e' && argv[5][1] == 'n' )
+		} else if ( str.compare( "--gpio" ) == 0 ) {
+			std::string str2 = argv[5];
+			if ( str2.compare( "enable" ) == 0 )
 				action = YKUSH3_GPIO_EN;
-                        else if (argv[5][0] == 'd' && argv[5][1] == 'i' && argv[5][2] == 's')
+                        else if ( str2.compare( "disable" ) == 0 )
 				action = YKUSH3_GPIO_DIS;
 			else
 				ykush->print_help();
-		} else if ( argv[4][0] == '-' && argv[4][1] == '-' && argv[4][2] == 'b' && argv[4][3] == 'o' && argv[4][4] == 'o' ) { 
+		} else if ( str.compare( "--boot" ) == 0 ) { 
 			action = YKUSH3_ENTER_BOOTLOADER;		
 		} else {
 			ykush->print_help();
 			return;
 		}
-	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'u' ) ) {
+	} else if ( str.compare( "-u" ) == 0 ) {
+		std::cout << "DEBUG: -u\n";
 		if ( argc < 3 ) {
 			ykush->print_help();
 			return;
 		}
 		action = YKUSH3_PORT_UP;
 		port = argv[3][0];
-	} else if ( ( argv[2][0] == '-')  && ( argv[2][1] == 'd' ) ) {
+	} else if ( str.compare( "-d" ) == 0 ) {
 		if ( argc < 4 ) {
 			ykush->print_help();
 			return;
 		}
 		action = YKUSH3_PORT_DOWN;
 		port = argv[3][0];
-	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'l' ) ) {
+	} else if ( str.compare( "-l" ) == 0 ) {
 		action = YKUSH3_LIST_BOARDS;
-	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'g' ) ) {
+	} else if ( str.compare( "-g" ) == 0 ) {
 		if ( argc < 4 ) {
 			ykush->print_help();
 			return;
 		}
 		action = YKUSH3_GET_STATUS;
 		port = argv[3][0];
-	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'o' ) ) {
-		if ( argc < 3 ) {
-			ykush->print_help();
-			return;
-		}
-		if ( argv[2][2] == 'n' )
-			action = YKUSH3_EXT_CTRL_ON;
-		else if ( argv[2][2] == 'f' && argv[2][3] == 'f' ) 
-			action = YKUSH3_EXT_CTRL_OFF;
-	} else if ( ( argv[2][0] == '-' ) && ( argv [2][1] == 'w' ) ) {
+	} else if ( str.compare( "-on" ) == 0 ) {
+		action = YKUSH3_EXT_CTRL_ON;
+	} else if ( str.compare( "-off" ) == 0 ) {
+		action = YKUSH3_EXT_CTRL_OFF;
+	} else if ( str.compare( "-w" ) == 0 ) {
 		if ( argc < 5 ) {
 			ykush->print_help();
 			return;
@@ -277,10 +276,10 @@ void ykush3_cmd_parser(int argc, char** argv)
 		action = YKUSH3_WRITE_IO;
 		port = argv[3][0];
 		value = argv[4][0];
-	} else if ( argv[2][0] == '-' && argv[2][1] == 'r' ) { 
+	} else if ( str.compare( "-r" ) == 0 ) { 
 		action = YKUSH3_READ_IO;
 		port = argv[3][0];
-	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 'c' ) ) {
+	} else if ( str.compare( "-c" ) == 0 ) {
 		if ( argc < 5 ) {
 			ykush->print_help();
 			return;
@@ -288,14 +287,15 @@ void ykush3_cmd_parser(int argc, char** argv)
 		action = YKUSH3_CONFIG;
 		port = argv[3][0];
 		value = argv[4][0];
-	} else if ( ( argv[2][0] == '-' ) && ( argv[2][1] == '-' ) && ( argv[2][2] == 'r' ) && ( argv[2][3] == 'e' ) ) {
+	} else if ( str.compare( "--reset" ) == 0 ) {
 		action = YKUSH3_RESET;
-	} else if ( argv[2][0] == '-' && argv[2][1] == '-' && argv[2][2] == 'b' && argv[2][3] == 'o' && argv[2][4] == 'o' ) { 
+	} else if ( str.compare( "--boot" ) == 0 ) { 
 			action = YKUSH3_ENTER_BOOTLOADER;
-	} else if ( argv[2][0] == '-' && argv[2][1] == '-' && argv[2][2] == 'g' && argv[2][3] == 'p' && argv[2][4] == 'i' ) {
-			if ( argv[3][0] == 'e' && argv[3][1] == 'n' )
+	} else if ( str.compare( "--gpio" ) == 0 ) {
+			std::string str2 = argv[3];
+			if ( str2.compare( "enable" ) == 0 )
 				action = YKUSH3_GPIO_EN;
-                        else if (argv[3][0] == 'd' && argv[3][1] == 'i' && argv[3][2] == 's')
+                        else if ( str2.compare( "disable" ) == 0 )
 				action = YKUSH3_GPIO_DIS;
 			else
 				ykush->print_help();
@@ -428,33 +428,32 @@ void ykush3_cmd_parser(int argc, char** argv)
  *********************************************************/
 int Ykush3::port_up(char *serial, char port)
 {  
-    switch(port)
-    {
-        case '1':
-            hid_report_out[0] = 0x11;
-            break;
+	switch(port) {
+	case '1':
+		hid_report_out[0] = 0x11;
+		break;
 
-        case '2':     
-            hid_report_out[0] = 0x12;
-            break;
-        
-        case '3':     
-            hid_report_out[0] = 0x13;
-            break;
+	case '2':     
+		hid_report_out[0] = 0x12;
+		break;
+		
+	case '3':     
+		hid_report_out[0] = 0x13;
+		break;
 
-        case 'a':     
-            hid_report_out[0] = 0x1a;
-            break;
+	case 'a':     
+		hid_report_out[0] = 0x1a;
+		break;
 
-        case '4':     
-            hid_report_out[0] = 0x14;
-            break;
+	case '4':     
+		hid_report_out[0] = 0x14;
+		break;
 
-        default:
-            return 0;
-            break;
+	default:
+		return 0;
+		break;
 
-    }
+	}
     
     
     //send HID report to board

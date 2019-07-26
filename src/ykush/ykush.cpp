@@ -427,26 +427,9 @@ void Ykush::print_help(char *exec_name)
 {
 	Help *help = new Help(exec_name);
 
+	help->print_version();
 	help->print_usage();
-	help->print_board_names();
-
-
-
-	
-
-
-    printf("\n-------------------");
-    printf("\n\tUsage for YKUSH boards:\n");
-    printf("-------------------\n");
-    printf("\n%s -d downstream_number \t\tTurns DOWN the downstream port with the number downstream_number\n", exec_name);
-    printf("\n%s -u downstream_number \t\tTurns UP the downstream port with the number downstream_number\n", exec_name);
-    printf("\n%s -g downstream_number \t\tObtains the switching status of port with the number downstream_number\n", exec_name);
-    printf("\n%s -l \t\t\t\tLists all currently attached YKUSH boards\n", exec_name);
-    printf("\n%s -s serial_number -d downstream_number \tTurns DOWN the downstream port with the number downstream_number for the board with the specified serial number\n", exec_name);
-    printf("\n%s -s serial_number -u downstream_number \tTurns UP the downstream port with the number downstream_number for the board with the specified serial number\n\n\n", exec_name);
-    printf("\n%s -s serial_number -g downstream_number \tObtains the switching status of port with the number downstream_number for the board with the specified serial number\n\n\n", exec_name);
-
-
+	help->print_ykush();
 
 }
 

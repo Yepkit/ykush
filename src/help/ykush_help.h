@@ -26,6 +26,7 @@ class Help
 
 		Help(char *exec_name);
 
+		void print_version(void);
 		void print_usage(void);
 		void print_board_names(void);
 		void print_common_options(void);

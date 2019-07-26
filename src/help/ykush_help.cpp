@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright 2017 Yepkit Lda (www.yepkit.com)
+Copyright 2019 Yepkit Lda (www.yepkit.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,28 +21,31 @@ limitations under the License.
 
 
 
-
 Help::Help(char *exec_name)
 {
 	app_name = exec_name;
 }
 
+void Help::print_version(void) {
+	std::cout << "YKUSHCMD Version 1.2.0\n";
+}
+
 void Help::print_usage(void)
 {
-	std::cout << "Usage:\t" << app_name << " [board_name] [OPTION]...\n";
-	std::cout << "Control Yepkit YKUSH family boards.\n\n";
+	std::cout << "Usage:\t" << app_name << " [board_name] [-s serial_number] [OPTION]...\n";
+	std::cout << "Control Yepkit YKUSH family boards.\n";
 }
 
 void Help::print_board_names(void)
 {
-	std::cout << "The board_name specifies the board model being addressed.";
+	std::cout << "\nThe board_name specifies the board model being addressed.";
 	std::cout << "If no board_name is provided the board is assumed to be a YKUSH board (board_name = ykush).\n";
 	std::cout << "Board names:\n";
 	std::cout << " ykush\t\tYKUSH board.\n";
 	std::cout << " ykush3\t\tYKUSH3 board.\n";
 	std::cout << " ykushxs\tYKUSHXS board.\n";
 	std::cout << "The [board_name] must be provided for commands addressed for a specific board.";
-	std::cout << "For general or common commands, applicable to all board models, the [board_name] is to ommited from the command.";
+	std::cout << "For general or common commands, applicable to all board models, the [board_name] is to ommited from the command.\n";
 }
 
 void Help::print_common_options(void)
@@ -54,7 +57,23 @@ void Help::print_common_options(void)
 
 void Help::print_ykush(void)
 {
+	std::cout << "\nYKUSH board options:\n";
 
+	std::cout << "-d 1|2|3|a                Power Down/Off downstream port with the number privided.\n";
+	std::cout << "                          If [a] is provided as the port number then all ports will be switched.\n";
+
+	std::cout << "-u 1|2|3|a                Power Up/On downstream port number downstream_number\n";
+
+	std::cout << "-s serial_number          Board serial number to wich the command is addressed.\n";
+	std::cout << "                          When multiple YKUSH boards are connected to a host, this option should be used\n";
+	std::cout << "                          to specify the board. If more than one board is connected and this option is not\n";
+	std::cout << "                          provided the command will be sent to the first board in the USB enumeration list.\n";
+
+	std::cout << "-l                        Lists the serial numbers of the YKUSH boards attached to the host.\n";
+
+	std::cout << "-g 1|2|3                  Switching state of a downstream port.\n";
+
+	std::cout << "-h                        Display help for YKUSH board specific commands.\n";
 }
 
 void Help::print_ykush2(void)
@@ -75,8 +94,13 @@ void Help::print_ykushxs(void)
 
 void Help::print_all(void) 
 {
+	print_version();
 	print_usage();
 	print_board_names();
+	print_ykush();
+	print_ykush2();
+	print_ykush3();
+	print_ykushxs();
 }
 
 
