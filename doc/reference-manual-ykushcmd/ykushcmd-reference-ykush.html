@@ -3,11 +3,14 @@
 <div class="reference_page_toc">
         <ul>
                 <li><a href="#command_overview">Command overview</a></li>
-                <li><a href="#switch_command_example">Downstream port On/Off switching</a></li>
-                <li><a href="#switch_state_command_example">Port switching state</a></li>
                 <li><a href="#list_attached_example">List attached boards</a></li>
+                <li><a href="#switch_command_example">Downstream port On/Off switching</a></li>
+                <li><a href="#switch_state_command_example">Port switching state</a></li>      
         </ul>
 </div>
+
+
+
 
 <h2 id="command_overview">Command overview</h2>
 <p>YKUSH board commands have the following structure.</p>
@@ -40,13 +43,32 @@
 </table>
 
 
+
+<h2 id="list_attached_example">List attached boards</h2>
+<p>
+        The <b>[-l]</b> option is used to list all attached YKUSH boards.
+        All YKUSH board have unique serial numbers which are displayed when this option is used.
+</p>
+<pre>
+<code class="language-bash">
+#list the serial number for each of the attached YKUSH boards
+$ ykushcmd ykush -l
+
+Attached YKUSH Boards:
+1. Board found with serial number: YK17125
+2. Board found with serial number: YK21493
+</code>
+</pre>
+                
+
+
 <h2 id="switch_command_example">Downstream port On/Off switching</h2>
 <p>
-        When only one YKUSH board is attached to the host the <i>-s</i> option is not required.
+        When only one YKUSH board is attached to the host the <b>[-s serial_number]</b> option is not required.
         Bellow are some examples.
 </p>
 <pre>
-<code class="languade-bash">
+<code class="language-bash">
 #powerdown downstream port 1
 $ ykushcmd ykush -d 1
 
@@ -58,15 +80,27 @@ $ ykushcmd ykush -d 3
 
 #powerdown all three downstream ports
 $ ykushcmd ykush -d a
+
+#powerup downstream port 1
+$ ykushcmd ykush -u 1
+
+#powerup downstream port 2
+$ ykushcmd ykush -u 2
+
+#powerup downstream port 3
+$ ykushcmd ykush -u 3
+
+#powerup all three downstream ports
+$ ykushcmd ykush -u a
 </code>
 </pre>
 
 <p>
-        If more than one YKUSH board is attached to the host the <i>-s</i> option should be used.
+        If more than one YKUSH board is attached to the host the <b>[-s serial_number]</b> option should be used.
         Bellow are some examples.
 </p>
 <pre>
-<code class="languade-bash">
+<code class="language-bash">
 #list the serial number for each of the attached YKUSH boards
 $ ykushcmd ykush -l
 
@@ -88,3 +122,39 @@ $ ykushcmd ykush -s YK21493 -d a
 </code>
 </pre>
 
+
+<h2 id="switch_state_command_example">Port switching state</h2>
+<p>
+        The current switching state of each downstream port can be fetched from the YKUSH board using the <b>[-g 1|2|3]</b> option.
+</p>
+<pre>
+<code class="language-bash">
+#State of downstream port 1
+$ ykushcmd ykush -g 1
+
+Downstream port 1 is ON
+
+#powerdown downstream port 1
+$ ykushcmd ykush -d 1
+
+#State of downstream port 1
+$ ykushcmd ykush -g 1
+
+Downstream port 1 is OFF
+
+#list the serial number for each of the attached YKUSH boards
+$ ykushcmd ykush -l
+
+Attached YKUSH Boards:
+1. Board found with serial number: YK17125
+2. Board found with serial number: YK21493
+
+#State of downstream port 1 of the board with serial number YK17125
+$ ykushcmd ykush -s YK17125 -g 1
+
+Downstream port 1 is OFF
+
+#powerup downstream port 1 of the board with serial number YK17125
+$ ykushcmd ykush -s YK17125 -u 1
+</code>
+</pre>
