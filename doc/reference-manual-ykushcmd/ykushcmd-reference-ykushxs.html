@@ -1,4 +1,4 @@
-<h1>YKUSH Board Commands</h1>
+<h1>YKUSHXS Board Commands</h1>
 
 <div class="reference_page_toc">
         <ul>
@@ -39,7 +39,7 @@
                 </td>
         </tr>
         <tr>
-                <td>-g 1|2|3</td>
+                <td>-g</td>
                 <td>
                         List attached YKUSHXS boards.
                 </td>
@@ -55,10 +55,10 @@
 </p>
 <pre>
 <code class="language-bash">
-#list the serial number for each of the attached YKUSH boards
+#list the serial number for each of the attached YKUSHXS boards
 $ ykushcmd ykushxs -l
 
-Attached YKUSH Boards:
+Attached YKUSHXS Boards:
 1. Board found with serial number: YK17125
 2. Board found with serial number: YK21493
 </code>
@@ -68,61 +68,34 @@ Attached YKUSH Boards:
 
 <h2 id="switch_command_example">Downstream port On/Off switching</h2>
 <p>
-        When only one YKUSH board is attached to the host the <b>[-s serial_number]</b> option is not required.
+        When only one YKUSHXS board is attached to the host the <b>[-s serial_number]</b> option is not required.
         Bellow are some examples.
 </p>
 <pre>
 <code class="language-bash">
-#power-down downstream port 1
-$ ykushcmd ykush -d 1
+#power-down the downstream port
+$ ykushcmd ykushxs -d
 
-#power down downstream port 2
-$ ykushcmd ykush -d 2
-
-#power down downstream port 3
-$ ykushcmd ykush -d 3
-
-#power down all three downstream ports
-$ ykushcmd ykush -d a
-
-#power-up downstream port 1
-$ ykushcmd ykush -u 1
-
-#power-up downstream port 2
-$ ykushcmd ykush -u 2
-
-#power-up downstream port 3
-$ ykushcmd ykush -u 3
-
-#power-up all three downstream ports
-$ ykushcmd ykush -u a
+#power-up the downstream port 
+$ ykushcmd ykushxs -u
 </code>
 </pre>
 
 <p>
-        If more than one YKUSH board is attached to the host the <b>[-s serial_number]</b> option should be used.
+        If more than one YKUSHXS board is attached to the host the <b>[-s serial_number]</b> option should be used.
         Bellow are some examples.
 </p>
 <pre>
 <code class="language-bash">
-#list the serial number for each of the attached YKUSH boards
-$ ykushcmd ykush -l
+#list the serial number for each of the attached YKUSHXS boards
+$ ykushcmd ykushxs -l
 
-Attached YKUSH Boards:
+Attached YKUSHXS Boards:
 1. Board found with serial number: YK17125
 2. Board found with serial number: YK21493
 
-#power-down downstream port 1 of the board with serial number YK17125
-$ ykushcmd ykush -s YK17125 -d 1
-
-#power-down downstream port 1 of the board with serial number YK21493
-$ ykushcmd ykush -s YK21493 -d 1
-
-#power-down downstream port 3
-$ ykushcmd ykush -d 3
-
-#power-down all three downstream ports of the board with serial number YK21493
-$ ykushcmd ykush -s YK21493 -d a
+#power-down the downstream port of the board with serial number YK17125
+$ ykushcmd ykushxs -s YK17125 -d
 </code>
 </pre>
 
@@ -133,32 +106,32 @@ $ ykushcmd ykush -s YK21493 -d a
 </p>
 <pre>
 <code class="language-bash">
-#State of downstream port 1
-$ ykushcmd ykush -g 1
+#State of the downstream port
+$ ykushcmd ykushxs -g
 
-Downstream port 1 is ON
+Downstream port is ON
 
-#power-down downstream port 1
-$ ykushcmd ykush -d 1
+#power-down the downstream port
+$ ykushcmd ykushxs -d
 
-#State of downstream port 1
-$ ykushcmd ykush -g 1
+#State of downstream port
+$ ykushcmd ykushxs -g
 
-Downstream port 1 is OFF
+Downstream port is OFF
 
-#list the serial number for each of the attached YKUSH boards
-$ ykushcmd ykush -l
+#list the serial number for each of the attached YKUSHXS boards
+$ ykushcmd ykushxs -l
 
-Attached YKUSH Boards:
+Attached YKUSHXS Boards:
 1. Board found with serial number: YK17125
 2. Board found with serial number: YK21493
 
-#State of downstream port 1 of the board with serial number YK17125
-$ ykushcmd ykush -s YK17125 -g 1
+#State of the downstream port for the board with serial number YK17125
+$ ykushcmd ykushxs -s YK17125 -g
 
-Downstream port 1 is OFF
+Downstream port is OFF
 
-#power-up downstream port 1 of the board with serial number YK17125
-$ ykushcmd ykush -s YK17125 -u 1
+#power-up the downstream port of the board with serial number YK17125
+$ ykushcmd ykushxs -s YK17125 -u
 </code>
 </pre>

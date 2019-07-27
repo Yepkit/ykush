@@ -215,19 +215,9 @@ void YkushXs::ykushxs_help(char * execName)
 {
 	Help *help = new Help(execName);
 
-
-    printf("\n\n-------------------");
-    printf("\n\tUsage:\n");
-    printf("-------------------\n");
-    printf("\n%s -d \t\tTurns DOWN the downstream port\n", execName);
-    printf("\n%s -u \t\tTurns UP the downstream port\n", execName);
-    printf("\n%s -g \t\tObtains the switching status of port\n", execName);
-    printf("\n%s -l \t\tLists all currently attached YKUSH XS boards\n", execName);
-    printf("\n%s -s serial_number -d \tTurns DOWN the downstream port for the board with the specified serial number\n", execName);
-    printf("\n%s -s serial_number -u \tTurns UP the downstream port for the board with the specified serial number\n\n\n", execName);
-    printf("\n%s -s serial_number -g \tObtains the switching status of port for the board with the specified serial number\n\n\n", execName);
-
-
+	help->print_version();
+	help->print_usage();
+	help->print_ykushxs();
 }
 
 

@@ -1,0 +1,5 @@
+node reference_page_create_replace.js /home/paulo/development/software/ykushcmd/doc/reference-manual-ykushcmd/METADATA_ykushcmd-reference-ykushxs.json /home/paulo/development/software/ykushcmd/doc/reference-manual-ykushcmd/ykushcmd-reference-ykushxs.html
+
+
+
+node reference_index_create_replace.js /home/paulo/development/software/ykushcmd/doc/reference-manual-ykushcmd/INDEX_reference-manual-ykushcmd.json

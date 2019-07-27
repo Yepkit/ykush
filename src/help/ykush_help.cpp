@@ -88,7 +88,22 @@ void Help::print_ykush3(void)
 
 void Help::print_ykushxs(void)
 {
+	std::cout << "\nYKUSHXS board options:\n";
 
+	std::cout << "-d                        Power Down/Off the downstream port.\n";
+
+	std::cout << "-u                        Power Up/On the downstream port\n";
+
+	std::cout << "-s serial_number          Board serial number to wich the command is addressed.\n";
+	std::cout << "                          When multiple YKUSHXS boards are connected to a host, this option should be used\n";
+	std::cout << "                          to specify the board. If more than one board is connected and this option is not\n";
+	std::cout << "                          provided the command will be sent to the first board in the USB enumeration list.\n";
+
+	std::cout << "-l                        Lists the serial numbers of the YKUSHXS boards attached to the host.\n";
+
+	std::cout << "-g                        Switching state of a downstream port.\n";
+
+	std::cout << "-h                        Display help for YKUSHXS board specific commands.\n";
 }
 
 

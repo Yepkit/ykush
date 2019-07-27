@@ -971,6 +971,7 @@ void Ykush3::print_help(void)
 {
 	Help *help = new Help(app_exc_name);
 
+	help->print_version();
 	help->print_usage();
 	help->print_ykush3();
 }
