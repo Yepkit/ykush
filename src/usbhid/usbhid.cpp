@@ -142,7 +142,6 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
 
         if(init() < 0)
                 return -1;
-
         num_devs = libusb_get_device_list(usb_context, &devs);
 	if (num_devs < 0)
                 return -1;
@@ -212,14 +211,29 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
                                                 }
                                         }
 
+ 
 
                                         res = libusb_claim_interface(open_device.handle, open_device.interface);
                                         if (res < 0) {
-                                                std::cout << "cannot claim interface\n";
-                                                libusb_free_device_list(devs, 1);
-                                                libusb_free_config_descriptor(conf_desc);
-                                                libusb_close(open_device.handle);
-                                                return -1;
+                                                //try detach kernel driver
+                                                int detached = 0;
+                                                res = libusb_kernel_driver_active(open_device.handle, open_device.interface);
+                                                if (res == 1) {
+                                                        res = libusb_detach_kernel_driver(open_device.handle, open_device.interface);
+                                                        if (res < 0)
+                                                                std::cout << "Couldn't detach kernel driver, even though a kernel driver was attached.\n";
+                                                        else
+                                                                detached = 1;
+                                                }
+                                                res = libusb_claim_interface(open_device.handle, open_device.interface);
+                                                
+                                                if (res < 0) {
+                                                        std::cout << "cannot claim interface\n";
+                                                        libusb_free_device_list(devs, 1);
+                                                        libusb_free_config_descriptor(conf_desc);
+                                                        libusb_close(open_device.handle);
+                                                        return -1;
+                                                }      
                                         }
                                         //std::cout << "debug claim interface: " << res << "\n";
 
@@ -304,11 +318,25 @@ int UsbHid::open(unsigned int vendor_id, unsigned int product_id, char *serial)
 
                                                 res = libusb_claim_interface(open_device.handle, open_device.interface);
 						if (res < 0) {
-							std::cout << "cannot claim interface\n";
-                                                        libusb_free_device_list(devs, 1);
-                                                        libusb_free_config_descriptor(conf_desc);
-							libusb_close(open_device.handle);
-							return -1;
+							//try detach kernel driver
+                                                        int detached = 0;
+                                                        res = libusb_kernel_driver_active(open_device.handle, open_device.interface);
+                                                        if (res == 1) {
+                                                                res = libusb_detach_kernel_driver(open_device.handle, open_device.interface);
+                                                                if (res < 0)
+                                                                        std::cout << "Couldn't detach kernel driver, even though a kernel driver was attached.\n";
+                                                                else
+                                                                        detached = 1;
+                                                        }
+                                                        res = libusb_claim_interface(open_device.handle, open_device.interface);
+                                                        
+                                                        if (res < 0) {
+                                                                std::cout << "cannot claim interface\n";
+                                                                libusb_free_device_list(devs, 1);
+                                                                libusb_free_config_descriptor(conf_desc);
+                                                                libusb_close(open_device.handle);
+                                                                return -1;
+                                                        }
                                                 }
                                                 //std::cout << "debug claim interface: " << res << "\n";
 

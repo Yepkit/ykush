@@ -241,7 +241,6 @@ void ykush3_cmd_parser(int argc, char** argv)
 			return;
 		}
 	} else if ( str.compare( "-u" ) == 0 ) {
-		std::cout << "DEBUG: -u\n";
 		if ( argc < 3 ) {
 			ykush->print_help();
 			return;

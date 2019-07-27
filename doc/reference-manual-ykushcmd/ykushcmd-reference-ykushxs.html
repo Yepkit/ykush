@@ -13,8 +13,8 @@
 
 
 <h2 id="command_overview">Command overview</h2>
-<p>YKUSH board commands have the following structure.</p>
-<p class="command_line">ykushcmd ykush [-s serial_number] [OPTION]</p>
+<p>YKUSHXS board commands have the following structure.</p>
+<p class="command_line">ykushcmd ykushxs [-s serial_number] [OPTION]</p>
 <p>Where:</p>
 <table cellpadding="10">
         <tr>
@@ -27,23 +27,21 @@
                 </td>
         </tr>
         <tr>
-                <td valign="top">-d 1|2|3|a</td>
+                <td>-d</td>
                 <td>
-                        Power Down/Off downstream port with the number provided.
-                        If <i>a</i> is provided as the port number then all ports will be switched.
+                        Power Down/Off the downstream port.
                 </td>
         </tr>
         <tr>
-                <td valign="top">-u 1|2|3|a</td>
+                <td>-u</td>
                 <td>
-                        Power Up/On downstream port with the number provided.
-                        If <i>a</i> is provided as the port number then all ports will be switched.
+                        Power Up/On the downstream port.
                 </td>
         </tr>
         <tr>
                 <td>-g 1|2|3</td>
                 <td>
-                        List attached YKUSH boards.
+                        List attached YKUSHXS boards.
                 </td>
         </tr>
 </table>
@@ -52,13 +50,13 @@
 
 <h2 id="list_attached_example">List attached boards</h2>
 <p>
-        The <b>[-l]</b> option is used to list all attached YKUSH boards.
+        The <b>[-l]</b> option is used to list all attached YKUSHXS boards.
         All YKUSH board have unique serial numbers which are displayed when this option is used.
 </p>
 <pre>
 <code class="language-bash">
 #list the serial number for each of the attached YKUSH boards
-$ ykushcmd ykush -l
+$ ykushcmd ykushxs -l
 
 Attached YKUSH Boards:
 1. Board found with serial number: YK17125
@@ -78,13 +76,13 @@ Attached YKUSH Boards:
 #power-down downstream port 1
 $ ykushcmd ykush -d 1
 
-#power-down downstream port 2
+#power down downstream port 2
 $ ykushcmd ykush -d 2
 
 #power down downstream port 3
 $ ykushcmd ykush -d 3
 
-#power-down all three downstream ports
+#power down all three downstream ports
 $ ykushcmd ykush -d a
 
 #power-up downstream port 1
