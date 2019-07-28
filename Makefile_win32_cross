@@ -15,19 +15,17 @@ PROG_SOURCE_FULL = $(addprefix src/, $(PROG_SOURCE))
 OBJS = $(SOURCE_FULL:.cpp=.o)
 PROG_OBJ = $(PROG_SOURCE_FULL:.cpp=.o)
 
-CUR_PATH = $(CURDIR)
+CUR_PATH = $(shell echo $(PWD))
 INCLUDEPATHS = $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)) hidapi )
 LOADPATHS = -L$(CUR_PATH)/hidapi/mingw32
 LIBS = -lhidapi
 FLAGS = -static-libgcc -static-libstdc++
-
-#Change MinGW exec name to match version instaled in your system
-CPP = x86_64-w64-mingw32-g++
+CPP = i686-w64-mingw32-g++
 #CPP_WIN32 =  i686-w64-mingw32-g++ 
 #CPP_WIN64 =  x86_64-w64-mingw32-g++ 
 
 
-ykushcmd_win64.exe : $(PROG_OBJ) $(OBJS)
+ykushcmd_win32.exe : $(PROG_OBJ) $(OBJS)
 	$(CPP) $(FLAGS) $(LOADPATHS) -o bin/Win32/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
 
 $(PROG_OBJ) :  %.o : %.cpp
@@ -38,5 +36,5 @@ $(OBJS) : %.o : %.cpp %.h
 
 
 clean :
-	rm -f bin/Win64/yktrl_win32.exe $(OBJS) $(PROG_OBJ)
+	rm -f bin/Win32/yktrl_win32.exe $(OBJS) $(PROG_OBJ)
 

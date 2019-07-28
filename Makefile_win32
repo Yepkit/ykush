@@ -15,11 +15,13 @@ PROG_SOURCE_FULL = $(addprefix src/, $(PROG_SOURCE))
 OBJS = $(SOURCE_FULL:.cpp=.o)
 PROG_OBJ = $(PROG_SOURCE_FULL:.cpp=.o)
 
-CUR_PATH = $(shell echo $(PWD))
+CUR_PATH = $(CURDIR)
 INCLUDEPATHS = $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)) hidapi )
 LOADPATHS = -L$(CUR_PATH)/hidapi/mingw32
 LIBS = -lhidapi
 FLAGS = -static-libgcc -static-libstdc++
+
+#Change MinGW exec name to match version instaled in your system
 CPP = i686-w64-mingw32-g++
 #CPP_WIN32 =  i686-w64-mingw32-g++ 
 #CPP_WIN64 =  x86_64-w64-mingw32-g++ 
