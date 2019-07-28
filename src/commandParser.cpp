@@ -85,31 +85,27 @@ int commandParser(int argc, char** argv)
 
 	//Parse input options and define action
 	if( argc >= 2) {
-		if ( str_ykushxs.compare( argv[1]) == 0 ) 
-		{
+		if ( str_ykushxs.compare( argv[1]) == 0 ) {
 			//YKUSHXS
-			ykushxs_cmd_parser(argc, argv);
-			return 0;
+			return ykushxs_cmd_parser(argc, argv);
 		} else if ( str_ykush2.compare( argv[1]) == 0 ) {
 			//YKUSH2
-			ykush2_cmd_parser(argc, argv);
+			ykush2_cmd_parser(argc, argv);	//Not active yet.
 			return 0;
 		} else if ( str_ykush3.compare( argv[1]) == 0) {
 			//YKUSH3
-			ykush3_cmd_parser(argc, argv);
-			return 0;
+			return ykush3_cmd_parser(argc, argv);
 		} else if ( str_ykush.compare( argv[1]) == 0 ) {
 			//YKUSH
 			if ( argc >= 3 )
-				ykush_cmd_parser(argc - 1 , &argv[1]);
+				return ykush_cmd_parser(argc - 1 , &argv[1]);
 			else
 				help.print_all();
 			
-			return 0;
+			return -1;
 		} else {
 			//YKUSH
-			ykush_cmd_parser(argc, argv);
-			return 0;
+			return ykush_cmd_parser(argc, argv);
 		}
 	}
 	

@@ -83,7 +83,7 @@ class Ykush : public UsbDevice
 //FUNCTIONS
 //---------------------------------
 
-void ykush_cmd_parser(int argc, char** argv);
+int ykush_cmd_parser(int argc, char** argv);
 
 
 void ykush_help(char * execName);
@@ -95,7 +95,7 @@ void ykush_up(char * iserial);
 void ykush_down(char * iserial);
 
 
-void ykush_list_attached(void); 
+int ykush_list_attached(void); 
 
 
 

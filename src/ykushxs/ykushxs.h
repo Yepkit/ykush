@@ -57,7 +57,7 @@ class YkushXs : public UsbDevice
 //FUNCTIONS
 //---------------------------------
 
-void ykushxs_cmd_parser(int argc, char** argv);
+int ykushxs_cmd_parser(int argc, char** argv);
 
 
 void ykushxs_help(char * execName);
@@ -69,7 +69,7 @@ void ykushxs_up(char * iserial);
 void ykushxs_down(char * iserial);
 
 
-void ykushxs_list_attached(void); 
+int ykushxs_list_attached(void); 
 
 
 

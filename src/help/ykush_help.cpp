@@ -83,7 +83,32 @@ void Help::print_ykush2(void)
 
 void Help::print_ykush3(void)
 {
+	std::cout << "\nYKUSH3 board options:\n";
 
+	std::cout << "-d 1|2|3|a                Power Down/Off downstream port with the number privided.\n";
+	std::cout << "                          If [a] is provided as the port number then all ports will be switched.\n";
+
+	std::cout << "-u 1|2|3|a                Power Up/On downstream port number downstream_number\n";
+
+	std::cout << "-s serial_number          Board serial number to wich the command is addressed.\n";
+	std::cout << "                          When multiple YKUSH boards are connected to a host, this option should be used\n";
+	std::cout << "                          to specify the board. If more than one board is connected and this option is not\n";
+	std::cout << "                          provided the command will be sent to the first board in the USB enumeration list.\n";
+
+	std::cout << "-l                        Lists the serial numbers of the YKUSH boards attached to the host.\n";
+
+	std::cout << "-g 1|2|3                  Switching state of a downstream port.\n";
+
+	std::cout << "-on                       Switch On the 5V output power port.\n";
+	std::cout << "-off                      Switch Off the 5V output power port.\n";
+
+	std::cout << "-r 1|2|3                  Read GPIO with the number provided (1, 2 or 3).\n";
+	std::cout << "-w 1|2|3 0|1              Write to the GPIO with the number provided (1, 2 or 3).\\";
+	std::cout << "                          Writing a value of 1 or 0 will drive the GPIO to logical high or low, respectively.\n";
+
+	std::cout << "--reset                   Resets (reboot) the YKUSH3 board.\n";
+
+	std::cout << "-h                        Display help for YKUSH board specific commands.\n";
 }
 
 void Help::print_ykushxs(void)

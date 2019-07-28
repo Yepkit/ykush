@@ -30,120 +30,80 @@ enum ykushxsAction
 };
 
 
-void ykushxs_cmd_parser(int argc, char** argv)
+int ykushxs_cmd_parser(int argc, char** argv)
 {
 	char bySerialFlag = 0;
 	enum ykushxsAction action = YKUSHXS_HELP;
 	YkushXs ykushxs;
 	
-
-	if(argc < 3)
-	{
+	if ( argc < 3 ) {
 		ykushxs.ykushxs_help(argv[0]);
-		return;
+		return -1;
 	}
 
-	if((argv[2][0]=='-') && (argv[2][1]=='s'))
-	{
+	if ( ( argv[2][0] == '-' ) && ( argv[2][1] == 's' ) ) {
 		bySerialFlag = 1;
-		if(argv[4][0]=='-' && argv[4][1]=='u') 
-		{
+		if ( (argv[4][0] == '-') && (argv[4][1] == 'u') ) {
+			action = YKUSHXS_PORT_UP;
+		} else if ( (argv[4][0] == '-') && (argv[4][1] == 'd') ) {
+			action = YKUSHXS_PORT_DOWN;
+		} else if ( (argv[4][0] == '-') && (argv[4][1] == 'l') ) {
+			action = YKUSHXS_LIST_BOARDS;
+		} else if ( (argv[4][0] == '-') && (argv[4][1] == 'g') ) {
+			action = YKUSHXS_GET_STATUS;
+		} else {
+			ykushxs.ykushxs_help(argv[0]);
+			return -1;
+		}
+	} else if ( (argv[2][0] == '-') && (argv[2][1] == 'u') ) {
 		action = YKUSHXS_PORT_UP;
-		} else if(argv[4][0]=='-' && argv[4][1]=='d') 
-		{
+	} else if ( (argv[2][0] == '-') && (argv[2][1]=='d') ) {
 		action = YKUSHXS_PORT_DOWN;
-		} else if(argv[4][0]=='-' && argv[4][1]=='l') 
-		{
+	} else if ( (argv[2][0] == '-') && (argv[2][1] == 'l') ) {
 		action = YKUSHXS_LIST_BOARDS;
-		} else if(argv[4][0]=='-' && argv[4][1]=='g') 
-		{
+	} else if ( (argv[2][0] == '-') && (argv[2][1] == 'g') ) {
 		action = YKUSHXS_GET_STATUS;
-		} else 
-		{
+	} else {
 		ykushxs.ykushxs_help(argv[0]);
-		return;
-		}
-
-	} 
-	else if((argv[2][0]=='-') && (argv[2][1]=='u'))
-	{
-		action = YKUSHXS_PORT_UP;
-	}
-	else if((argv[2][0]=='-') && (argv[2][1]=='d'))
-	{
-		action = YKUSHXS_PORT_DOWN;
-	}
-	else if((argv[2][0]=='-') && (argv[2][1]=='l'))
-	{
-		action = YKUSHXS_LIST_BOARDS;
-	}
-	else if((argv[2][0]=='-') && (argv[2][1]=='g'))
-	{
-		action = YKUSHXS_GET_STATUS;
-	}
-	else
-	{
-		ykushxs.ykushxs_help(argv[0]);
-		return;
+		return -1;
 	}
 
-
-
-	switch (action)
-	{
-		case YKUSHXS_PORT_UP:
-		if(bySerialFlag)
-		{
-		ykushxs.port_up(argv[3]);
-		}
-		else
-		{
-			ykushxs.port_up(NULL);
+	switch ( action ) {
+	case YKUSHXS_PORT_UP:
+		if ( bySerialFlag ) {
+			return ykushxs.port_up( argv[3] );
+		} else {
+			return ykushxs.port_up(NULL);
 		}
 		break;
-
-		case YKUSHXS_PORT_DOWN:
-		if(bySerialFlag)
-		{
-			ykushxs.port_down(argv[3]);
-		}
-		else
-		{
-			ykushxs.port_down(NULL);
+	case YKUSHXS_PORT_DOWN:
+		if ( bySerialFlag ) {
+			return ykushxs.port_down(argv[3]);
+		} else {
+			return ykushxs.port_down(NULL);
 		}
 		break;
-
-		case YKUSHXS_LIST_BOARDS:
-			ykushxs_list_attached(); 
+	case YKUSHXS_LIST_BOARDS:
+		return ykushxs_list_attached(); 
 		break;
-
-		case YKUSHXS_GET_STATUS:
-		if(bySerialFlag)
-		{
-			if(ykushxs.get_port_status(argv[3])==0x11)
-			{
-			printf("\n\nDownstream port is ON\n\n");
-			} 
-			else 
-			{
-			printf("\n\nDownstream port is OFF\n\n");
+	case YKUSHXS_GET_STATUS:
+		if ( bySerialFlag ){
+			if( ykushxs.get_port_status(argv[3]) == 0x11 ) {
+				printf("\n\nDownstream port is ON\n\n");
+			} else {
+				printf("\n\nDownstream port is OFF\n\n");
 			}
-		}
-		else
-		{
-			if(ykushxs.get_port_status(NULL)==0x11)
-			{
-			printf("\n\nDownstream port is ON\n\n");
-			} 
-			else 
-			{
-			printf("\n\nDownstream port is OFF\n\n");
+		} else {
+			if ( ykushxs.get_port_status(NULL) == 0x11 ) {
+				printf("\n\nDownstream port is ON\n\n");
+			} else {
+				printf("\n\nDownstream port is OFF\n\n");
 			}
 		}   
 		break;
-
-		default:
+	default:
 		ykushxs.ykushxs_help(argv[0]); 
+		return -1;
 		break;
 
 	}
@@ -151,19 +111,19 @@ void ykushxs_cmd_parser(int argc, char** argv)
 }
 
 
+int YkushXs::port_up(char *serial) {
 
-
-int YkushXs::port_up(char *serial)
-{
 	hid_report_out[0] = 0x11;   //port up
+	
+	int res = sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
-	//send HID report to board
-	sendHidReport(serial, hid_report_out, hid_report_in, 64);
+	if ( res < 0 )
+		return res;
 
-	//handle board response HID report
-	//TODO
-
-	return 0;
+	if ( hid_report_in[0] == 0x01 )
+		return 0;
+	else
+		return -1;
 }
 
 
@@ -171,12 +131,15 @@ int YkushXs::port_down(char *serial)
 {
 	hid_report_out[0] = 0x01;   //port down
 
-	sendHidReport(serial, hid_report_out, hid_report_in, 64);
+	int res = sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
-	//handle board response HID report
-	//TODO
+	if ( res < 0 )
+		return res;
 
-	return 0;
+	if ( hid_report_in[0] == 0x01 )
+		return 0;
+	else
+		return -1;
 }
 
 
@@ -186,27 +149,28 @@ int YkushXs::get_port_status(char *serial)
 
 	hid_report_out[0] = 0x21;   //get status
 
-	//send HID report to board
-	sendHidReport(serial, hid_report_out, hid_report_in, 64);
+	int res = sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
-	//handle board response HID report
-	status = hid_report_in[1];
+	if ( res < 0 )
+		return res;
 
-	return status;
+	if ( hid_report_in[0] == 0x01 )
+		return hid_report_in[1];
+	else
+		return -1;
 }
 
 
-void ykushxs_list_attached()
+int ykushxs_list_attached()
 {
 	YkushXs ykushxs;
 
 	printf("\n\nAttached YKUSH XS Boards:\n");        
-	if(ykushxs.listConnected()==0)
-	{
+	if ( ykushxs.listConnected() == 0 ) {
 		printf("\nNo YKUSH XS boards found.");
 	}
 	printf("\n\n");
-
+	return 0;
 }
 
 

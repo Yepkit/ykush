@@ -72,18 +72,18 @@ class Ykush3 : public UsbDevice
 
 		int read_io(char *serial, char port);
 		
-		void gpio_ctrl_enable(char *serial);
+		int gpio_ctrl_enable(char *serial);
 		
-		void gpio_ctrl_disable(char *serial);
+		int gpio_ctrl_disable(char *serial);
 		
-		void enter_bootloader(char *serial);
+		int enter_bootloader(char *serial);
 
 
 		//Configurations control
 		int config_port(char *serial, char port, char value);
 
 		//Reset
-		void reset(char *serial);
+		int reset(char *serial);
 		
 		//Help
 		void print_help(void);
@@ -114,10 +114,10 @@ class Ykush3 : public UsbDevice
 //FUNCTIONS
 //---------------------------------
 
-void ykush3_cmd_parser(int argc, char** argv);
+int ykush3_cmd_parser(int argc, char** argv);
 
 
-void ykush3_list_attached(void); 
+int ykush3_list_attached(void); 
 
 
 
