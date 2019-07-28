@@ -25,7 +25,7 @@ CPP = i686-w64-mingw32-g++
 #CPP_WIN64 =  x86_64-w64-mingw32-g++ 
 
 
-yktrl_win32.exe : $(PROG_OBJ) $(OBJS)
+ykushcmd_win32.exe : $(PROG_OBJ) $(OBJS)
 	$(CPP) $(FLAGS) $(LOADPATHS) -o bin/Win32/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
 
 $(PROG_OBJ) :  %.o : %.cpp

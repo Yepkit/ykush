@@ -7,7 +7,7 @@ bin/ykushcmd*
 *.exe
 *.so
 *.exp
-nbproject/
-doc/ykushcmd-doxygen/
-.vscode/
+nbproject
+doc/ykushcmd-doxygen/*
+.vscode
 

@@ -29,7 +29,7 @@ CPP = g++
  
 
 
-yktrl : $(PROG_OBJ) $(OBJS)
+ykushcmd : $(PROG_OBJ) $(OBJS)
 	$(CPP) -o bin/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
 
 $(PROG_OBJ) :  %.o : %.cpp

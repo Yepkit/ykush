@@ -44,7 +44,7 @@ void Help::print_board_names(void)
 	std::cout << " ykush\t\tYKUSH board.\n";
 	std::cout << " ykush3\t\tYKUSH3 board.\n";
 	std::cout << " ykushxs\tYKUSHXS board.\n";
-	std::cout << "The [board_name] must be provided for commands addressed for a specific board.";
+	std::cout << "The [board_name] must be provided for commands addressed for a specific board.\n";
 	std::cout << "For general or common commands, applicable to all board models, the [board_name] is to ommited from the command.\n";
 }
 
@@ -103,7 +103,7 @@ void Help::print_ykush3(void)
 	std::cout << "-off                      Switch Off the 5V output power port.\n";
 
 	std::cout << "-r 1|2|3                  Read GPIO with the number provided (1, 2 or 3).\n";
-	std::cout << "-w 1|2|3 0|1              Write to the GPIO with the number provided (1, 2 or 3).\\";
+	std::cout << "-w 1|2|3 0|1              Write to the GPIO with the number provided (1, 2 or 3).\n";
 	std::cout << "                          Writing a value of 1 or 0 will drive the GPIO to logical high or low, respectively.\n";
 
 	std::cout << "--reset                   Resets (reboot) the YKUSH3 board.\n";
