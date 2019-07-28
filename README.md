@@ -78,7 +78,7 @@ After a successful build process the executable file will be created in the `bin
 Using it
 ========
 
-For details on using YKUSHCMD please refer to the [YKUSHCMD Reference Manual](https://www.yepkit.com/product/300115/YKUSHXS).
+For details on using YKUSHCMD please refer to the [YKUSHCMD Reference Manual](https://www.learn.yepkit.com/reference/ykushcmd-reference-ykush/1/2).
 
 
 
