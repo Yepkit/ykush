@@ -9,3 +9,23 @@ node reference_page_create_replace.js /home/paulo/development/software/ykushcmd/
 
 #YKUSH3
 node reference_page_create_replace.js /home/paulo/development/software/ykushcmd/doc/reference-manual-ykushcmd/METADATA_ykushcmd-reference-ykush3.json /home/paulo/development/software/ykushcmd/doc/reference-manual-ykushcmd/ykushcmd-reference-ykush3.html
+
+
+
+
+
+#
+#AWS
+#
+
+node reference_index_create_replace.js /home/yepkit/web/nodejs/apps/learn.yepkit.com/htmls/reference/ykushcmd/INDEX_reference-manual-ykushcmd.json
+
+#YKUSH
+node reference_page_create_replace.js /home/yepkit/web/nodejs/apps/learn.yepkit.com/htmls/reference/ykushcmd/METADATA_ykushcmd-reference-ykush.json /home/yepkit/web/nodejs/apps/learn.yepkit.com/htmls/reference/ykushcmd/ykushcmd-reference-ykush.html
+
+
+#YKUSHXS
+node reference_page_create_replace.js /home/yepkit/web/nodejs/apps/learn.yepkit.com/htmls/reference/ykushcmd/METADATA_ykushcmd-reference-ykushxs.json /home/yepkit/web/nodejs/apps/learn.yepkit.com/htmls/reference/ykushcmd/ykushcmd-reference-ykushxs.html
+
+#YKUSH3
+node reference_page_create_replace.js /home/yepkit/web/nodejs/apps/learn.yepkit.com/htmls/reference/ykushcmd/METADATA_ykushcmd-reference-ykush3.json /home/yepkit/web/nodejs/apps/learn.yepkit.com/htmls/reference/ykushcmd/ykushcmd-reference-ykush3.html
