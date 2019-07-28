@@ -1,20 +1,21 @@
-<h1>YKUSH Board Commands</h1>
+<h1>YKUSH3 Board Commands</h1>
 
 <div class="reference_page_toc">
         <ul>
                 <li><a href="#command_overview">Command overview</a></li>
                 <li><a href="#list_attached_example">List attached boards</a></li>
                 <li><a href="#switch_command_example">Downstream port On/Off switching</a></li>
-                <li><a href="#switch_state_command_example">Port switching state</a></li>      
+                <li><a href="#switch_state_command_example">Port switching state</a></li>  
+                <li><a href="#gpio_read_write_command_example">GPIO read/write</a></li>
+                <li><a href="#reset_command_example">Reset/reboot board</a></li>    
         </ul>
 </div>
 
 
 
-
 <h2 id="command_overview">Command overview</h2>
-<p>YKUSH board commands have the following structure.</p>
-<p class="command_line">ykushcmd ykush [-s serial_number] [OPTION]</p>
+<p>YKUSH3 board commands have the following structure.</p>
+<p class="command_line">ykushcmd ykush3 [-s serial_number] [OPTION]</p>
 <p>Where:</p>
 <table cellpadding="10">
         <tr>
@@ -29,7 +30,7 @@
         <tr>
                 <td valign="top">-l</td>
                 <td>
-                        List attached YKUSH boards.
+                        List attached YKUSH3 boards.
                         The serial number of each board attached to the host will be displayed.
                 </td>
         </tr>
@@ -50,7 +51,38 @@
         <tr>
                 <td>-g 1|2|3</td>
                 <td>
-                        Get state of downstream port.
+                        Get port state.
+                </td>
+        </tr>
+        <tr>
+                <td valign="top">-on</td>
+                <td>
+                        Switch On the 5V output power port.
+                </td>
+        </tr>
+        <tr>
+                <td valign="top">-off</td>
+                <td>
+                        Switch Off the 5V output power port.
+                </td>
+        </tr>
+        <tr>
+                <td valign="top">-r 1|2|3</td>
+                <td>
+                        Read GPIO with the number provided (1, 2 or 3).
+                </td>
+        </tr>
+        <tr>
+                <td valign="top">-w 1|2|3 0|1</td>
+                <td>
+                        Write to the GPIO with the number provided (1, 2 or 3).
+                        Writing a value of <b>1</b> or <b>0</b> will drive the GPIO to logical <b>high</b> or <b>low</b>, respectively.
+                </td>
+        </tr>
+        <tr>
+                <td valign="top">--reset</td>
+                <td>
+                        Resets (reboot) the YKUSH3 board.
                 </td>
         </tr>
 </table>
@@ -59,15 +91,15 @@
 
 <h2 id="list_attached_example">List attached boards</h2>
 <p>
-        The <b>[-l]</b> option is used to list all attached YKUSH boards.
+        The <b>[-l]</b> option is used to list all attached YKUSH3 boards.
         All YKUSH board have unique serial numbers which are displayed when this option is used.
 </p>
 <pre>
 <code class="language-bash">
-#list the serial number for each of the attached YKUSH boards
-$ ykushcmd ykush -l
+#list the serial number for each of the attached YKUSH3 boards
+$ ykushcmd ykush3 -l
 
-Attached YKUSH Boards:
+Attached YKUSH3 Boards:
 1. Board found with serial number: YK17125
 2. Board found with serial number: YK21493
 </code>
@@ -77,97 +109,135 @@ Attached YKUSH Boards:
 
 <h2 id="switch_command_example">Downstream port On/Off switching</h2>
 <p>
-        When only one YKUSH board is attached to the host the <b>[-s serial_number]</b> option is not required.
+        When only one YKUSH3 board is attached to the host the <b>[-s serial_number]</b> option is not required.
         Bellow are some examples.
 </p>
 <pre>
 <code class="language-bash">
 #power-down downstream port 1
-$ ykushcmd ykush -d 1
+$ ykushcmd ykush3 -d 1
 
 #power-down downstream port 2
-$ ykushcmd ykush -d 2
+$ ykushcmd ykush3 -d 2
 
 #power down downstream port 3
-$ ykushcmd ykush -d 3
+$ ykushcmd ykush3 -d 3
 
 #power-down all three downstream ports
-$ ykushcmd ykush -d a
+$ ykushcmd ykush3 -d a
 
 #power-up downstream port 1
-$ ykushcmd ykush -u 1
+$ ykushcmd ykush3 -u 1
 
 #power-up downstream port 2
-$ ykushcmd ykush -u 2
+$ ykushcmd ykush3 -u 2
 
 #power-up downstream port 3
-$ ykushcmd ykush -u 3
+$ ykushcmd ykush3 -u 3
 
 #power-up all three downstream ports
-$ ykushcmd ykush -u a
+$ ykushcmd ykush3 -u a
 </code>
 </pre>
 
 <p>
-        If more than one YKUSH board is attached to the host the <b>[-s serial_number]</b> option should be used.
+        If more than one YKUSH3 board is attached to the host the <b>[-s serial_number]</b> option should be used.
         Bellow are some examples.
 </p>
 <pre>
 <code class="language-bash">
-#list the serial number for each of the attached YKUSH boards
-$ ykushcmd ykush -l
+#list the serial number for each of the attached YKUSH3 boards
+$ ykushcmd ykush3 -l
 
-Attached YKUSH Boards:
+Attached YKUSH3 Boards:
 1. Board found with serial number: YK17125
 2. Board found with serial number: YK21493
 
 #power-down downstream port 1 of the board with serial number YK17125
-$ ykushcmd ykush -s YK17125 -d 1
+$ ykushcmd ykush3 -s YK17125 -d 1
 
 #power-down downstream port 1 of the board with serial number YK21493
-$ ykushcmd ykush -s YK21493 -d 1
+$ ykushcmd ykush3 -s YK21493 -d 1
 
 #power-down downstream port 3
-$ ykushcmd ykush -d 3
+$ ykushcmd ykush3 -d 3
 
 #power-down all three downstream ports of the board with serial number YK21493
-$ ykushcmd ykush -s YK21493 -d a
+$ ykushcmd ykush3 -s YK21493 -d a
 </code>
 </pre>
 
 
 <h2 id="switch_state_command_example">Port switching state</h2>
 <p>
-        The current switching state of each downstream port can be fetched from the YKUSH board using the <b>[-g 1|2|3]</b> option.
+        The current switching state of each downstream port can be fetched from the YKUSH3 board using the <b>[-g 1|2|3]</b> option.
 </p>
 <pre>
 <code class="language-bash">
 #State of downstream port 1
-$ ykushcmd ykush -g 1
+$ ykushcmd ykush3 -g 1
 
 Downstream port 1 is ON
 
 #power-down downstream port 1
-$ ykushcmd ykush -d 1
+$ ykushcmd ykush3 -d 1
 
 #State of downstream port 1
-$ ykushcmd ykush -g 1
+$ ykushcmd ykush3 -g 1
 
 Downstream port 1 is OFF
 
 #list the serial number for each of the attached YKUSH boards
-$ ykushcmd ykush -l
+$ ykushcmd ykush3 -l
 
 Attached YKUSH Boards:
 1. Board found with serial number: YK17125
 2. Board found with serial number: YK21493
 
 #State of downstream port 1 of the board with serial number YK17125
-$ ykushcmd ykush -s YK17125 -g 1
+$ ykushcmd ykush3 -s YK17125 -g 1
 
 Downstream port 1 is OFF
 
 #power-up downstream port 1 of the board with serial number YK17125
-$ ykushcmd ykush -s YK17125 -u 1
+$ ykushcmd ykush3 -s YK17125 -u 1
+</code>
+</pre>
+
+
+
+<h2 id="gpio_read_write_command_example">GPIO read/write</h2>
+<p>
+        The <b>[-r|-w]</b> option is used to read from or write to a GPIO.
+</p>
+<pre>
+<code class="language-bash">
+#Writing a 0 to a GPIO will drive it to logical low (0V).
+#Example of writing value 0 to GPIO 1
+$ ykushcmd ykush3 -w 1 0
+
+#Writing a 1 to a GPIO will drive it to logical high (3.3V).
+#Example of writing value 1 to GPIO 1
+$ ykushcmd ykush3 -w 1 1
+
+#Example of writing value 1 to GPIO 2
+$ ykushcmd ykush3 -w 2 1
+
+#Reading from a GPIO will get the digital value of that pin,
+#0 if Low and 1 if High.
+#Example of reading from GPIO 3
+$ ykushcmd ykush3 -r 3
+</code>
+</pre>
+
+
+<h2 id="reset_command_example">GPIO read/write</h2>
+<p>
+        The <b>[--reset]</b> option is used to reset (reboot) the board.
+</p>
+<pre>
+<code class="language-bash">
+#Example of resetting YKUSH3
+$ ykushcmd ykush3 --reset
 </code>
 </pre>

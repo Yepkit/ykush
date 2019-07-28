@@ -1,0 +1,16 @@
+{
+        "page_uid": "ykushcmd-reference-ykush3",
+        "page_title" : "YKUSH3 with YKUSHCMD",
+        "reference_uid" :"reference-manual-ykushcmd",
+        "reference_title" : "YKUSHCMD Reference Manual",
+        "version" : {
+                "major" : 1,
+                "minor" :  2
+        },
+        "status": "published",
+        "content": {
+                "tags": ["YKUSHCMD","YKUSH3","User Manual","Switched Hub","USB Hub", "Yepkit", "USB 3.1"],
+                "title": "Controlling YKUSH3 with YKUSHCMD",
+                "subtitle": "Command options and examples"
+        }
+}

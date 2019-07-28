@@ -7,7 +7,8 @@
             },
     "pages" : [
             { "page_uid" : "ykushcmd-reference-ykush", "page_title" : "YKUSH"},
-            { "page_uid" : "ykushcmd-reference-ykushxs", "page_title" : "YKUSHXS"}
+            { "page_uid" : "ykushcmd-reference-ykushxs", "page_title" : "YKUSHXS"},
+            { "page_uid" : "ykushcmd-reference-ykush3", "page_title" : "YKUSH3"}
     ],
     "root_page_uid" : "ykushcmd-reference-ykush"
 }
