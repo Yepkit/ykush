@@ -34,12 +34,12 @@ void ykushxs_cmd_parser(int argc, char** argv)
 {
 	char bySerialFlag = 0;
 	enum ykushxsAction action = YKUSHXS_HELP;
-	YkushXs *ykushxs = new YkushXs();
+	YkushXs ykushxs;
 	
 
 	if(argc < 3)
 	{
-		ykushxs->ykushxs_help(argv[0]);
+		ykushxs.ykushxs_help(argv[0]);
 		return;
 	}
 
@@ -60,7 +60,7 @@ void ykushxs_cmd_parser(int argc, char** argv)
 		action = YKUSHXS_GET_STATUS;
 		} else 
 		{
-		ykushxs->ykushxs_help(argv[0]);
+		ykushxs.ykushxs_help(argv[0]);
 		return;
 		}
 
@@ -83,7 +83,7 @@ void ykushxs_cmd_parser(int argc, char** argv)
 	}
 	else
 	{
-		ykushxs->ykushxs_help(argv[0]);
+		ykushxs.ykushxs_help(argv[0]);
 		return;
 	}
 
@@ -94,22 +94,22 @@ void ykushxs_cmd_parser(int argc, char** argv)
 		case YKUSHXS_PORT_UP:
 		if(bySerialFlag)
 		{
-		ykushxs->port_up(argv[3]);
+		ykushxs.port_up(argv[3]);
 		}
 		else
 		{
-			ykushxs->port_up(NULL);
+			ykushxs.port_up(NULL);
 		}
 		break;
 
 		case YKUSHXS_PORT_DOWN:
 		if(bySerialFlag)
 		{
-			ykushxs->port_down(argv[3]);
+			ykushxs.port_down(argv[3]);
 		}
 		else
 		{
-			ykushxs->port_down(NULL);
+			ykushxs.port_down(NULL);
 		}
 		break;
 
@@ -120,7 +120,7 @@ void ykushxs_cmd_parser(int argc, char** argv)
 		case YKUSHXS_GET_STATUS:
 		if(bySerialFlag)
 		{
-			if(ykushxs->get_port_status(argv[3])==0x11)
+			if(ykushxs.get_port_status(argv[3])==0x11)
 			{
 			printf("\n\nDownstream port is ON\n\n");
 			} 
@@ -131,7 +131,7 @@ void ykushxs_cmd_parser(int argc, char** argv)
 		}
 		else
 		{
-			if(ykushxs->get_port_status(NULL)==0x11)
+			if(ykushxs.get_port_status(NULL)==0x11)
 			{
 			printf("\n\nDownstream port is ON\n\n");
 			} 
@@ -143,7 +143,7 @@ void ykushxs_cmd_parser(int argc, char** argv)
 		break;
 
 		default:
-		ykushxs->ykushxs_help(argv[0]); 
+		ykushxs.ykushxs_help(argv[0]); 
 		break;
 
 	}
@@ -198,10 +198,10 @@ int YkushXs::get_port_status(char *serial)
 
 void ykushxs_list_attached()
 {
-	YkushXs *ykushxs = new YkushXs();
+	YkushXs ykushxs;
 
 	printf("\n\nAttached YKUSH XS Boards:\n");        
-	if(ykushxs->listConnected()==0)
+	if(ykushxs.listConnected()==0)
 	{
 		printf("\nNo YKUSH XS boards found.");
 	}
@@ -213,11 +213,11 @@ void ykushxs_list_attached()
 
 void YkushXs::ykushxs_help(char * execName)
 {
-	Help *help = new Help(execName);
+	Help help( execName );
 
-	help->print_version();
-	help->print_usage();
-	help->print_ykushxs();
+	help.print_version();
+	help.print_usage();
+	help.print_ykushxs();
 }
 
 

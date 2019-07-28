@@ -45,7 +45,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 {
 	char bySerialFlag = 0;
 	enum ykush3Action action = YKUSH3_HELP;
-	Ykush3 *ykush = new Ykush3();
+	Ykush3 ykush3;
 	char port;
 	char value;
 	char status_response = 0;
@@ -172,7 +172,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 	//...
 
 	if ( argc < 3 ) {
-		ykush->print_help();
+		ykush3.print_help();
 		return;
 	}
 
@@ -181,7 +181,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 	if ( str.compare( "-s" ) == 0 ) {	//BY SERIAL
 		
 		if ( argc < 6 ) {
-			ykush->print_help();
+			ykush3.print_help();
 			return;
 		}
 		str = argv[4];
@@ -208,7 +208,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 		} else if ( str.compare( "-w" ) == 0 ) {
 			
 			if ( argc < 7 ) {
-				ykush->print_help();
+				ykush3.print_help();
 				return;
 			}
 			action = YKUSH3_WRITE_IO;
@@ -233,23 +233,23 @@ void ykush3_cmd_parser(int argc, char** argv)
                         else if ( str2.compare( "disable" ) == 0 )
 				action = YKUSH3_GPIO_DIS;
 			else
-				ykush->print_help();
+				ykush3.print_help();
 		} else if ( str.compare( "--boot" ) == 0 ) { 
 			action = YKUSH3_ENTER_BOOTLOADER;		
 		} else {
-			ykush->print_help();
+			ykush3.print_help();
 			return;
 		}
 	} else if ( str.compare( "-u" ) == 0 ) {
 		if ( argc < 3 ) {
-			ykush->print_help();
+			ykush3.print_help();
 			return;
 		}
 		action = YKUSH3_PORT_UP;
 		port = argv[3][0];
 	} else if ( str.compare( "-d" ) == 0 ) {
 		if ( argc < 4 ) {
-			ykush->print_help();
+			ykush3.print_help();
 			return;
 		}
 		action = YKUSH3_PORT_DOWN;
@@ -258,7 +258,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 		action = YKUSH3_LIST_BOARDS;
 	} else if ( str.compare( "-g" ) == 0 ) {
 		if ( argc < 4 ) {
-			ykush->print_help();
+			ykush3.print_help();
 			return;
 		}
 		action = YKUSH3_GET_STATUS;
@@ -269,7 +269,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 		action = YKUSH3_EXT_CTRL_OFF;
 	} else if ( str.compare( "-w" ) == 0 ) {
 		if ( argc < 5 ) {
-			ykush->print_help();
+			ykush3.print_help();
 			return;
 		}
 		action = YKUSH3_WRITE_IO;
@@ -280,7 +280,7 @@ void ykush3_cmd_parser(int argc, char** argv)
 		port = argv[3][0];
 	} else if ( str.compare( "-c" ) == 0 ) {
 		if ( argc < 5 ) {
-			ykush->print_help();
+			ykush3.print_help();
 			return;
 		}
 		action = YKUSH3_CONFIG;
@@ -297,10 +297,10 @@ void ykush3_cmd_parser(int argc, char** argv)
                         else if ( str2.compare( "disable" ) == 0 )
 				action = YKUSH3_GPIO_DIS;
 			else
-				ykush->print_help();
+				ykush3.print_help();
 		
 	} else {
-		ykush->print_help();
+		ykush3.print_help();
 		return;
 	}
 
@@ -308,28 +308,28 @@ void ykush3_cmd_parser(int argc, char** argv)
 	switch ( action ) {
 	case YKUSH3_PORT_UP:
 		if ( bySerialFlag ) 
-			ykush->port_up(argv[3], port); 
+			ykush3.port_up(argv[3], port); 
 		else
-			ykush->port_up(NULL, port); 
+			ykush3.port_up(NULL, port); 
 		break;
 	case YKUSH3_PORT_DOWN:
 		if ( bySerialFlag )
-			ykush->port_down(argv[3], port); 
+			ykush3.port_down(argv[3], port); 
 		else
-			ykush->port_down(NULL, port); 
+			ykush3.port_down(NULL, port); 
 		break;
 	case YKUSH3_LIST_BOARDS:
 		ykush3_list_attached(); 
 		break;
 	case YKUSH3_GET_STATUS:
 		if ( bySerialFlag ) {
-			status_response = ykush->get_port_status(argv[3], port);
+			status_response = ykush3.get_port_status(argv[3], port);
 			if ( status_response >> 4 )
 				 printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F );
 			else 
 				printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
 		} else {
-			status_response = ykush->get_port_status(NULL, port);
+			status_response = ykush3.get_port_status(NULL, port);
 			if ( status_response >> 4 )
 			     printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F);
 			else 
@@ -338,61 +338,61 @@ void ykush3_cmd_parser(int argc, char** argv)
 		break;
 	case YKUSH3_EXT_CTRL_ON:
 		if ( bySerialFlag )
-			ykush->port_up(argv[3], '4'); 
+			ykush3.port_up(argv[3], '4'); 
 		else
-			ykush->port_up(NULL, '4'); 
+			ykush3.port_up(NULL, '4'); 
 		break;
 	case YKUSH3_EXT_CTRL_OFF:
 		if ( bySerialFlag )
-			ykush->port_down(argv[3], '4'); 
+			ykush3.port_down(argv[3], '4'); 
 		else
-			ykush->port_down(NULL, '4'); 
+			ykush3.port_down(NULL, '4'); 
 		break;
 	case YKUSH3_WRITE_IO:
 		if ( bySerialFlag )
-			ykush->write_io(argv[3], port, value); 
+			ykush3.write_io(argv[3], port, value); 
 		else
-			ykush->write_io(NULL, port, value); 
+			ykush3.write_io(NULL, port, value); 
 		break;
 	case YKUSH3_READ_IO:
 		if ( bySerialFlag )
-			printf("\n%d\n", ykush->read_io(argv[3], port)); 
+			printf("\n%d\n", ykush3.read_io(argv[3], port)); 
 		else
-			printf("\n%d\n", ykush->read_io(NULL, port)); 
+			printf("\n%d\n", ykush3.read_io(NULL, port)); 
 		break;
 	case YKUSH3_CONFIG:
 		if ( bySerialFlag )
-		    ykush->config_port(argv[3], port, value); 
+		    ykush3.config_port(argv[3], port, value); 
 		else
-		    ykush->config_port(NULL, port, value); 
+		    ykush3.config_port(NULL, port, value); 
 		break;
 
 	case YKUSH3_RESET:
 		if ( bySerialFlag )
-			ykush->reset(argv[3]); 
+			ykush3.reset(argv[3]); 
 		else
-			ykush->reset(NULL); 
+			ykush3.reset(NULL); 
 		break;
 	case YKUSH3_GPIO_EN:
 		if ( bySerialFlag )
-			ykush->gpio_ctrl_enable(argv[3]); 
+			ykush3.gpio_ctrl_enable(argv[3]); 
 		else
-			ykush->gpio_ctrl_enable(NULL); 
+			ykush3.gpio_ctrl_enable(NULL); 
 		break;
 	case YKUSH3_GPIO_DIS:
 		if ( bySerialFlag )
-			ykush->gpio_ctrl_disable(argv[3]); 
+			ykush3.gpio_ctrl_disable(argv[3]); 
 		else
-			ykush->gpio_ctrl_disable(NULL); 
+			ykush3.gpio_ctrl_disable(NULL); 
 		break;
 	case YKUSH3_ENTER_BOOTLOADER:
 		if ( bySerialFlag )
-			ykush->enter_bootloader(argv[3]); 
+			ykush3.enter_bootloader(argv[3]); 
 		else
-			ykush->enter_bootloader(NULL);
+			ykush3.enter_bootloader(NULL);
 		break;
 	default:
-		ykush->print_help();
+		ykush3.print_help();
 		break;
 	}
 
@@ -400,31 +400,6 @@ void ykush3_cmd_parser(int argc, char** argv)
 
 
 
-
-
-/********************************************************
- ********************************************************
- *
- *  Ykush Class Implementation
- *
- ********************************************************
- ********************************************************/
-
-
-
-
-/*********************************************************
- * Method: port_up
- *
- * Description:
- *
- * Commands the YKUSH XS board to turn ON the downstream
- * port.
- *
- *
- *
- *
- *********************************************************/
 int Ykush3::port_up(char *serial, char port)
 {  
 	switch(port) {
@@ -461,18 +436,7 @@ int Ykush3::port_up(char *serial, char port)
 }
 
 
-/*********************************************************
- * Method: port_down
- *
- * Description:
- *
- * Commands the YKUSH XS board to turn OFF the downstream
- * port.
- *
- *
- *
- *
- *********************************************************/
+
 int Ykush3::port_down(char *serial, char port)
 {
     switch(port)
@@ -511,21 +475,6 @@ int Ykush3::port_down(char *serial, char port)
 
 
 
-
-/*********************************************************
- * Method: get_port_status
- *
- * Description:
- *
- * Commands the YKUSH XS to respond with the port status.
- *
- *  1 -> Port is ON/UP
- *  0 -> PORT is OFF/DOWN
- *
- *
- *
- *
- *********************************************************/
 int Ykush3::get_port_status(char *serial, char port)
 {
     int status;      
@@ -565,15 +514,6 @@ int Ykush3::get_port_status(char *serial, char port)
 
 
 
-
-
-
-/****************************************************
- *
- *
- *
- *
- ****************************************************/ 
 int Ykush3::write_io(char *serial, char port, char value)
 {
 
@@ -612,17 +552,6 @@ int Ykush3::write_io(char *serial, char port, char value)
 
 
 
-
-
-
-
-
-/****************************************************
- *
- *
- *
- *
- ****************************************************/ 
 int Ykush3::read_io(char *serial, char port)
 {
     
@@ -657,15 +586,7 @@ int Ykush3::read_io(char *serial, char port)
 
 }
 
-
-
-
-/****************************************************
- *
- *
- *
- *
- ****************************************************/ 
+ 
 int Ykush3::config_port(char *serial, char port, char value)
 {
 	hid_report_out[0] = 0x41;
@@ -702,14 +623,6 @@ int Ykush3::config_port(char *serial, char port, char value)
 }
 
 
-
-
-/****************************************************
- *
- *
- *
- *
- ****************************************************/ 
 void Ykush3::reset(char *serial)
 {
 
@@ -722,10 +635,6 @@ void Ykush3::reset(char *serial)
 
 
 
-
-/**
- * 
- */
 void Ykush3::gpio_ctrl_enable(char *serial)
 {
     hid_report_out[0] = 0x32;
@@ -737,9 +646,7 @@ void Ykush3::gpio_ctrl_enable(char *serial)
 }
 
 
-/**
- * 
- */
+
 void Ykush3::gpio_ctrl_disable(char *serial)
 {
 	hid_report_out[0] = 0x32;
@@ -752,9 +659,6 @@ void Ykush3::gpio_ctrl_disable(char *serial)
 
 
 
-/**
- * 
- */
 void Ykush3::enter_bootloader(char *serial)
 {
 	hid_report_out[0] = 0x42;
@@ -765,16 +669,9 @@ void Ykush3::enter_bootloader(char *serial)
 }
 
 
-/**************************************************************
- * 
- * 			I2C Methods
- * 
- **************************************************************/
 
 int Ykush3::i2c_enable_disable_control(bool enable_flag) 
 {
-	//std::cout << "i2c_enable_disable_control com flag: " << enable_flag << std::endl;
-
 	hid_report_out[0] = 0x51;
 	hid_report_out[1] = 0x01;
 	
@@ -796,7 +693,6 @@ int Ykush3::i2c_enable_disable_control(bool enable_flag)
 
 int Ykush3::i2c_enable_disable_gateway(bool enable_flag)
 {
-	//std::cout << "i2c_enable_disable_gateway com flag: " << enable_flag << std::endl;
 	hid_report_out[0] = 0x51;
 	hid_report_out[1] = 0x02;
 
@@ -936,28 +832,19 @@ int Ykush3::display_version_firmware(void)
 
 
 
-
-
 int Ykush3::set_usb_serial(char *serial) {
 	usb_serial = serial;
 	return 0;
 }
 
 
-
-
-/****************************************************
- *
- *
- *
- *
- ****************************************************/ 
+ 
 void ykush3_list_attached()
 {
-    Ykush3 *ykush = new Ykush3();
+    Ykush3 ykush3;
 
     printf("\n\nAttached YKUSH Boards:\n");        
-    if(ykush->listConnected()==0)
+    if(ykush3.listConnected() == 0)
     {
         printf("\n\nNo YKUSH boards found.");
     } 
@@ -969,11 +856,11 @@ void ykush3_list_attached()
 
 void Ykush3::print_help(void) 
 {
-	Help *help = new Help(app_exc_name);
+	Help help(app_exc_name);
 
-	help->print_version();
-	help->print_usage();
-	help->print_ykush3();
+	help.print_version();
+	help.print_usage();
+	help.print_ykush3();
 }
 
 

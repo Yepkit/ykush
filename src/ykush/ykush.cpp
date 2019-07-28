@@ -40,52 +40,18 @@ void ykush_cmd_parser(int argc, char** argv)
 {
 	char bySerialFlag = 0;
 	enum ykushAction action = YKUSH_HELP;
-	Ykush *ykush = new Ykush(0xF2F7);
-	Ykush *ykushLegacy = new Ykush(0x0042);
+	Ykush ykush( 0xF2F7 );
+	Ykush ykushLegacy( 0x0042 );
 	char port;
 	char status_response = 0;
 
-	/* 
-	CommandLine *cmd_handler = new CommandLine();
-	if ( cmd_handler->parse(argc, argv) ) {
-		std::cout << "Error parsing command." << std::endl;
-		ykush->print_help(argv[0]);
-		return;
-	}
-	YkushCommand  user_command = cmd_handler->get_command();
-
-	//verify if board is a YKUSH
-	std::string board_str ("ykush");
-	if ( board_str.compare(user_command.board) != 0 ) {
-		//board is not YKUSH
-		ykush->print_help(argv[0]);
-		return;
-	}
-
-	//iterate through command options
-	std::string option_str;
-	for (int i = 0; i < user_command.n_options; i++ ) {
-		option_str = user_command.option[i].name;
-		
-		
-		//Option: --non-blocking
-		if ( option_str.compare("--non-blocking") ) {	
-			if ( user_command.option[i].n_parameters == 1 ) {
-				ykush->set_usb_serial(user_command.option[i].parameter[0]);
-			}
-		}
-		
-	}
-	*/
-
-
-	//the old way...
+	
 	if((argv[1][0]=='-') && (argv[1][1]=='s'))
 	{
 		if(argc < 5)
 		{
 		//ykush_help(argv[0]);
-		ykush->print_help(argv[0]);
+		ykush.print_help(argv[0]);
 		return;
 		}
 		bySerialFlag = 1;
@@ -108,7 +74,7 @@ void ykush_cmd_parser(int argc, char** argv)
 		} else 
 		{
 		//ykush_help(argv[0]);
-		ykush->print_help(argv[0]);
+		ykush.print_help(argv[0]);
 		return;
 		}
 
@@ -117,7 +83,7 @@ void ykush_cmd_parser(int argc, char** argv)
 	{
 		if(argc < 3)
 		{
-		ykush->print_help(argv[0]);
+		ykush.print_help(argv[0]);
 		return;
 		}
 
@@ -128,7 +94,7 @@ void ykush_cmd_parser(int argc, char** argv)
 	{
 		if(argc < 3)
 		{
-		ykush->print_help(argv[0]);
+		ykush.print_help(argv[0]);
 		return;
 		}
 		action = YKUSH_PORT_DOWN;
@@ -143,7 +109,7 @@ void ykush_cmd_parser(int argc, char** argv)
 	{
 		if(argc < 3)
 		{
-		ykush->print_help(argv[0]);
+		ykush.print_help(argv[0]);
 		return;
 		}
 		action = YKUSH_GET_STATUS;
@@ -152,7 +118,7 @@ void ykush_cmd_parser(int argc, char** argv)
 	else
 	{
 		//ykush_help(argv[0]);
-		ykush->print_help(argv[0]);
+		ykush.print_help(argv[0]);
 		return;
 	}
 
@@ -164,18 +130,18 @@ void ykush_cmd_parser(int argc, char** argv)
 		case YKUSH_PORT_UP:
 		if(bySerialFlag)
 		{
-		if(ykush->port_up(argv[2], port)==-1)
+		if(ykush.port_up(argv[2], port)==-1)
 		{
 			//try legacy
-			ykushLegacy->port_up(argv[2], port);
+			ykushLegacy.port_up(argv[2], port);
 		}
 		}
 		else
 		{
-			if(ykush->port_up(NULL, port)==-1)
+			if(ykush.port_up(NULL, port)==-1)
 			{
 			//try legacy
-			ykushLegacy->port_up(NULL, port);
+			ykushLegacy.port_up(NULL, port);
 			}
 		}
 		break;
@@ -183,18 +149,18 @@ void ykush_cmd_parser(int argc, char** argv)
 		case YKUSH_PORT_DOWN:
 		if(bySerialFlag)
 		{
-			if(ykush->port_down(argv[2], port)==-1)
+			if(ykush.port_down(argv[2], port)==-1)
 			{
 			//try legacy
-			ykushLegacy->port_down(argv[2], port);
+			ykushLegacy.port_down(argv[2], port);
 			}
 		}
 		else
 		{
-			if(ykush->port_down(NULL, port)==-1)
+			if(ykush.port_down(NULL, port)==-1)
 			{
 			//try legacy
-			ykushLegacy->port_down(NULL, port);
+			ykushLegacy.port_down(NULL, port);
 			}
 		}
 		break;
@@ -206,7 +172,7 @@ void ykush_cmd_parser(int argc, char** argv)
 		case YKUSH_GET_STATUS:
 		if(bySerialFlag)
 		{
-			status_response = ykush->get_port_status(argv[2], port);
+			status_response = ykush.get_port_status(argv[2], port);
 			if (status_response >> 4)
 			{
 			printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F );
@@ -218,7 +184,7 @@ void ykush_cmd_parser(int argc, char** argv)
 		}
 		else
 		{
-			status_response = ykush->get_port_status(NULL, port);
+			status_response = ykush.get_port_status(NULL, port);
 			if (status_response >> 4)
 			{
 			printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F);
@@ -232,7 +198,7 @@ void ykush_cmd_parser(int argc, char** argv)
 
 		default:
 		//ykush_help(argv[0]);
-		ykush->print_help(argv[0]);
+		ykush.print_help(argv[0]);
 		break;
 
 	}
@@ -268,18 +234,7 @@ int Ykush::port_up(char *serial, char port)
 }
 
 
-/*********************************************************
- * Method: port_down
- *
- * Description:
- *
- * Commands the YKUSH XS board to turn OFF the downstream
- * port.
- *
- *
- *
- *
- *********************************************************/
+
 int Ykush::port_down(char *serial, char port)
 {
     switch(port)
@@ -320,20 +275,6 @@ int Ykush::port_down(char *serial, char port)
 
 
 
-/*********************************************************
- * Method: get_port_status
- *
- * Description:
- *
- * Commands the YKUSH XS to respond with the port status.
- *
- *  1 -> Port is ON/UP
- *  0 -> PORT is OFF/DOWN
- *
- *
- *
- *
- *********************************************************/
 int Ykush::get_port_status(char *serial, char port)
 {
     int status;
@@ -376,22 +317,16 @@ int Ykush::get_port_status(char *serial, char port)
 
 
 
-/****************************************************
- *
- *
- *
- *
- ****************************************************/ 
 void ykush_list_attached()
 {
-	Ykush *ykush = new Ykush(0xF2F7);
-	Ykush *ykushLegacy = new Ykush(0x0042);
+	Ykush ykush( 0xF2F7 );
+	Ykush ykushLegacy( 0x0042 );
 
 	printf("\n\nAttached YKUSH Boards:\n");        
-	if(ykush->listConnected()==0)
+	if(ykush.listConnected()==0)
 	{
 		//try legacy
-		if(ykushLegacy->listConnected()==0)
+		if(ykushLegacy.listConnected()==0)
 		{
 		printf("\n\nNo YKUSH boards found.");
 		}
@@ -399,7 +334,7 @@ void ykush_list_attached()
 	else
 	{
 		//list legacy boards if attached 
-		ykushLegacy->listConnected();
+		ykushLegacy.listConnected();
 	}
 
 	printf("\n\n");
@@ -408,28 +343,13 @@ void ykush_list_attached()
 
 
 
-
-
-
-/***************************************************
- * Function: ykush_help
- *
- * Description:
- *
- * Prints to standard output the command usage help
- * information.
- *
- *
- *
- *
- ***************************************************/
 void Ykush::print_help(char *exec_name)
 {
-	Help *help = new Help(exec_name);
+	Help help( exec_name );
 
-	help->print_version();
-	help->print_usage();
-	help->print_ykush();
+	help.print_version();
+	help.print_usage();
+	help.print_ykush();
 
 }
 
