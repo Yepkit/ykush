@@ -62,18 +62,18 @@ jobs:
       - store_artifacts:
           path: bin/Win64/ykushcmd_win64.exe
           destination: bin/win64/ykushcmd.exe
-
-      - run:
-          name: "Build 32"
-          command: |
-            make -f Makefile_win32
-            bin/Win32/ykushcmd_win32.exe -h
-      - store_artifacts:
-          path: bin/Win32/libhidapi.dll
-          destination: bin/win32/libhidapi.dll
-      - store_artifacts:
-          path: bin/Win32/ykushcmd_win32.exe
-          destination: bin/win32/ykushcmd.exe
+      # should install mingw32
+      #- run:
+      #    name: "Build 32"
+      #    command: |
+      #      make -f Makefile_win32
+      #      bin/Win32/ykushcmd_win32.exe -h
+      #- store_artifacts:
+      #    path: bin/Win32/libhidapi.dll
+      #    destination: bin/win32/libhidapi.dll
+      #- store_artifacts:
+      #    path: bin/Win32/ykushcmd_win32.exe
+      #    destination: bin/win32/ykushcmd.exe
   build-mac:
     macos:  # indicate that we are using the macOS executor
       xcode: "10.0.0" # indicate our selected version of Xcode

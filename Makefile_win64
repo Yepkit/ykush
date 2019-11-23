@@ -38,5 +38,5 @@ $(OBJS) : %.o : %.cpp %.h
 
 
 clean :
-	rm -f bin/Win64/yktrl_win32.exe $(OBJS) $(PROG_OBJ)
+	rm -f bin/Win64/ykushcmd_win64.exe $(OBJS) $(PROG_OBJ)
 
