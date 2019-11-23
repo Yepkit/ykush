@@ -2,7 +2,7 @@ version: 2.1
 
 workflows:
   version: 2
-  test-publish:
+  builds:
     jobs:
       - build-linux:
           filters:  # required since `deploy` has tag filters AND requires `build`
@@ -18,7 +18,7 @@ workflows:
       #        only: /.*/
 
 jobs:
-  build-liunux:
+  build-linux:
     working_directory: ~/ykush
     docker:
       - image: gcc
