@@ -71,9 +71,9 @@ jobs:
       - store_artifacts:
           path: bin/Win32/libhidapi.dll
           destination: bin/win32/libhidapi.dll
-            - store_artifacts:
-                path: bin/Win32/ykushcmd_win32.exe
-                destination: bin/win32/ykushcmd.exe
+      - store_artifacts:
+          path: bin/Win32/ykushcmd_win32.exe
+          destination: bin/win32/ykushcmd.exe
   build-mac:
     macos:  # indicate that we are using the macOS executor
       xcode: "10.0.0" # indicate our selected version of Xcode
