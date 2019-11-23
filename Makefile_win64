@@ -28,7 +28,7 @@ CPP = x86_64-w64-mingw32-g++
 
 
 ykushcmd_win64.exe : $(PROG_OBJ) $(OBJS)
-	$(CPP) $(FLAGS) $(LOADPATHS) -o bin/Win32/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
+	$(CPP) $(FLAGS) $(LOADPATHS) -o bin/Win64/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
 
 $(PROG_OBJ) :  %.o : %.cpp
 	$(CPP) $(FLAGS) $(PREPROCESSOR_DEFS) $(INCLUDEPATHS) -c $< -o $@
