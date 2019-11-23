@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs:
+  win: circleci/windows@1.0.0
+
+
 workflows:
   version: 2
   builds:
@@ -8,10 +12,10 @@ workflows:
           filters:  # required since `deploy` has tag filters AND requires `build`
             tags:
               only: /.*/
-      #- build-windows:
-      #    filters:  # required since `deploy` has tag filters AND requires `build`
-      #      tags:
-      #        only: /.*/
+      - build-windows:
+          filters:  # required since `deploy` has tag filters AND requires `build`
+            tags:
+              only: /.*/
       #- build-mac:
       #    filters:  # required since `deploy` has tag filters AND requires `build`
       #      tags:
@@ -35,4 +39,23 @@ jobs:
       - store_artifacts:
           path: bin
           prefix: bin
-          destination: bin
+          destination: bin/linux
+  build-windows:
+    executor:
+      name: win/vs2019
+      shell: powershell.exe
+    working_directory: ~/pyring
+    steps:
+      - checkout
+      - run:
+          name: "Install deps"
+          command: choco install gcc make
+      - run:
+          name: "Build"
+          command: |
+            python --version
+            make -f Makefilefile_win64
+      - store_artifacts:
+          path: bin
+          prefix: bin
+          destination: bin/win64
