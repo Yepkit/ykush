@@ -101,7 +101,7 @@ int commandParser(int argc, char** argv)
 				return ykush_cmd_parser(argc - 1 , &argv[1]);
 			else
 				help.print_all();
-				return 0;
+			return -1;
 		} else {
 			//YKUSH
 			return ykush_cmd_parser(argc, argv);
