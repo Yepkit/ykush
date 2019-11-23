@@ -16,10 +16,10 @@ workflows:
           filters:  # required since `deploy` has tag filters AND requires `build`
             tags:
               only: /.*/
-      #- build-mac:
-      #    filters:  # required since `deploy` has tag filters AND requires `build`
-      #      tags:
-      #        only: /.*/
+      - build-mac:
+          filters:  # required since `deploy` has tag filters AND requires `build`
+            tags:
+              only: /.*/
 
 jobs:
   build-linux:
@@ -43,7 +43,7 @@ jobs:
     executor:
       name: win/vs2019
       shell: powershell.exe
-    working_directory: ~/pyring
+    working_directory: ~/ykush
     steps:
       - checkout
       - run:
@@ -56,3 +56,20 @@ jobs:
       - store_artifacts:
           path: bin/Win64
           destination: bin/win64
+      - store_artifacts:
+          path: bin/Win32/ykushcmd_win64.exe
+          destination: bin/win64/ykushcmd.exe
+  build-mac:
+    macos:  # indicate that we are using the macOS executor
+      xcode: "10.0.0" # indicate our selected version of Xcode
+    steps:
+      - checkout
+      - run:
+          name: install deps
+          command: brew install gcc make libhid
+      - run:
+          name: build
+          command: make
+      - store_artifacts:
+          path: bin/ykushcmd
+          destination: bin/macos/ykushcmd
