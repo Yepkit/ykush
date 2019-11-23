@@ -27,7 +27,8 @@ jobs:
       - run:
           name: install deps
           command: |
-            apt-get install libusb-1.0-0 libusb-1.0-0-dev
+            apt update
+            apt install libusb-1.0-0 libusb-1.0-0-dev
       - run:
           name: build
           command: make
