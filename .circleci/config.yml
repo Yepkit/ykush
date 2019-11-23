@@ -55,7 +55,7 @@ jobs:
           name: "Build"
           command: |
             make -f Makefile_win64
-            bin/Win32/ykushcmd_win64.exe --help
+            cd bin/Win32; ykushcmd_win64.exe --help
       - store_artifacts:
           path: bin/Win64
           destination: bin/win64
