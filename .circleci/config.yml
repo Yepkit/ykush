@@ -1,0 +1,37 @@
+version: 2.1
+
+workflows:
+  version: 2
+  test-publish:
+    jobs:
+      - build-linux:
+          filters:  # required since `deploy` has tag filters AND requires `build`
+            tags:
+              only: /.*/
+      #- build-windows:
+      #    filters:  # required since `deploy` has tag filters AND requires `build`
+      #      tags:
+      #        only: /.*/
+      #- build-mac:
+      #    filters:  # required since `deploy` has tag filters AND requires `build`
+      #      tags:
+      #        only: /.*/
+
+jobs:
+  build-liunux:
+    working_directory: ~/ykush
+    docker:
+      - image: gcc
+    steps:
+      - checkout
+      - run:
+          name: install deps
+          command: |
+            gcc -v
+      - run:
+          name: build
+          command: make
+      - store_artifacts:
+          path: bin
+          prefix: bin
+          destination: bin
