@@ -37,8 +37,7 @@ jobs:
           name: build
           command: make
       - store_artifacts:
-          path: bin
-          prefix: bin
+          path: bin/ykushcmd
           destination: bin/linux
   build-windows:
     executor:
@@ -54,8 +53,7 @@ jobs:
           name: "Build"
           command: |
             python --version
-            make -f Makefilefile_win64
+            make -f Makefile_win64
       - store_artifacts:
-          path: bin
-          prefix: bin
+          path: bin/Win64
           destination: bin/win64
