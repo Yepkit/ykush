@@ -38,7 +38,7 @@ int ykush_cmd_parser(int argc, char** argv)
 	if((argv[1][0]=='-') && (argv[1][1]=='s')) {
 		if(argc < 5) {
 			ykush.print_help(argv[0]);
-			return 0;
+			return -1;
 		}
 		bySerialFlag = 1;
 		if(argv[3][0]=='-' && argv[3][1]=='u') {
