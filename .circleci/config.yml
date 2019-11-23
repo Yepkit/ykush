@@ -35,7 +35,9 @@ jobs:
             apt install -y libusb-1.0-0 libusb-1.0-0-dev
       - run:
           name: build
-          command: make
+          command: |
+            make
+            bin/ykushcmd --help
       - store_artifacts:
           path: bin/ykushcmd
           destination: bin/linux/ykushcmd
@@ -53,6 +55,7 @@ jobs:
           name: "Build"
           command: |
             make -f Makefile_win64
+            bin/Win32/ykushcmd_win64.exe --help
       - store_artifacts:
           path: bin/Win64
           destination: bin/win64
@@ -69,7 +72,9 @@ jobs:
           command: brew install gcc make libhid
       - run:
           name: build
-          command: make
+          command: |
+            make
+            bin/ykushcmd --help
       - store_artifacts:
           path: bin/ykushcmd
           destination: bin/macos/ykushcmd
