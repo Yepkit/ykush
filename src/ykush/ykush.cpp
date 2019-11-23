@@ -31,7 +31,10 @@ int ykush_cmd_parser(int argc, char** argv)
 	char port;
 	char status_response = 0;
 
-
+    if((argv[1][0]=='-') && (argv[1][1]=='h')) {
+        ykush.print_help(argv[0]);
+        return 0;
+    }
 	if((argv[1][0]=='-') && (argv[1][1]=='s')) {
 		if(argc < 5) {
 			ykush.print_help(argv[0]);
@@ -133,7 +136,6 @@ int ykush_cmd_parser(int argc, char** argv)
 	default:
 		ykush.print_help(argv[0]);
 		return -1;
-		break;
 	}
 	return 0;
 }

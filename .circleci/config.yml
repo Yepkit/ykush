@@ -37,7 +37,7 @@ jobs:
           name: build
           command: |
             make
-            bin/ykushcmd --help
+            bin/ykushcmd -h
       - store_artifacts:
           path: bin/ykushcmd
           destination: bin/linux/ykushcmd
@@ -55,7 +55,7 @@ jobs:
           name: "Build"
           command: |
             make -f Makefile_win64
-            bin/Win64/ykushcmd_win64.exe --help
+            bin/Win64/ykushcmd_win64.exe -h
       - store_artifacts:
           path: bin/Win64
           destination: bin/win64
@@ -74,7 +74,7 @@ jobs:
           name: build
           command: |
             make
-            bin/ykushcmd --help
+            bin/ykushcmd -h
       - store_artifacts:
           path: bin/ykushcmd
           destination: bin/macos/ykushcmd
