@@ -49,7 +49,7 @@ jobs:
       - checkout
       - run:
           name: "Install deps"
-          command: choco install gcc make
+          command: choco install mingw
       - run:
           name: "Build"
           command: |
