@@ -20,19 +20,18 @@ limitations under the License.
 #include <stdio.h>
 
 
-
 Help::Help(char *exec_name)
 {
 	app_name = exec_name;
 }
 
 void Help::print_version(void) {
-	std::cout << "YKUSHCMD Version 1.2.0\n";
+	std::cout << "YKUSHCMD Version 1.2.1\n";
 }
 
 void Help::print_usage(void)
 {
-	std::cout << "Usage:\t" << app_name << " [board_name] [-s serial_number] [OPTION]...\n";
+	  std::cout << "Usage:\t" << app_name << " [board_name] [-s serial_number] [OPTION]...\n";
 	std::cout << "Control Yepkit YKUSH family boards.\n";
 }
 
@@ -50,9 +49,9 @@ void Help::print_board_names(void)
 
 void Help::print_common_options(void)
 {
-	
 
-	
+
+
 }
 
 void Help::print_ykush(void)
@@ -102,7 +101,7 @@ void Help::print_ykush3(void)
   std::cout << "-c <port-number> <config-value>       Configure the default state of a downstream port\n";
   std::cout << "                                      (port-number=1|2|3) at power-on.\n";
   std::cout << "                                      The default states are off (config-value=0), on (config-value=1)\n";
-  std::cout << "                                     and persistent (config-value=2).\n";
+  std::cout << "                                      and persistent (config-value=2).\n";
 
 	std::cout << "-on                       Switch On the 5V output power port.\n";
 	std::cout << "-off                      Switch Off the 5V output power port.\n";
@@ -137,7 +136,7 @@ void Help::print_ykushxs(void)
 }
 
 
-void Help::print_all(void) 
+void Help::print_all(void)
 {
 	print_version();
 	print_usage();

@@ -27,374 +27,330 @@ limitations under the License.
 extern char *app_exc_name;
 
 
-int ykush3_cmd_parser(int argc, char** argv)
-{
-	char bySerialFlag = 0;
-	enum ykush3Action action = YKUSH3_HELP;
-	Ykush3 ykush3;
-	char port;
-	char value;
-	char status_response = 0;
-	
-	bool action_taken = false;
+int 
+ykush3_cmd_parser (int argc, char** argv)
+  {
+    char bySerialFlag = 0;
+    enum ykush3Action action = YKUSH3_HELP;
+    Ykush3 ykush3;
+    char port;
+    char value;
+    char status_response = 0;
+    bool action_taken = false;
+    
+    if (argc < 3)
+      {
+        ykush3.print_help ();
+        return -1;
+      }
 
-	/*
-	CommandLine *cmd_handler = new CommandLine();
-	
-	if ( cmd_handler->parse(argc, argv) ) {
-		std::cout << "Error parsing command." << std::endl;
-		ykush->print_help();
-		return;
-	}
+    std::string str = argv[2];
 
-	
-	YkushCommand  user_command = cmd_handler->get_command();
+    if (str.compare ("-s") == 0) 
+      {	//BY SERIAL
+        if (argc < 6) 
+          {
+            ykush3.print_help ();
+            return -1;
+          }
 
-	//verify if board is YKUSH3
-	std::string board_str ("ykush3");
-	if ( board_str.compare(user_command.board) != 0 ) {
-		//board is not YKUSH3
-		ykush->print_help("ykush3");
-		return;
-	}
+        str = argv[4];
+        bySerialFlag = 1;
+        if (str.compare ("-u") == 0 ) 
+          {
+            action = YKUSH3_PORT_UP;
+            port = argv[5][0];
+          }
+        else if (str.compare ("-d") == 0 ) 
+          {
+            action = YKUSH3_PORT_DOWN;
+            port = argv[5][0];
+          }
+        else if (str.compare ("-g") == 0 )
+          {
+            action = YKUSH3_GET_STATUS;
+            port = argv[5][0];
+          }
+        else if (str.compare ("-on") == 0 )
+          {
+            action = YKUSH3_EXT_CTRL_ON;
+          }
+        else if (str.compare ("-off") == 0 )
+          {
+            action = YKUSH3_EXT_CTRL_OFF;
+          } 
+        else if (str.compare ("-w") == 0 )
+          {
+            if (argc < 7) 
+              {
+                ykush3.print_help ();
+                return -1;
+              }
+            action = YKUSH3_WRITE_IO;
+            port = argv[5][0];
+            value = argv[6][0]; 
+          } 
+        else if (str.compare ("-r") == 0) 
+          { 
+            action = YKUSH3_READ_IO;
+            port = argv[5][0];
+          } 
+        else if (str.compare ("-c") == 0)
+          { 
+            action = YKUSH3_CONFIG;
+            port = argv[5][0];
+            value = argv[6][0];
+          } 
+        else if (str.compare("--reset") == 0) 
+          { 
+            action = YKUSH3_RESET;
+          }
+        else if (str.compare ("--gpio") == 0) 
+          {
+            std::string str2 = argv[5];
+            if (str2.compare ("enable") == 0) 
+              {
+                action = YKUSH3_GPIO_EN;
+              }
+            else if (str2.compare ("disable") == 0 ) 
+              {
+                action = YKUSH3_GPIO_DIS;
+              } 
+            else 
+              {
+                ykush3.print_help ();
+                return -1;
+              }
+          } 
+        else if (str.compare ("--boot") == 0) 
+          { 
+            action = YKUSH3_ENTER_BOOTLOADER;		
+          } 
+        else
+          {
+            ykush3.print_help ();
+            return -1;
+          }
+      }
+    else if (str.compare ("-u") == 0) 
+      {
+        if (argc < 3)
+          {
+            ykush3.print_help ();
+            return -1;
+          }
+        action = YKUSH3_PORT_UP;
+        port = argv[3][0];
+      }
+    else if (str.compare ("-d") == 0)
+      {
+        if (argc < 4) 
+          {
+            ykush3.print_help ();
+            return -1;
+          }
+        action = YKUSH3_PORT_DOWN;
+        port = argv[3][0];
+      }
+    else if (str.compare ("-l") == 0)
+      {
+        action = YKUSH3_LIST_BOARDS;
+      } 
+    else if (str.compare ("-g") == 0)
+      {
+        if (argc < 4)
+          {
+            ykush3.print_help ();
+            return -1;
+          }
+        action = YKUSH3_GET_STATUS;
+        port = argv[3][0];
+      }
+    else if (str.compare ("-on") == 0)
+      {
+        action = YKUSH3_EXT_CTRL_ON;
+      }
+    else if (str.compare ("-off") == 0)
+      {
+        action = YKUSH3_EXT_CTRL_OFF;
+      } 
+    else if (str.compare ("-w") == 0)
+      {
+        if (argc < 5)
+          {
+            ykush3.print_help ();
+            return -1;
+          }
+        action = YKUSH3_WRITE_IO;
+        port = argv[3][0];
+        value = argv[4][0];
+      }
+    else if (str.compare ("-r") == 0)
+      { 
+        action = YKUSH3_READ_IO;
+        port = argv[3][0];
+      } 
+    else if (str.compare ("-c") == 0)
+      {
+        if (argc < 5)
+          {
+            ykush3.print_help ();
+            return -1;
+          }
+        action = YKUSH3_CONFIG;
+        port = argv[3][0];
+        value = argv[4][0];
+      }
+    else if (str.compare ("--reset") == 0)
+      {
+        action = YKUSH3_RESET;
+      }
+    else if (str.compare ("--boot") == 0)
+      { 
+          action = YKUSH3_ENTER_BOOTLOADER;
+      }
+    else if (str.compare ("--gpio") == 0)
+      {
+          std::string str2 = argv[3];
+          if (str2.compare ("enable") == 0)
+            {
+              action = YKUSH3_GPIO_EN;
+            }
+          else if (str2.compare ("disable") == 0)
+            {
+              action = YKUSH3_GPIO_DIS;
+            }
+          else
+            {
+              ykush3.print_help ();
+              return -1;
+            }
+      }
+    else
+      {
+        ykush3.print_help ();
+        return -1;
+      }
 
-	//iterate through command options
-	std::string option_str;
-	for (int i = 0; i < user_command.n_options; i++ ) {
-		option_str = user_command.option[i].name;
-		
-		//Option: --i2c-usb-serial
-		if ( option_str.compare("--i2c-usb-serial") ) {	
-			if ( user_command.option[i].n_parameters == 1 ) {
-				ykush->set_usb_serial(user_command.option[i].parameter[0]);
-			}
-		}
+    switch (action)
+      {
+      case YKUSH3_PORT_UP:
+        if (bySerialFlag) 
+          return ykush3.port_up (argv[3], port); 
+        else
+          return ykush3.port_up (NULL, port); 
+        break;
 
-		//Option: --i2c-enable-control
-		if ( option_str.compare("--i2c-enable-control") == 0 ) {	
-			ykush->i2c_enable_disable_control(true);
-			action_taken = true;
-		} else if ( option_str.compare("--i2c-disable-control") == 0 ) {
-			ykush->i2c_enable_disable_control(false);
-			action_taken = true;
-		}
+      case YKUSH3_PORT_DOWN:
+        if (bySerialFlag)
+          return ykush3.port_down (argv[3], port); 
+        else
+          return ykush3.port_down (NULL, port); 
+        break;
 
-		//Option: --i2c-enable-gateway
-		if ( option_str.compare("--i2c-enable-gateway") == 0 ) {	
-			ykush->i2c_enable_disable_control(true);
-			action_taken = true;
-		} else if ( option_str.compare("--i2c-disable-gateway") == 0 ) {
-			ykush->i2c_enable_disable_control(false);
-			action_taken = true;
-		}
+      case YKUSH3_LIST_BOARDS:
+        ykush3_list_attached (); 
+        break;
 
-		//Option: --i2c-set-address <address>
-		if ( option_str.compare("--i2c-set-address") == 0 ) {
-			//get address parameter
-			if ( user_command.option[i].n_parameters == 1 ) {
-				if ( ykush->i2c_set_address(user_command.option[i].parameter[0]) ) {
-					std::cout << "Error on sending I2C address" << std::endl; 
-				}
-			} else {
-				ykush->print_help("ykush3");
-			}
-			action_taken = true;
-		}
+      case YKUSH3_GET_STATUS:
+        if (bySerialFlag)
+          {
+            status_response = ykush3.get_port_status (argv[3], port);
+            if (status_response < 0)
+              return status_response;
+            if (status_response >> 4)
+              printf ("\n\nDownstream port %d is ON\n\n", status_response & 0x0F);
+            else 
+              printf ("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
+            return 0;
+          } 
+        else
+          {
+            status_response = ykush3.get_port_status (NULL, port);
+            if (status_response < 0)
+              return status_response;
+            if (status_response >> 4)
+                 printf ("\n\nDownstream port %d is ON\n\n", status_response & 0x0F);
+            else 
+                 printf ("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
+            return 0;
+          }   
+        break;
 
-		//Option: --i2c-write <dev_address> <num_bytes> <byte1>...
-		if ( option_str.compare("--i2c-write") == 0 ) {
-			//get data bytes
-			if ( user_command.option[i].n_parameters > 3 ) {
-				if ( ykush->i2c_write(user_command.option[i].parameter[0], user_command.option[i].parameter[1], &user_command.option[i].parameter[2]) ) {
-					std::cout << "Error on I2C writing" << std::endl;
-					//...
-					//ToDo: Have the handling of all error codes reported by the board firmware.
-					//... 
-				}
-			} else {
-				std::cout << "I2C write command requires at least one byte of data to be sent." << std::endl;
-				ykush->print_help("ykush3");
-			}
-			action_taken = true;
-		}
+      case YKUSH3_EXT_CTRL_ON:
+        if (bySerialFlag)
+          return ykush3.port_up (argv[3], '4'); 
+        else
+          return ykush3.port_up (NULL, '4'); 
+        break;
 
-		//Option: --i2c-read <dev_address> <num_bytes>
-		if ( option_str.compare("--i2c-read") == 0 ) {
-			//get data bytes
-			if ( user_command.option[i].n_parameters > 2 ) {
-				unsigned char data_buffer[64];
-				int bytes_read;
-				if ( ykush->i2c_read(user_command.option[i].parameter[0], user_command.option[i].parameter[1], data_buffer, &bytes_read) ) {
-					std::cout << "Error on I2C reading" << std::endl;
-					//...
-					//ToDo: Have the handling of all error codes reported by the board firmware.
-					//... 
-				}
-			} else {
-				std::cout << "I2C write command requires at least one byte of data to be sent." << std::endl;
-				ykush->print_help("ykush3");
-			}
-			action_taken = true;
-		}
+      case YKUSH3_EXT_CTRL_OFF:
+        if (bySerialFlag)
+          return ykush3.port_down (argv[3], '4'); 
+        else
+          return ykush3.port_down (NULL, '4'); 
+        break;
 
-		//Option: --version-bootloader
-		if ( option_str.compare("--version-bootloader") == 0 ) {
-			ykush->display_version_bootloader();
-		}
+      case YKUSH3_WRITE_IO:
+        if (bySerialFlag)
+          return ykush3.write_io (argv[3], port, value); 
+        else
+          return ykush3.write_io (NULL, port, value); 
+        return 0;
+        break;
 
-		//Option: --version-firmware
-		if ( option_str.compare("--version-firmware") == 0 ) {
-			ykush->display_version_firmware();
-		}
+      case YKUSH3_READ_IO:
+        if (bySerialFlag)
+          printf ("\n%d\n", ykush3.read_io(argv[3], port)); 
+        else
+          printf ("\n%d\n", ykush3.read_io(NULL, port)); 
+        return 0;
+        break;
 
-	}
-	if ( action_taken )
-		return;
+      case YKUSH3_CONFIG:
+        if (bySerialFlag)
+              return ykush3.config_port (argv[3], port, value); 
+        else
+              return ykush3.config_port (NULL, port, value); 
+        break;
 
-	*/
+      case YKUSH3_RESET:
+        if (bySerialFlag)
+          return ykush3.reset (argv[3]); 
+        else
+          return ykush3.reset (NULL); 
+        break;
 
-	//...
-	//----- LEGACY PARSING SCHEME. Keep in ykushcmd but will be replaced in the yktrl app.
-	//...
+      case YKUSH3_GPIO_EN:
+        if (bySerialFlag)
+          return ykush3.gpio_ctrl_enable (argv[3]); 
+        else
+          return ykush3.gpio_ctrl_enable (NULL); 
+        break;
 
-	if ( argc < 3 ) {
-		ykush3.print_help();
-		return -1;
-	}
+      case YKUSH3_GPIO_DIS:
+        if (bySerialFlag)
+          return ykush3.gpio_ctrl_disable (argv[3]); 
+        else
+          return ykush3.gpio_ctrl_disable (NULL); 
+        break;
 
-	std::string str = argv[2];
+      case YKUSH3_ENTER_BOOTLOADER:
+        if (bySerialFlag)
+          return ykush3.enter_bootloader (argv[3]); 
+        else
+          return ykush3.enter_bootloader (NULL);
+        break;
 
-	if ( str.compare( "-s" ) == 0 ) {	//BY SERIAL
-		
-		if ( argc < 6 ) {
-			ykush3.print_help();
-			return -1;
-		}
-		str = argv[4];
-		bySerialFlag = 1;
+      default:
+        ykush3.print_help ();
+        return -1;
+        break;
 
-		if ( str.compare( "-u" ) == 0 ) {
-			action = YKUSH3_PORT_UP;
-			port = argv[5][0];
-			
-		} else if ( str.compare( "-d" ) == 0 ) {
-			
-			action = YKUSH3_PORT_DOWN;
-			port = argv[5][0];
-			
-		} else if ( str.compare( "-g" ) == 0 ) {
-			
-			action = YKUSH3_GET_STATUS;
-			port = argv[5][0];
-			
-		} else if ( str.compare( "-on" ) == 0 ) {
-			action = YKUSH3_EXT_CTRL_ON;
-		} else if ( str.compare( "-off" ) == 0 ) {
-			action = YKUSH3_EXT_CTRL_OFF;
-		} else if ( str.compare( "-w" ) == 0 ) {
-			
-			if ( argc < 7 ) {
-				ykush3.print_help();
-				return -1;
-			}
-			action = YKUSH3_WRITE_IO;
-			port = argv[5][0];
-			value = argv[6][0]; 
-			
-		} else if ( str.compare( "-r" ) == 0 ) { 
-			
-			action = YKUSH3_READ_IO;
-			port = argv[5][0];
-			
-		} else if ( str.compare( "-c" ) == 0 ) { 
-			action = YKUSH3_CONFIG;
-			port = argv[5][0];
-			value = argv[6][0];
-		} else if ( str.compare( "--reset" ) == 0 ) { 
-			action = YKUSH3_RESET;
-		} else if ( str.compare( "--gpio" ) == 0 ) {
-			std::string str2 = argv[5];
-			if ( str2.compare( "enable" ) == 0 ) {
-				action = YKUSH3_GPIO_EN;
-			} else if ( str2.compare( "disable" ) == 0 ) {
-				action = YKUSH3_GPIO_DIS;
-			} else {
-				ykush3.print_help();
-				return -1;
-			}
-		} else if ( str.compare( "--boot" ) == 0 ) { 
-			action = YKUSH3_ENTER_BOOTLOADER;		
-		} else {
-			ykush3.print_help();
-			return -1;
-		}
-	} else if ( str.compare( "-u" ) == 0 ) {
-		if ( argc < 3 ) {
-			ykush3.print_help();
-			return -1;
-		}
-		action = YKUSH3_PORT_UP;
-		port = argv[3][0];
-	} else if ( str.compare( "-d" ) == 0 ) {
-		if ( argc < 4 ) {
-			ykush3.print_help();
-			return -1;
-		}
-		action = YKUSH3_PORT_DOWN;
-		port = argv[3][0];
-	} else if ( str.compare( "-l" ) == 0 ) {
-		action = YKUSH3_LIST_BOARDS;
-	} else if ( str.compare( "-g" ) == 0 ) {
-		if ( argc < 4 ) {
-			ykush3.print_help();
-			return -1;
-		}
-		action = YKUSH3_GET_STATUS;
-		port = argv[3][0];
-	} else if ( str.compare( "-on" ) == 0 ) {
-		action = YKUSH3_EXT_CTRL_ON;
-	} else if ( str.compare( "-off" ) == 0 ) {
-		action = YKUSH3_EXT_CTRL_OFF;
-	} else if ( str.compare( "-w" ) == 0 ) {
-		if ( argc < 5 ) {
-			ykush3.print_help();
-			return -1;
-		}
-		action = YKUSH3_WRITE_IO;
-		port = argv[3][0];
-		value = argv[4][0];
-	} else if ( str.compare( "-r" ) == 0 ) { 
-		action = YKUSH3_READ_IO;
-		port = argv[3][0];
-	} else if ( str.compare( "-c" ) == 0 ) {
-		if ( argc < 5 ) {
-			ykush3.print_help();
-			return -1;
-		}
-		action = YKUSH3_CONFIG;
-		port = argv[3][0];
-		value = argv[4][0];
-	} else if ( str.compare( "--reset" ) == 0 ) {
-		action = YKUSH3_RESET;
-	} else if ( str.compare( "--boot" ) == 0 ) { 
-			action = YKUSH3_ENTER_BOOTLOADER;
-	} else if ( str.compare( "--gpio" ) == 0 ) {
-			std::string str2 = argv[3];
-			if ( str2.compare( "enable" ) == 0 ) {
+      }
 
-			} else if ( str2.compare( "disable" ) == 0 ) {
-				action = YKUSH3_GPIO_DIS;
-			} else {
-				ykush3.print_help();
-				return -1;
-			}
-	} else {
-		ykush3.print_help();
-		return -1;
-	}
-
-
-	switch ( action ) {
-	case YKUSH3_PORT_UP:
-		if ( bySerialFlag ) 
-			return ykush3.port_up(argv[3], port); 
-		else
-			return ykush3.port_up(NULL, port); 
-		break;
-	case YKUSH3_PORT_DOWN:
-		if ( bySerialFlag )
-			return ykush3.port_down(argv[3], port); 
-		else
-			return ykush3.port_down(NULL, port); 
-		break;
-	case YKUSH3_LIST_BOARDS:
-		ykush3_list_attached(); 
-		break;
-	case YKUSH3_GET_STATUS:
-		if ( bySerialFlag ) {
-			status_response = ykush3.get_port_status(argv[3], port);
-			if ( status_response < 0 )
-				return status_response;
-			if ( status_response >> 4 )
-				printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F );
-			else 
-				printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
-			return 0;
-		} else {
-			status_response = ykush3.get_port_status(NULL, port);
-			if ( status_response < 0 )
-				return status_response;
-			if ( status_response >> 4 )
-			     printf("\n\nDownstream port %d is ON\n\n", status_response & 0x0F);
-			else 
-			     printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
-			return 0;
-		}   
-		break;
-	case YKUSH3_EXT_CTRL_ON:
-		if ( bySerialFlag )
-			return ykush3.port_up(argv[3], '4'); 
-		else
-			return ykush3.port_up(NULL, '4'); 
-		break;
-	case YKUSH3_EXT_CTRL_OFF:
-		if ( bySerialFlag )
-			return ykush3.port_down(argv[3], '4'); 
-		else
-			return ykush3.port_down(NULL, '4'); 
-		break;
-	case YKUSH3_WRITE_IO:
-		if ( bySerialFlag )
-			return ykush3.write_io(argv[3], port, value); 
-		else
-			return ykush3.write_io(NULL, port, value); 
-		return 0;
-		break;
-	case YKUSH3_READ_IO:
-		if ( bySerialFlag )
-			printf("\n%d\n", ykush3.read_io(argv[3], port)); 
-		else
-			printf("\n%d\n", ykush3.read_io(NULL, port)); 
-		return 0;
-		break;
-	case YKUSH3_CONFIG:
-		if ( bySerialFlag )
-		    	return ykush3.config_port(argv[3], port, value); 
-		else
-		    	return ykush3.config_port(NULL, port, value); 
-		break;
-
-	case YKUSH3_RESET:
-		if ( bySerialFlag )
-			return ykush3.reset(argv[3]); 
-		else
-			return ykush3.reset(NULL); 
-		break;
-	case YKUSH3_GPIO_EN:
-		if ( bySerialFlag )
-			return ykush3.gpio_ctrl_enable(argv[3]); 
-		else
-			return ykush3.gpio_ctrl_enable(NULL); 
-		break;
-	case YKUSH3_GPIO_DIS:
-		if ( bySerialFlag )
-			return ykush3.gpio_ctrl_disable(argv[3]); 
-		else
-			return ykush3.gpio_ctrl_disable(NULL); 
-		break;
-	case YKUSH3_ENTER_BOOTLOADER:
-		if ( bySerialFlag )
-			return ykush3.enter_bootloader(argv[3]); 
-		else
-			return ykush3.enter_bootloader(NULL);
-		break;
-	default:
-		ykush3.print_help();
-		return -1;
-		break;
-	}
-
-}
+    return 0;
+  }
 
 
 
@@ -632,38 +588,41 @@ int Ykush3::reset(char *serial)
 
 
 
-int Ykush3::gpio_ctrl_enable(char *serial)
-{
+int
+Ykush3::gpio_ctrl_enable (char *serial)
+  {
     hid_report_out[0] = 0x32;
     hid_report_out[1] = 0x01;
     
     //send HID report to board
-    sendHidReport(serial, hid_report_out, hid_report_in, 64);
-
-}
-
-
-
-int Ykush3::gpio_ctrl_disable(char *serial)
-{
-	hid_report_out[0] = 0x32;
-	hid_report_out[1] = 0x00;
-	
-	//send HID report to board
-	sendHidReport(serial, hid_report_out, hid_report_in, 64);
-
-}
+    sendHidReport (serial, hid_report_out, hid_report_in, 64);
+    return 0;
+  }
 
 
 
-int Ykush3::enter_bootloader(char *serial)
-{
-	hid_report_out[0] = 0x42;
-	
-	//send HID report to board
-	sendHidReport(serial, hid_report_out, hid_report_in, 64);
+int
+Ykush3::gpio_ctrl_disable (char *serial)
+  {
+    hid_report_out[0] = 0x32;
+    hid_report_out[1] = 0x00;
+    
+    //send HID report to board
+    sendHidReport (serial, hid_report_out, hid_report_in, 64);
+    return 0;
+  }
 
-}
+
+
+int 
+Ykush3::enter_bootloader (char *serial)
+  {
+    hid_report_out[0] = 0x42;
+    
+    //send HID report to board
+    sendHidReport (serial, hid_report_out, hid_report_in, 64);
+    return 0;
+  }
 
 
 
