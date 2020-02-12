@@ -26,7 +26,7 @@ Help::Help(char *exec_name)
 }
 
 void Help::print_version(void) {
-	std::cout << "YKUSHCMD Version 1.2.1\n";
+	std::cout << "YKUSHCMD Version 1.2.2\n";
 }
 
 void Help::print_usage(void)
