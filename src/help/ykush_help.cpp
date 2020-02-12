@@ -110,6 +110,8 @@ void Help::print_ykush3(void)
 	std::cout << "-w 1|2|3 0|1              Write to the GPIO with the number provided (1, 2 or 3).\n";
 	std::cout << "                          Writing a value of 1 or 0 will drive the GPIO to logical high or low, respectively.\n";
 
+  std::cout << "--gpio enable|disable     Enable / Disable GPIO control interface. Will become active on next reset/power-on.\n\n";
+
 	std::cout << "--reset                   Resets (reboot) the YKUSH3 board.\n";
 
 	std::cout << "-h                        Display help for YKUSH board specific commands.\n";

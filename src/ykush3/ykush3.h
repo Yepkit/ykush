@@ -45,7 +45,8 @@ enum ykush3Action {
 	YKUSH3_I2C_SET_ADRRESS,
 	YKUSH3_I2C_WRITE,
 	YKUSH3_I2C_READ,
-
+  YKUSH3_FIRMWARE_VERSION,
+  YKUSH3_BOOTLOADER_VERSION,
 	YKUSH3_HELP
 };
 
@@ -56,7 +57,8 @@ class Ykush3 : public UsbDevice
 
 		Ykush3()
 		: UsbDevice(0x04D8, 0xF11B)
-		{     
+		{  
+      usb_serial = NULL;
 		}
 
 		//Downstream ports and 5V EXT port control 
@@ -96,8 +98,8 @@ class Ykush3 : public UsbDevice
 		int i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read);	//ToDo
 
 		//Versioning
-		int display_version_bootloader(void);
-		int display_version_firmware(void);
+		int display_version_bootloader (void);
+		int display_version_firmware (void);
 
 		int set_usb_serial(char *serial);
 	

@@ -47,12 +47,15 @@ ykush3_cmd_parser (int argc, char** argv)
     std::string str = argv[2];
 
     if (str.compare ("-s") == 0) 
-      {	//BY SERIAL
+      {	
+        //BY SERIAL
         if (argc < 6) 
           {
             ykush3.print_help ();
             return -1;
           }
+        // set serialç in object
+        ykush3.set_usb_serial(argv[3]);
 
         str = argv[4];
         bySerialFlag = 1;
@@ -62,7 +65,7 @@ ykush3_cmd_parser (int argc, char** argv)
             port = argv[5][0];
           }
         else if (str.compare ("-d") == 0 ) 
-          {
+          {  
             action = YKUSH3_PORT_DOWN;
             port = argv[5][0];
           }
@@ -125,13 +128,22 @@ ykush3_cmd_parser (int argc, char** argv)
         else if (str.compare ("--boot") == 0) 
           { 
             action = YKUSH3_ENTER_BOOTLOADER;		
-          } 
+          }
+        else if (str.compare ("--firmware-version") == 0)
+          {
+            action = YKUSH3_FIRMWARE_VERSION;
+          }
+        else if (str.compare ("--bootloader-version") == 0)
+          {
+            action = YKUSH3_BOOTLOADER_VERSION;
+          }
         else
           {
             ykush3.print_help ();
             return -1;
           }
       }
+    // Without serial prefix
     else if (str.compare ("-u") == 0) 
       {
         if (argc < 3)
@@ -225,6 +237,14 @@ ykush3_cmd_parser (int argc, char** argv)
               ykush3.print_help ();
               return -1;
             }
+      }
+    else if (str.compare ("--firmware-version") == 0)
+      {
+        action = YKUSH3_FIRMWARE_VERSION;
+      }
+    else if (str.compare ("--bootloader-version") == 0)
+      {
+        action = YKUSH3_BOOTLOADER_VERSION;
       }
     else
       {
@@ -342,6 +362,14 @@ ykush3_cmd_parser (int argc, char** argv)
           return ykush3.enter_bootloader (NULL);
         break;
 
+      case YKUSH3_FIRMWARE_VERSION:
+        return ykush3.display_version_firmware ();
+        break;
+      
+      case YKUSH3_BOOTLOADER_VERSION:
+        return ykush3.display_version_bootloader ();
+        break;
+
       default:
         ykush3.print_help ();
         return -1;
@@ -351,6 +379,7 @@ ykush3_cmd_parser (int argc, char** argv)
 
     return 0;
   }
+
 
 
 
@@ -752,39 +781,44 @@ int Ykush3::i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned ch
 }
 
 
-int Ykush3::display_version_bootloader(void)
-{
-	hid_report_out[0] = 0x61;
-	hid_report_out[1] = 0x01;
-	if ( sendHidReport(usb_serial, hid_report_out, hid_report_in, 64) != 0 ) {
-		std::cout << "Unable to get bootloader version \n";
-		return 1; 
-	}
-	//print response
-	if ( ( hid_report_in[0] != 0x01 ) && ( hid_report_in[0] != 0x61 ) ) {
-		std::cout << "Bootloader version-1.0.0\n";
-		return 0; 
-	}
-	std::cout << "Bootloader version-" << hid_report_in[2] << "." << hid_report_in[3] << "." << hid_report_in[4];
-	return 0;
-}
+int 
+Ykush3::display_version_bootloader (void)
+  {
+    int major, minor, patch;
+    hid_report_out[0] = 0x61;
+    hid_report_out[1] = 0x01;
+    if (sendHidReport (usb_serial, hid_report_out, hid_report_in, 64) != 0 ) 
+      {
+        std::cout << "Unable to get bootloader version \n";
+        return 1; 
+      }
+    //print response
+    if ((hid_report_in[0] != 0x01) && (hid_report_in[0] != 0x61)) 
+      {
+        std::cout << "Bootloader version-0.10.0\n";
+        return 0; 
+      }
+
+    std::cout << "Bootloader version-" << (int) hid_report_in[2] << "." << (int) hid_report_in[3] << "." << (int) hid_report_in[4] << std::endl;
+    return 0;
+  }
 		
 
-int Ykush3::display_version_firmware(void)
-{
-	hid_report_out[0] = 0x61;
-	hid_report_out[1] = 0x02;
-	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
-	//print response
-	if ( ( hid_report_in[0] != 0x01 ) && ( hid_report_in[0] != 0x61 ) ) {
-		std::cout << "Firmware version-1.0.0\n";
-		std::cout << "There is a new version of the firmware available for download in yepkit.com.\n";
-		std::cout << "Please consider updating the boot loader for unlocking the newest board features.\n";
-		return 0; 
-	}
-	std::cout << "Bootloader version-" << hid_report_in[2] << "." << hid_report_in[3] << "." << hid_report_in[4];
-	return 0;
-}
+int
+Ykush3::display_version_firmware (void)
+  {
+    hid_report_out[0] = 0x61;
+    hid_report_out[1] = 0x02;
+    sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
+    //print response
+    if (( hid_report_in[0] != 0x01) && (hid_report_in[0] != 0x61))
+      {
+        std::cout << "Firmware version-1.0.0\n";
+        return 0; 
+      }
+    std::cout << "Firmware version-" << (int) hid_report_in[2] << "." << (int) hid_report_in[3] << "." << (int) hid_report_in[4] << std::endl;
+    return 0;
+  }
 
 
 
