@@ -20,19 +20,19 @@ limitations under the License.
 #include <stdio.h>
 
 
-
 Help::Help(char *exec_name)
 {
 	app_name = exec_name;
 }
 
-void Help::print_version(void) {
-	std::cout << "YKUSHCMD Version 1.2.0\n";
+void Help::print_version(void) 
+{
+	std::cout << "YKUSHCMD Version 1.2.2\n";
 }
 
 void Help::print_usage(void)
 {
-	std::cout << "Usage:\t" << app_name << " [board_name] [-s serial_number] [OPTION]...\n";
+        std::cout << "Usage:\t" << app_name << " [board_name] [-s serial_number] [OPTION]...\n";
 	std::cout << "Control Yepkit YKUSH family boards.\n";
 }
 
@@ -50,9 +50,9 @@ void Help::print_board_names(void)
 
 void Help::print_common_options(void)
 {
-	
 
-	
+
+
 }
 
 void Help::print_ykush(void)
@@ -97,7 +97,12 @@ void Help::print_ykush3(void)
 
 	std::cout << "-l                        Lists the serial numbers of the YKUSH boards attached to the host.\n";
 
-	std::cout << "-g 1|2|3                  Switching state of a downstream port.\n";
+        std::cout << "-g 1|2|3                  Switching state of a downstream port.\n";
+        
+        std::cout << "-c <port-number> <config-value>       Configure the default state of a downstream port\n";
+        std::cout << "                                      (port-number=1|2|3) at power-on.\n";
+        std::cout << "                                      The default states are off (config-value=0), on (config-value=1)\n";
+        std::cout << "                                      and persistent (config-value=2).\n";
 
 	std::cout << "-on                       Switch On the 5V output power port.\n";
 	std::cout << "-off                      Switch Off the 5V output power port.\n";
@@ -106,9 +111,14 @@ void Help::print_ykush3(void)
 	std::cout << "-w 1|2|3 0|1              Write to the GPIO with the number provided (1, 2 or 3).\n";
 	std::cout << "                          Writing a value of 1 or 0 will drive the GPIO to logical high or low, respectively.\n";
 
+        std::cout << "--gpio enable|disable     Enable / Disable GPIO control interface. Will become active on next reset/power-on.\n\n";
+
 	std::cout << "--reset                   Resets (reboot) the YKUSH3 board.\n";
 
 	std::cout << "-h                        Display help for YKUSH board specific commands.\n";
+
+        std::cout << "--bootloader-version      Board bootloader version.\n";
+        std::cout << "--firmware-version        Board firmware version.\n";
 }
 
 void Help::print_ykushxs(void)
@@ -132,7 +142,7 @@ void Help::print_ykushxs(void)
 }
 
 
-void Help::print_all(void) 
+void Help::print_all(void)
 {
 	print_version();
 	print_usage();

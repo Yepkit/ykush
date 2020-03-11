@@ -10,4 +10,5 @@ bin/ykushcmd*
 nbproject
 doc/ykushcmd-doxygen/*
 .vscode
+dev/
 
