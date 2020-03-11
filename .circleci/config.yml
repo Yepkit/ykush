@@ -3,7 +3,6 @@ version: 2.1
 orbs:
   win: circleci/windows@1.0.0
 
-
 workflows:
   version: 2
   builds:
@@ -16,10 +15,10 @@ workflows:
           filters:  # required since `deploy` has tag filters AND requires `build`
             tags:
               only: /.*/
-      - build-mac:
-          filters:  # required since `deploy` has tag filters AND requires `build`
-            tags:
-              only: /.*/
+      #- build-mac:
+      #    filters:  # required since `deploy` has tag filters AND requires `build`
+      #      tags:
+      #        only: /.*/
 
 jobs:
   build-linux:
@@ -74,19 +73,19 @@ jobs:
       #- store_artifacts:
       #    path: bin/Win32/ykushcmd_win32.exe
       #    destination: bin/win32/ykushcmd.exe
-  build-mac:
-    macos:  # indicate that we are using the macOS executor
-      xcode: "10.0.0" # indicate our selected version of Xcode
-    steps:
-      - checkout
-      - run:
-          name: install deps
-          command: brew install gcc make libhid
-      - run:
-          name: build
-          command: |
-            make
-            bin/ykushcmd -h
-      - store_artifacts:
-          path: bin/ykushcmd
-          destination: bin/macos/ykushcmd
+  #build-mac:
+  #  macos:  # indicate that we are using the macOS executor
+  #    xcode: "10.0.0" # indicate our selected version of Xcode
+  #  steps:
+  #    - checkout
+  #    - run:
+  #        name: install deps
+  #        command: brew install gcc make libhid
+  #    - run:
+  #        name: build
+  #        command: |
+  #          make
+  #          bin/ykushcmd -h
+  #    - store_artifacts:
+  #        path: bin/ykushcmd
+  #        destination: bin/macos/ykushcmd
