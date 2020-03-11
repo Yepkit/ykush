@@ -31,7 +31,10 @@ int ykush_cmd_parser(int argc, char** argv)
 	char port;
 	char status_response = 0;
 
-	
+    if((argv[1][0]=='-') && (argv[1][1]=='h')) {
+        ykush.print_help(argv[0]);
+        return 0;
+    }
 	if((argv[1][0]=='-') && (argv[1][1]=='s')) {
 		if(argc < 5) {
 			ykush.print_help(argv[0]);
@@ -109,7 +112,7 @@ int ykush_cmd_parser(int argc, char** argv)
 		break;
 
 	case YKUSH_LIST_BOARDS:
-			return ykush_list_attached(); 
+			return ykush_list_attached();
 		break;
 
 	case YKUSH_GET_STATUS:
@@ -127,31 +130,30 @@ int ykush_cmd_parser(int argc, char** argv)
 			} else {
 				printf("\n\nDownstream port %d is OFF\n\n", status_response & 0x0F);
 			}
-		}   
+		}
 		break;
 
 	default:
 		ykush.print_help(argv[0]);
 		return -1;
-		break;
 	}
 	return 0;
 }
 
 
 int Ykush::port_up(char *serial, char port)
-{  
+{
 	switch(port) {
 	case '1':
 		hid_report_out[0] = 0x11;
 		break;
-	case '2':     
+	case '2':
 		hid_report_out[0] = 0x12;
 		break;
-	case '3':     
+	case '3':
 		hid_report_out[0] = 0x13;
 		break;
-	case 'a':     
+	case 'a':
 		hid_report_out[0] = 0x1a;
 		break;
 	default:
@@ -168,7 +170,7 @@ int Ykush::port_up(char *serial, char port)
 
 	if ( res < 1 )
 		return res;
-	
+
 	if ( hid_report_in[0] == 0x01 )
 		return 0;
 	return -1;
@@ -182,13 +184,13 @@ int Ykush::port_down(char *serial, char port)
 	case '1':
 		hid_report_out[0] = 0x01;
 		break;
-	case '2':     
+	case '2':
 		hid_report_out[0] = 0x02;
 		break;
-	case '3':     
+	case '3':
 		hid_report_out[0] = 0x03;
 		break;
-	case 'a':     
+	case 'a':
 		hid_report_out[0] = 0x0a;
 		break;
 	default:
@@ -196,7 +198,7 @@ int Ykush::port_down(char *serial, char port)
 		break;
 
 	}
-	
+
 	int res;
 	if(is_legacy)
 		res = sendHidReport(serial, hid_report_out, hid_report_in, 6);
@@ -205,7 +207,7 @@ int Ykush::port_down(char *serial, char port)
 
 	if ( res < 1 )
 		return res;
-	
+
 	if ( hid_report_in[0] == 0x01 )
 		return 0;
 	return -1;
@@ -219,17 +221,17 @@ int Ykush::get_port_status(char *serial, char port)
 	case '1':
 		hid_report_out[0] = 0x21;
 		break;
-	case '2':     
+	case '2':
 		hid_report_out[0] = 0x22;
 		break;
-	case '3':     
+	case '3':
 		hid_report_out[0] = 0x23;
 		break;
 	default:
 		return -1;
 		break;
 	}
-	
+
 	int res;
 	if(is_legacy)
 		res = sendHidReport(serial, hid_report_out, hid_report_in, 6);
@@ -251,7 +253,7 @@ int ykush_list_attached()
 	Ykush ykush( 0xF2F7 );
 	Ykush ykushLegacy( 0x0042 );
 
-	printf("\nAttached YKUSH Boards:\n");        
+	printf("\nAttached YKUSH Boards:\n");
 	if( ykush.listConnected() == 0 ) {
 		if( ykushLegacy.listConnected() == 0 ) {
 			printf("\nNo YKUSH boards found.");
