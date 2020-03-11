@@ -35,7 +35,7 @@ int ykushxs_cmd_parser(int argc, char** argv)
 	char bySerialFlag = 0;
 	enum ykushxsAction action = YKUSHXS_HELP;
 	YkushXs ykushxs;
-	
+
 	if ( argc < 3 ) {
 		ykushxs.ykushxs_help(argv[0]);
 		return -1;
@@ -84,7 +84,7 @@ int ykushxs_cmd_parser(int argc, char** argv)
 		}
 		break;
 	case YKUSHXS_LIST_BOARDS:
-		return ykushxs_list_attached(); 
+		return ykushxs_list_attached();
 		break;
 	case YKUSHXS_GET_STATUS:
 		if ( bySerialFlag ){
@@ -99,22 +99,20 @@ int ykushxs_cmd_parser(int argc, char** argv)
 			} else {
 				printf("\n\nDownstream port is OFF\n\n");
 			}
-		}   
+		}
 		break;
 	default:
-		ykushxs.ykushxs_help(argv[0]); 
-		return -1;
+		ykushxs.ykushxs_help(argv[0]);
 		break;
-
 	}
-
+    return -1;
 }
 
 
 int YkushXs::port_up(char *serial) {
 
 	hid_report_out[0] = 0x11;   //port up
-	
+
 	int res = sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
 	if ( res < 0 )
@@ -165,7 +163,7 @@ int ykushxs_list_attached()
 {
 	YkushXs ykushxs;
 
-	printf("\n\nAttached YKUSH XS Boards:\n");        
+	printf("\n\nAttached YKUSH XS Boards:\n");
 	if ( ykushxs.listConnected() == 0 ) {
 		printf("\nNo YKUSH XS boards found.");
 	}

@@ -70,18 +70,18 @@ enum Board {
 };
 
 
-int commandParser(int argc, char** argv) 
-{	
-    	Help help(argv[0]);
+int commandParser(int argc, char** argv)
+{
+    Help help(argv[0]);
 	std::string str_ykush ("ykush");
 	std::string str_ykush3 ("ykush3");
 	std::string str_ykush2 ("ykush2");
 	std::string str_ykushxs ("ykushxs");
 
   	if ( argc <= 1) {
-        	help.print_all();
+        help.print_all();
 		return 0;
-    	}
+    }
 
 	//Parse input options and define action
 	if( argc >= 2) {
@@ -101,14 +101,12 @@ int commandParser(int argc, char** argv)
 				return ykush_cmd_parser(argc - 1 , &argv[1]);
 			else
 				help.print_all();
-			
 			return -1;
 		} else {
 			//YKUSH
 			return ykush_cmd_parser(argc, argv);
 		}
 	}
-	
 	return 0;
 }
 

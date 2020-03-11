@@ -381,38 +381,34 @@ ykush3_cmd_parser (int argc, char** argv)
   }
 
 
-
-
 int Ykush3::port_up(char *serial, char port)
-{  
+{
 	switch(port) {
 	case '1':
 		hid_report_out[0] = 0x11;
 		break;
 
-	case '2':     
+	case '2':
 		hid_report_out[0] = 0x12;
 		break;
-		
-	case '3':     
+
+	case '3':
 		hid_report_out[0] = 0x13;
 		break;
 
-	case 'a':     
+	case 'a':
 		hid_report_out[0] = 0x1a;
 		break;
 
-	case '4':     
+	case '4':
 		hid_report_out[0] = 0x14;
 		break;
 
 	default:
 		return -1;
-		break;
-
 	}
-    
-    
+
+
     //send HID report to board
     return sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
@@ -428,31 +424,29 @@ int Ykush3::port_down(char *serial, char port)
             hid_report_out[0] = 0x01;
             break;
 
-        case '2':     
+        case '2':
             hid_report_out[0] = 0x02;
             break;
-        
-        case '3':     
+
+        case '3':
             hid_report_out[0] = 0x03;
             break;
 
-        case 'a':     
+        case 'a':
             hid_report_out[0] = 0x0a;
             break;
-        
+
         case '4':
             hid_report_out[0] = 0x04;
             break;
 
         default:
             return 0;
-            break;
-
     }
-  
+
     //send HID report to board
     return sendHidReport(serial, hid_report_out, hid_report_in, 64);
-   
+
 
 }
 
@@ -460,7 +454,7 @@ int Ykush3::port_down(char *serial, char port)
 
 int Ykush3::get_port_status(char *serial, char port)
 {
-    int status;      
+    int status;
 
     switch(port)
     {
@@ -468,25 +462,23 @@ int Ykush3::get_port_status(char *serial, char port)
             hid_report_out[0] = 0x21;
             break;
 
-        case '2':     
+        case '2':
             hid_report_out[0] = 0x22;
             break;
-        
-        case '3':     
+
+        case '3':
             hid_report_out[0] = 0x23;
             break;
 
-        case '4':     
+        case '4':
             hid_report_out[0] = 0x24;
             break;
 
         default:
             return 0;
-            break;
-
     }
-  
-    //send HID report to board 
+
+    //send HID report to board
     sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
     //handle board response HID report
@@ -502,9 +494,9 @@ int Ykush3::write_io(char *serial, char port, char value)
 
     hid_report_out[0] = 0x31;
     if(value=='0'){
-        hid_report_out[2] = 0; 
+        hid_report_out[2] = 0;
     } else {
-        hid_report_out[2] = 1; 
+        hid_report_out[2] = 1;
     }
 
 
@@ -514,20 +506,20 @@ int Ykush3::write_io(char *serial, char port, char value)
             hid_report_out[1] = 0x01;
             break;
 
-        case '2':     
+        case '2':
             hid_report_out[1] = 0x02;
             break;
-        
-        case '3':     
+
+        case '3':
             hid_report_out[1] = 0x03;
             break;
- 
+
         default:
             return 0;
             break;
 
     }
-    
+
     //send HID report to board
     return sendHidReport(serial, hid_report_out, hid_report_in, 64);
 
@@ -537,7 +529,7 @@ int Ykush3::write_io(char *serial, char port, char value)
 
 int Ykush3::read_io(char *serial, char port)
 {
-    
+
     hid_report_out[0] = 0x30;
 
     switch(port)
@@ -546,53 +538,53 @@ int Ykush3::read_io(char *serial, char port)
             hid_report_out[1] = 0x01;
             break;
 
-        case '2':     
+        case '2':
             hid_report_out[1] = 0x02;
             break;
-        
-        case '3':     
+
+        case '3':
             hid_report_out[1] = 0x03;
             break;
- 
+
         default:
             return 0;
             break;
 
     }
-    
-    
+
+
     //send HID report to board
     return sendHidReport(serial, hid_report_out, hid_report_in, 64);
-    
+
     //process response
     return hid_report_in[3];
 
 }
 
- 
+
 int Ykush3::config_port(char *serial, char port, char value)
 {
 	hid_report_out[0] = 0x41;
 	if ( value == '0' )
-		hid_report_out[2] = 0; 
+		hid_report_out[2] = 0;
 	else if ( value == '1' )
-		hid_report_out[2] = 1; 
+		hid_report_out[2] = 1;
 	else
 		hid_report_out[2] = 2;	//Persist mode
-	
+
 
 
 	switch ( port ) {
 	case '1':
 		hid_report_out[1] = 0x01;
 		break;
-	case '2':     
+	case '2':
 		hid_report_out[1] = 0x02;
 		break;
-	case '3':     
+	case '3':
 		hid_report_out[1] = 0x03;
 		break;
-	case 'e':     
+	case 'e':
 		hid_report_out[1] = 0x04;
 		break;
 	default:
@@ -608,11 +600,10 @@ int Ykush3::config_port(char *serial, char port, char value)
 
 int Ykush3::reset(char *serial)
 {
-	hid_report_out[0] = 0x55;        
-	
+	hid_report_out[0] = 0x55;
+
 	//send HID report to board
-	sendHidReport(serial, hid_report_out, hid_report_in, 64);
-	return 0;
+	return sendHidReport(serial, hid_report_out, hid_report_in, 64);
 }
 
 
@@ -654,15 +645,14 @@ Ykush3::enter_bootloader (char *serial)
   }
 
 
-
-int Ykush3::i2c_enable_disable_control(bool enable_flag) 
+int Ykush3::i2c_enable_disable_control(bool enable_flag)
 {
 	hid_report_out[0] = 0x51;
 	hid_report_out[1] = 0x01;
-	
+
 	if ( enable_flag )
 		hid_report_out[2] = 0x01;
-	else 
+	else
 		hid_report_out[2] = 0x00;
 
 	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
@@ -670,7 +660,7 @@ int Ykush3::i2c_enable_disable_control(bool enable_flag)
 	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
 		//command executed with success
 		return 0;
-	} 
+	}
 
 	return 1;
 }
@@ -683,7 +673,7 @@ int Ykush3::i2c_enable_disable_gateway(bool enable_flag)
 
 	if ( enable_flag )
 		hid_report_out[2] = 0x01;
-	else 
+	else
 		hid_report_out[2] = 0x00;
 
 	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
@@ -691,7 +681,7 @@ int Ykush3::i2c_enable_disable_gateway(bool enable_flag)
 	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
 		//command executed with success
 		return 0;
-	} 
+	}
 
 	return 1;
 }
@@ -729,7 +719,7 @@ int Ykush3::i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **dat
 	if ( size <= 0 )
 		return 1;
 	dec2bin(num_bytes_ASCII, &hid_report_out[3], size);
-	if ( hid_report_out[3] > 60 ) 
+	if ( hid_report_out[3] > 60 )
 		return 2;
 
 	//convert data_to_write_ASCII to binary
@@ -772,7 +762,7 @@ int Ykush3::i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned ch
 		for (i = 0; (i < hid_report_in[2]) && (i < 60); i++) {
 			data_buffer[i] = hid_report_in[i + 4];
 		}
-		*bytes_read = i; 
+		*bytes_read = i;
 	} else {
 		return 1;
 	}
@@ -821,19 +811,18 @@ Ykush3::display_version_firmware (void)
   }
 
 
-
-int Ykush3::set_usb_serial(char *serial) 
+int Ykush3::set_usb_serial(char *serial)
 {
 	usb_serial = serial;
 	return 0;
 }
 
 
- 
+
 int ykush3_list_attached()
 {
 	Ykush3 ykush3;
-	printf("\n\nAttached YKUSH Boards:\n");        
+	printf("\n\nAttached YKUSH Boards:\n");
 	if( ykush3.listConnected() == 0 )
 		printf("\n\nNo YKUSH boards found.");
 	printf("\n\n");
@@ -841,7 +830,7 @@ int ykush3_list_attached()
 }
 
 
-void Ykush3::print_help(void) 
+void Ykush3::print_help(void)
 {
 	Help help(app_exc_name);
 

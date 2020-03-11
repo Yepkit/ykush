@@ -1,0 +1,91 @@
+version: 2.1
+
+orbs:
+  win: circleci/windows@1.0.0
+
+workflows:
+  version: 2
+  builds:
+    jobs:
+      - build-linux:
+          filters:  # required since `deploy` has tag filters AND requires `build`
+            tags:
+              only: /.*/
+      - build-windows:
+          filters:  # required since `deploy` has tag filters AND requires `build`
+            tags:
+              only: /.*/
+      #- build-mac:
+      #    filters:  # required since `deploy` has tag filters AND requires `build`
+      #      tags:
+      #        only: /.*/
+
+jobs:
+  build-linux:
+    working_directory: ~/ykush
+    docker:
+      - image: gcc
+    steps:
+      - checkout
+      - run:
+          name: install deps
+          command: |
+            apt update
+            apt install -y libusb-1.0-0 libusb-1.0-0-dev
+      - run:
+          name: build
+          command: |
+            make
+            bin/ykushcmd -h
+      - store_artifacts:
+          path: bin/ykushcmd
+          destination: bin/linux/ykushcmd
+  build-windows:
+    executor:
+      name: win/vs2019
+      shell: powershell.exe
+    working_directory: ~/ykush
+    steps:
+      - checkout
+      - run:
+          name: "Install deps"
+          command: choco install mingw make
+      - run:
+          name: "Build 64"
+          command: |
+            make -f Makefile_win64
+            bin/Win64/ykushcmd_win64.exe -h
+      - store_artifacts:
+          path: bin/Win64/libhidapi.dll
+          destination: bin/win64/libhidapi.dll
+      - store_artifacts:
+          path: bin/Win64/ykushcmd_win64.exe
+          destination: bin/win64/ykushcmd.exe
+      # should install mingw32
+      #- run:
+      #    name: "Build 32"
+      #    command: |
+      #      make -f Makefile_win32
+      #      bin/Win32/ykushcmd_win32.exe -h
+      #- store_artifacts:
+      #    path: bin/Win32/libhidapi.dll
+      #    destination: bin/win32/libhidapi.dll
+      #- store_artifacts:
+      #    path: bin/Win32/ykushcmd_win32.exe
+      #    destination: bin/win32/ykushcmd.exe
+  #build-mac:
+  #  macos:  # indicate that we are using the macOS executor
+  #    xcode: "10.0.0" # indicate our selected version of Xcode
+  #  steps:
+  #    - checkout
+  #    - run:
+  #        name: install deps
+  #        command: brew install gcc make libhid
+  #    - run:
+  #        name: build
+  #        command: |
+  #          make
+  #          bin/ykushcmd -h
+  #    - store_artifacts:
+  #        path: bin/ykushcmd
+  #        destination: bin/macos/ykushcmd
