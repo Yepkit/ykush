@@ -100,7 +100,7 @@ void Help::print_ykush3(void)
         std::cout << "-g 1|2|3                  Switching state of a downstream port.\n";
         
         std::cout << "-c <port-number> <config-value>       Configure the default state of a downstream port\n";
-        std::cout << "                                      (port-number=1|2|3) at power-on.\n";
+        std::cout << "                                      (port-number=1|2|3|e) at power-on. The port number <e> refers to exteranl 5V port.\n";
         std::cout << "                                      The default states are off (config-value=0), on (config-value=1)\n";
         std::cout << "                                      and persistent (config-value=2).\n";
 
