@@ -62,33 +62,33 @@ class Ykush3 : public UsbDevice
 		}
 
 		//Downstream ports and 5V EXT port control 
-		int get_port_status(char *serial, char port);     //get downstream port status
+		int get_port_status(char port);     //get downstream port status
 
-		int port_up(char *serial, char port);
+		int port_up(char port);
 
-		int port_down(char *serial, char port);
+		int port_down(char port);
 
 
 		//GPIO control
-		int write_io(char *serial, char port, char value);
+		int write_io(char port, char value);
 
-		int read_io(char *serial, char port);
+		int read_io(char port);
 		
-		int gpio_ctrl_enable(char *serial);
+		int gpio_ctrl_enable(void);
 		
-		int gpio_ctrl_disable(char *serial);
+		int gpio_ctrl_disable(void);
 		
-		int enter_bootloader(char *serial);
+		int enter_bootloader(void);
 
 
 		//Configurations control
-		int config_port(char *serial, char port, char value);
+		int config_port(char port, char value);
 
 		//Reset
-		int reset(char *serial);
+		int reset(void);
 		
 		//Help
-		void print_help(void);
+		void print_help(char *app_name);
 
 		//I2C
 		int i2c_enable_disable_control(bool enable_flag);		//ToDo
@@ -102,9 +102,8 @@ class Ykush3 : public UsbDevice
 		int display_version_firmware (void);
 
 		int set_usb_serial(char *serial);
-	
-	private:
 
+	private:
 		char *usb_serial;
 };
 
@@ -115,6 +114,9 @@ class Ykush3 : public UsbDevice
 //---------------------------------
 //FUNCTIONS
 //---------------------------------
+
+
+int ykush3_action_parser(struct command_line *cmdl);
 
 int ykush3_cmd_parser(int argc, char** argv);
 
