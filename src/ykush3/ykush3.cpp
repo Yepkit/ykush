@@ -79,9 +79,10 @@ int ykush3_action_parser(struct command_line *cmdl)
 				return ykush3.i2c_enable_disable_gateway(false);	
 		} else if (opt_name.compare("--i2c-set-address") == 0) {
 			if (cur_opt->parameters)
-				return ykush3.i2c_set_address(cur_opt->parameters->value);
+				return ykush3.i2c_set_address(
+						cur_opt->parameters->value);
 		} else if (opt_name.compare("--i2c-write") == 0) {
-			// criar uma funcção que trate disto.	
+			return i2c_write_buffer(cur_opt);
 		}
 
 		cur_opt = cur_opt->next;
@@ -305,8 +306,6 @@ Ykush3::enter_bootloader (void)
     return 0;
   }
 
-
-
 int Ykush3::i2c_enable_disable_control(bool enable_flag) 
 {
 	hid_report_out[0] = 0x51;
@@ -319,14 +318,13 @@ int Ykush3::i2c_enable_disable_control(bool enable_flag)
 
 	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 
-	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
+	if ((hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51)) {
 		//command executed with success
 		return 0;
 	} 
 
 	return 1;
 }
-
 
 int Ykush3::i2c_enable_disable_gateway(bool enable_flag)
 {
@@ -348,7 +346,6 @@ int Ykush3::i2c_enable_disable_gateway(bool enable_flag)
 	return 1;
 }
 
-
 int Ykush3::i2c_set_address(char *i2c_address)
 {
 	std::cout << "i2c_set_address com address: " << i2c_address << std::endl;
@@ -359,7 +356,7 @@ int Ykush3::i2c_set_address(char *i2c_address)
 	hex2bin(i2c_address + 2, &hid_report_out[2], 2);
 	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 
-	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51) ) {
+	if ((hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x51)) {
 		//command executed with success
 		return 0;
 	}
@@ -368,7 +365,9 @@ int Ykush3::i2c_set_address(char *i2c_address)
 }
 
 
-int Ykush3::i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **data_to_write_ASCII)
+int Ykush3::i2c_write(char *i2c_address_ASCII,
+		char *num_bytes_ASCII,
+		char **data_to_write_ASCII)
 {
 	hid_report_out[0] = 0x52;
 	hid_report_out[1] = 0x01;
@@ -378,20 +377,21 @@ int Ykush3::i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **dat
 
 	//convert num_bytes_ASCII to binary
 	int size = strlen(num_bytes_ASCII);
-	if ( size <= 0 )
+	if (size <= 0)
 		return 1;
 	dec2bin(num_bytes_ASCII, &hid_report_out[3], size);
-	if ( hid_report_out[3] > 60 ) 
+	if (hid_report_out[3] > 60) 
 		return 2;
 
 	//convert data_to_write_ASCII to binary
-	for ( int i = 0; i < hid_report_out[3]; i++ ) {
+	for (int i = 0; i < hid_report_out[3]; i++) {
+		//BUG: isto não está bem!!!
 		hex2bin(num_bytes_ASCII + 2, &hid_report_out[i + 4], 2);
 	}
 
 	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 
-	if ( (hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x52) ) {
+	if ((hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x52)) {
 		//command executed with success
 		return 0;
 	}
@@ -399,7 +399,10 @@ int Ykush3::i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **dat
 }
 
 
-int Ykush3::i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read)
+int Ykush3::i2c_read(char *i2c_address_ASCII,
+		char *num_bytes_ASCII,
+		unsigned char *data_buffer,
+		int *bytes_read)
 {
 	hid_report_out[0] = 0x52;
 	hid_report_out[1] = 0x02;
@@ -439,7 +442,7 @@ Ykush3::display_version_bootloader (void)
     int major, minor, patch;
     hid_report_out[0] = 0x61;
     hid_report_out[1] = 0x01;
-    if (sendHidReport (usb_serial, hid_report_out, hid_report_in, 64) != 0 ) 
+    if (sendHidReport(usb_serial, hid_report_out, hid_report_in, 64) != 0)
       {
         std::cout << "Unable to get bootloader version \n";
         return 1; 
@@ -451,7 +454,13 @@ Ykush3::display_version_bootloader (void)
         return 0; 
       }
 
-    std::cout << "Bootloader version-" << (int) hid_report_in[2] << "." << (int) hid_report_in[3] << "." << (int) hid_report_in[4] << std::endl;
+    std::cout << "Bootloader version-"
+	    << (int) hid_report_in[2]
+	    << "."
+	    << (int) hid_report_in[3]
+	    << "."
+	    << (int) hid_report_in[4]
+	    << std::endl;
     return 0;
   }
 		
@@ -504,6 +513,22 @@ void Ykush3::print_help(char *app_name)
 
 
 
+int ykush3::i2c_write_buffer(struct command_option *cur_opt)
+{
+	if (cur_opt) {
+		char *param cur_opt->parameters->next;
+		char buffer[60][];
+		char num_bytes = 0;
+		while (param) {
+			
+
+			num_bytes++;
+			param = param->next;
+		}
+		return i2c_write(cur_opt->parameters->value, num_bytes, buffer);
+	}
+	return 1;
+}
 
 
 
