@@ -562,7 +562,7 @@ int Ykush3::read_io(char *serial, char port)
     
     
     //send HID report to board
-    return sendHidReport(serial, hid_report_out, hid_report_in, 64);
+    sendHidReport(serial, hid_report_out, hid_report_in, 64);
     
     //process response
     return hid_report_in[3];
