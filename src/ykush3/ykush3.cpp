@@ -833,9 +833,9 @@ int Ykush3::set_usb_serial(char *serial)
 int ykush3_list_attached()
 {
 	Ykush3 ykush3;
-	printf("\n\nAttached YKUSH Boards:\n");        
+	printf("\n\nAttached YKUSH 3 Boards:\n");        
 	if( ykush3.listConnected() == 0 )
-		printf("\n\nNo YKUSH boards found.");
+		printf("\n\nNo YKUSH 3 boards found.");
 	printf("\n\n");
 	return 0;
 }
