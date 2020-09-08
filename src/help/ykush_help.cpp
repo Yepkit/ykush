@@ -119,6 +119,8 @@ void Help::print_ykush3(void)
 
         std::cout << "--bootloader-version      Board bootloader version.\n";
         std::cout << "--firmware-version        Board firmware version.\n";
+        
+	std::cout << "--boot                    Enter bootloader mode for firmware update.\n";
 }
 
 void Help::print_ykushxs(void)
