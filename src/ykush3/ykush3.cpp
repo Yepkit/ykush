@@ -49,12 +49,12 @@ ykush3_cmd_parser (int argc, char** argv)
     if (str.compare ("-s") == 0) 
       {	
         //BY SERIAL
-        if (argc < 6) 
+        if (argc < 5) 
           {
             ykush3.print_help ();
             return -1;
           }
-        // set serialç in object
+        // set serial in object
         ykush3.set_usb_serial(argv[3]);
 
         str = argv[4];
