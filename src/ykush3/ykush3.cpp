@@ -36,7 +36,7 @@ int ykush3_action_parser(struct command_line *cmdl)
 		} else if (opt_name.compare("-d") == 0) {
 			return ykush3.port_down(cur_opt->parameters->value[0]);
 		} else if (opt_name.compare("-g") == 0) {
-			return ykush3.get_port_status(cur_opt->parameters->value[0]);
+                        return ykush3.get_port_status(cur_opt->parameters->value[0]);
 		} else if (opt_name.compare("-on") == 0) {
           		return ykush3.port_up('4'); 
 		} else if (opt_name.compare("-off") == 0) {
@@ -82,7 +82,7 @@ int ykush3_action_parser(struct command_line *cmdl)
 				return ykush3.i2c_set_address(
 						cur_opt->parameters->value);
 		} else if (opt_name.compare("--i2c-write") == 0) {
-			return i2c_write_buffer(cur_opt);
+			return ykush3.i2c_write_buffer(cur_opt);
 		}
 
 		cur_opt = cur_opt->next;
@@ -172,7 +172,30 @@ int Ykush3::get_port_status(char port)
     	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
     	
 	status = hid_report_in[1];
-    	return status;
+        switch (status) {
+        case 0x01:
+                std::cout << "Port 1 OFF\n";
+                break;
+        case 0x02:
+                std::cout << "Port 2 OFF\n";
+                break;
+        case 0x03:
+                std::cout << "Port 3 OFF\n";
+                break;
+        case 0x11:
+                std::cout << "Port 1 ON\n";
+                break;
+        case 0x12:
+                std::cout << "Port 2 ON\n";
+                break;
+        case 0x13:
+                std::cout << "Port 3 ON\n";
+                break;
+        default:
+                return -1;
+        }
+
+    	return 0;
 }
 
 
@@ -366,7 +389,7 @@ int Ykush3::i2c_set_address(char *i2c_address)
 
 
 int Ykush3::i2c_write(char *i2c_address_ASCII,
-		char *num_bytes_ASCII,
+		int num_bytes,
 		char **data_to_write_ASCII)
 {
 	hid_report_out[0] = 0x52;
@@ -376,17 +399,21 @@ int Ykush3::i2c_write(char *i2c_address_ASCII,
 	hex2bin(i2c_address_ASCII + 2, &hid_report_out[2], 2);
 
 	//convert num_bytes_ASCII to binary
+        /*
 	int size = strlen(num_bytes_ASCII);
 	if (size <= 0)
 		return 1;
-	dec2bin(num_bytes_ASCII, &hid_report_out[3], size);
-	if (hid_report_out[3] > 60) 
-		return 2;
+        dec2bin(num_bytes_ASCII, &hid_report_out[3], size);
+        */
+	if (num_bytes > 60) 
+		hid_report_out[3] = 60;
+        else
+                hid_report_out[3] = num_bytes;
 
 	//convert data_to_write_ASCII to binary
 	for (int i = 0; i < hid_report_out[3]; i++) {
 		//BUG: isto não está bem!!!
-		hex2bin(num_bytes_ASCII + 2, &hid_report_out[i + 4], 2);
+		hex2bin(data_to_write_ASCII[i], &hid_report_out[i + 4], 2);
 	}
 
 	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
@@ -513,15 +540,13 @@ void Ykush3::print_help(char *app_name)
 
 
 
-int ykush3::i2c_write_buffer(struct command_option *cur_opt)
+int Ykush3::i2c_write_buffer(struct command_option *cur_opt)
 {
 	if (cur_opt) {
-		char *param cur_opt->parameters->next;
-		char buffer[60][];
+		command_parameter *param = cur_opt->parameters->next;
+		char *buffer[60];
 		char num_bytes = 0;
 		while (param) {
-			
-
 			num_bytes++;
 			param = param->next;
 		}

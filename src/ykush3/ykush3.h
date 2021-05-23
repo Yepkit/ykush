@@ -101,7 +101,8 @@ class Ykush3 : public UsbDevice
 		int display_version_bootloader (void);
 		int display_version_firmware (void);
 
-		int set_usb_serial(char *sint i2c_write_buffer(struct command_option *cur_opt);
+		int set_usb_serial(char *s);
+                int i2c_write_buffer(struct command_option *cur_opt);
 };
 
 
