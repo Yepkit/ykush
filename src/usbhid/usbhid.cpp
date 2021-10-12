@@ -21,6 +21,7 @@ limitations under the License.
 #include <iostream>
 
 
+#if 0
 UsbHid::UsbHid()
 {
         usb_context = NULL;
@@ -405,3 +406,4 @@ int UsbHid::read(unsigned char *data, int length)
 
 	return actual_length;
 }
+#endif

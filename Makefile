@@ -17,14 +17,15 @@ OBJS = $(SOURCE_FULL:.cpp=.o)
 PROG_OBJ = $(PROG_SOURCE_FULL:.cpp=.o)
 
 DEFINES += _LINUX_
-DEFINES += _LIBUSB_
+#DEFINES += _LIBUSB_
 
 COMPILE_FLAGS += $(addprefix -D, $(DEFINES))
 
 CUR_PATH = $(shell echo $(PWD))
-INCLUDEPATHS = $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)) libusb )
+INCLUDEPATHS = $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)) libusb ) -I/opt/homebrew/include
 LOADPATHS = 
-LIBS = -lusb-1.0
+#LIBS = -lusb-1.0
+LIBS = -lhidapi
 CPP = g++
  
 
