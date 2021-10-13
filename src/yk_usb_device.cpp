@@ -26,6 +26,8 @@ limitations under the License.
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <stdio.h>
+#include <wchar.h>
 
 #ifdef _LIBUSB_
 // Uses libusb directly
@@ -151,16 +153,10 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
 		return -1;
 	}
 	
-#if 0
 	if (serial) {
 			// Convert to a wchar_t*
-			size_t origsize = strlen(serial) + 1;
-			size_t convertedChars = 0;
-
-			mbstowcs_s(&convertedChars, cserial, origsize, serial, _TRUNCATE);
-
+            swprintf(cserial, newsize, L"%s", serial);
 		}
-#endif
     
 	// Open the USB device 
 	handle = hid_open(vid, pid, serial ? cserial : NULL);
