@@ -83,6 +83,8 @@ int ykush3_action_parser(struct command_line *cmdl)
 						cur_opt->parameters->value);
 		} else if (opt_name.compare("--i2c-write") == 0) {
 			return ykush3.i2c_write_buffer(cur_opt);
+		} else if (opt_name.compare("--i2c-read") == 0) {
+			return ykush3.i2c_read_buffer(cur_opt);
 		}
 
 		cur_opt = cur_opt->next;
@@ -559,5 +561,19 @@ int Ykush3::i2c_write_buffer(struct command_option *cur_opt)
 	return 1;
 }
 
-
+int Ykush3::i2c_read_buffer(struct command_option *cur_opt)
+{
+	if (cur_opt) {
+                char *address = cur_opt->parameters->value;
+		command_parameter *param = cur_opt->parameters->next;
+                param = param->next;
+                char *num_bytes = param->value;
+		unsigned char buffer[60];
+	        int bytes_read = 0;
+                i2c_read(address, num_bytes, buffer, &bytes_read);
+                for (int i=0; i<bytes_read; i++)
+                        std::cout << buffer[i] << std::endl;
+	}
+	return 1;
+}
 

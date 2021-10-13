@@ -45,8 +45,8 @@ enum ykush3Action {
 	YKUSH3_I2C_SET_ADRRESS,
 	YKUSH3_I2C_WRITE,
 	YKUSH3_I2C_READ,
-  YKUSH3_FIRMWARE_VERSION,
-  YKUSH3_BOOTLOADER_VERSION,
+        YKUSH3_FIRMWARE_VERSION,
+        YKUSH3_BOOTLOADER_VERSION,
 	YKUSH3_HELP
 };
 
@@ -103,6 +103,7 @@ class Ykush3 : public UsbDevice
 
 		int set_usb_serial(char *s);
                 int i2c_write_buffer(struct command_option *cur_opt);
+                int i2c_read_buffer(struct command_option *cur_opt);
 };
 
 
