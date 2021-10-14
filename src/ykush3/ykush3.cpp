@@ -416,9 +416,10 @@ int Ykush3::i2c_write(char *i2c_address_ASCII,
 	for (int i = 0; i < hid_report_out[3]; i++) {
 		hex2bin(data_to_write_ASCII[i]+2, &hid_report_out[i + 4], 2);
 	}
-
-        for (int i=0; i<64; i++)
-                std::cout << std::hex << (int)hid_report_out[i] << " ";
+       
+        // DEBUG print
+        //for (int i=0; i<64; i++)
+        //        std::cout << std::hex << (int)hid_report_out[i] << " ";
 
 	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
 
@@ -548,7 +549,6 @@ int Ykush3::i2c_write_buffer(struct command_option *cur_opt)
 {
 	if (cur_opt) {
 		command_parameter *param = cur_opt->parameters->next;
-                param = param->next;
 		char *buffer[60];
 		char num_bytes = 0;
 		while (param) {
@@ -556,6 +556,7 @@ int Ykush3::i2c_write_buffer(struct command_option *cur_opt)
 			num_bytes++;
 			param = param->next;
 		}
+                std::cout << std::endl << (int)num_bytes << std::endl;
 		return i2c_write(cur_opt->parameters->value, num_bytes, buffer);
 	}
 	return 1;
