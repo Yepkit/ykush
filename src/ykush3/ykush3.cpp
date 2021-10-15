@@ -449,7 +449,10 @@ int Ykush3::i2c_read(char *i2c_address_ASCII,
 	dec2bin(num_bytes_ASCII, &hid_report_out[3], size);
 
 	sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
-
+        // DEBUG PRINT
+        int j;
+        //for (j = 0; j < 64; j++)
+          //              std::cout << std::hex << (int)hid_report_in[j] << " ";
 	//handle response message
 	if ((hid_report_in[0] == 0x01) && (hid_report_in[1] == 0x52)) {
 		//get num_bytes
@@ -457,7 +460,7 @@ int Ykush3::i2c_read(char *i2c_address_ASCII,
 			return 1;
 		int i;
 		for (i = 0; (i < hid_report_in[2]) && (i < 60); i++) {
-			data_buffer[i] = hid_report_in[i + 4];
+			data_buffer[i] = hid_report_in[i + 3];
 		}
 		*bytes_read = i; 
 	} else {
@@ -556,7 +559,6 @@ int Ykush3::i2c_write_buffer(struct command_option *cur_opt)
 			num_bytes++;
 			param = param->next;
 		}
-                std::cout << std::endl << (int)num_bytes << std::endl;
 		return i2c_write(cur_opt->parameters->value, num_bytes, buffer);
 	}
 	return 1;
@@ -567,13 +569,12 @@ int Ykush3::i2c_read_buffer(struct command_option *cur_opt)
 	if (cur_opt) {
                 char *address = cur_opt->parameters->value;
 		command_parameter *param = cur_opt->parameters->next;
-                param = param->next;
                 char *num_bytes = param->value;
 		unsigned char buffer[60];
 	        int bytes_read = 0;
                 i2c_read(address, num_bytes, buffer, &bytes_read);
                 for (int i=0; i<bytes_read; i++)
-                        std::cout << buffer[i] << std::endl;
+                        std::cout << (int)buffer[i] << std::endl;
 	}
 	return 1;
 }
