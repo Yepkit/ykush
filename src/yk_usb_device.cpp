@@ -42,12 +42,11 @@ int UsbDevice::listConnected()
 	cur_dev = devs;
 	while (cur_dev) {
                 std::cout << i << ". Board found with serial number: " << cur_dev->serial_number_ascii << "\n";
-		cur_dev = cur_dev->next;
+                cur_dev = cur_dev->next;
 		i++;
 	}
 
         usbhid->free_enumeration(devs);
-
 	return i;
 }
 #else

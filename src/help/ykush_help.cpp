@@ -118,7 +118,7 @@ void Help::print_ykush3(void)
 	std::cout << "                                 7 bit addressing is used and should be entered\n";
 	std::cout << "                                 in hexadecimal format with the 0x prefix.\n";
 	std::cout << "                                 Only the 7 most significant bits are considered.\n";
-	std::cout << "--i2c-master enable|disable      Enables or disables I2C slave mode.\n";
+	std::cout << "--i2c-master enable|disable      Enables or disables I2C master mode.\n";
 	std::cout << "--i2c-write <address> <data_byte 1> ... <data_byte n>     Writes n bytes to slave I2C device\n";
 	std::cout << "                                                          with address <address>. <address> is in hexadecimal.\n";
 	std::cout << "--i2c-read <address> <num_bytes>        Reads <num_bytes> from slave I2C device with address <address>.\n";
