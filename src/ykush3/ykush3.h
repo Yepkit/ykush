@@ -45,8 +45,8 @@ enum ykush3Action {
 	YKUSH3_I2C_SET_ADRRESS,
 	YKUSH3_I2C_WRITE,
 	YKUSH3_I2C_READ,
-  YKUSH3_FIRMWARE_VERSION,
-  YKUSH3_BOOTLOADER_VERSION,
+        YKUSH3_FIRMWARE_VERSION,
+        YKUSH3_BOOTLOADER_VERSION,
 	YKUSH3_HELP
 };
 
@@ -62,50 +62,48 @@ class Ykush3 : public UsbDevice
 		}
 
 		//Downstream ports and 5V EXT port control 
-		int get_port_status(char *serial, char port);     //get downstream port status
+		int get_port_status(char port);     //get downstream port status
 
-		int port_up(char *serial, char port);
+		int port_up(char port);
 
-		int port_down(char *serial, char port);
+		int port_down(char port);
 
 
 		//GPIO control
-		int write_io(char *serial, char port, char value);
+		int write_io(char port, char value);
 
-		int read_io(char *serial, char port);
+		int read_io(char port);
 		
-		int gpio_ctrl_enable(char *serial);
+		int gpio_ctrl_enable(void);
 		
-		int gpio_ctrl_disable(char *serial);
+		int gpio_ctrl_disable(void);
 		
-		int enter_bootloader(char *serial);
+		int enter_bootloader(void);
 
 
 		//Configurations control
-		int config_port(char *serial, char port, char value);
+		int config_port(char port, char value);
 
 		//Reset
-		int reset(char *serial);
+		int reset(void);
 		
 		//Help
-		void print_help(void);
+		void print_help(char *app_name);
 
 		//I2C
 		int i2c_enable_disable_control(bool enable_flag);		//ToDo
 		int i2c_enable_disable_gateway(bool enable_flag);		//ToDo
 		int i2c_set_address(char *i2c_address);			//ToDo
-		int i2c_write(char *i2c_address_ASCII, char *num_bytes_ASCII, char **data_to_write_ASCII);	//ToDo
+		int i2c_write(char *i2c_address_ASCII, int num_bytes, char **data_to_write_ASCII);	//ToDo
 		int i2c_read(char *i2c_address_ASCII, char *num_bytes_ASCII, unsigned char *data_buffer, int *bytes_read);	//ToDo
 
 		//Versioning
 		int display_version_bootloader (void);
 		int display_version_firmware (void);
 
-		int set_usb_serial(char *serial);
-	
-	private:
-
-		char *usb_serial;
+		int set_usb_serial(char *s);
+                int i2c_write_buffer(struct command_option *cur_opt);
+                int i2c_read_buffer(struct command_option *cur_opt);
 };
 
 
@@ -115,6 +113,9 @@ class Ykush3 : public UsbDevice
 //---------------------------------
 //FUNCTIONS
 //---------------------------------
+
+
+int ykush3_action_parser(struct command_line *cmdl);
 
 int ykush3_cmd_parser(int argc, char** argv);
 

@@ -113,7 +113,21 @@ void Help::print_ykush3(void)
 
         std::cout << "--gpio enable|disable     Enable / Disable GPIO control interface. Will become active on next reset/power-on.\n\n";
 
+	std::cout << "--i2c-slave enable|disable       Enables or disables I2C slave mode.\n";
+	std::cout << "--i2c-set-address <address>      Set the board I2C slave address to <address>.\n";
+	std::cout << "                                 7 bit addressing is used and should be entered\n";
+	std::cout << "                                 in hexadecimal format with the 0x prefix.\n";
+	std::cout << "                                 Only the 7 most significant bits are considered.\n";
+	std::cout << "--i2c-master enable|disable      Enables or disables I2C master mode.\n";
+	std::cout << "--i2c-write <address> <data_byte 1> ... <data_byte n>     Writes n bytes to slave I2C device\n";
+	std::cout << "                                                          with address <address>. <address> is in hexadecimal.\n";
+	std::cout << "--i2c-read <address> <num_bytes>        Reads <num_bytes> from slave I2C device with address <address>.\n";
+	std::cout << "                                        <address> is in hexadecimal. Only the 7 most significant bits are considered.\n\n";
+
+
 	std::cout << "--reset                   Resets (reboot) the YKUSH3 board.\n";
+
+	std::cout << "--boot                    Enter and stay in bootloader mode.\n";
 
 	std::cout << "-h                        Display help for YKUSH board specific commands.\n";
 
