@@ -104,10 +104,8 @@ int ykushxs_cmd_parser(int argc, char** argv)
 	default:
 		ykushxs.ykushxs_help(argv[0]); 
 		return -1;
-		break;
-
 	}
-
+    return 0;
 }
 
 
