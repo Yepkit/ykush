@@ -63,7 +63,7 @@ class UsbDevice {
 
 		unsigned char hid_report_out[64];
 		unsigned char hid_report_in[64];
-		char *usb_serial = NULL;
+		char *usb_serial;
 
 };
 
