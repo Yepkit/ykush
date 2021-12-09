@@ -8,23 +8,32 @@ SOURCE += yk_usb_device.cpp
 SOURCE += help/ykush_help.cpp
 SOURCE += utils/command_parser.cpp
 SOURCE += utils/string2val.cpp
-SOURCE += usbhid/usbhid.cpp
 
+# detect macOS/Darwin
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	# build for macOS using hidapi
+	INCLUDEPATHS = $(shell pkg-config hidapi --cflags)
+	LIBS = -lhidapi
+else
+	# build for Linux using libusb
+	DEFINES += _LINUX_
+	DEFINES += _LIBUSB_
+	SOURCE += usbhid/usbhid.cpp
+	INCLUDEPATHS = $(shell pkg-config libusb-1.0 --cflags)
+	LIBS = -lusb-1.0
+endif
 
 SOURCE_FULL = $(addprefix src/, $(SOURCE))
 PROG_SOURCE_FULL = $(addprefix src/, $(PROG_SOURCE))
 OBJS = $(SOURCE_FULL:.cpp=.o)
 PROG_OBJ = $(PROG_SOURCE_FULL:.cpp=.o)
 
-DEFINES += _LINUX_
-DEFINES += _LIBUSB_
-
 COMPILE_FLAGS += $(addprefix -D, $(DEFINES))
 
 CUR_PATH = $(shell echo $(PWD))
-INCLUDEPATHS = $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)) libusb )
+INCLUDEPATHS += $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)) libusb )
 LOADPATHS = 
-LIBS = -lusb-1.0
 CPP = g++
  
 
