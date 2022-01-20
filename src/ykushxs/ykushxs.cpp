@@ -136,6 +136,20 @@ int ykushxs_cmd_parser(int argc, char** argv)
 
 }
 
+
+int YkushXs::display_version_firmware(void) {
+        hid_report_out[0] = 0x30;
+        sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
+        //print response
+        if (( hid_report_in[0] != 0x30))
+        {
+                std::cout << "Firmware version-1.0.0\n";
+                return 0;
+        }
+        std::cout << "Firmware version-" << (int) hid_report_in[1] << "." << (int) hid_report_in[2] << "." << (int) hid_report_in[3] << std::endl;
+        return 0;
+}
+
 int YkushXs::datalines(char *serial, int on_flag) {
 
         if (on_flag)

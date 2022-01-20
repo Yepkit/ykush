@@ -47,7 +47,8 @@ public:
         void ykushxs_help(char * execName);
 
         int datalines(char *serial, int on_flag); 
-    
+
+	int display_version_firmware(void);
 };
 
 
