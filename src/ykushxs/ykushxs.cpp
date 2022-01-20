@@ -26,6 +26,8 @@ enum ykushxsAction
 	YKUSHXS_PORT_STATUS,
 	YKUSHXS_LIST_BOARDS,
 	YKUSHXS_GET_STATUS,
+        YKUSHXS_DATALINES_OFF,
+        YKUSHXS_DATALINES_ON,
 	YKUSHXS_HELP
 };
 
@@ -51,7 +53,13 @@ int ykushxs_cmd_parser(int argc, char** argv)
 			action = YKUSHXS_LIST_BOARDS;
 		} else if ( (argv[4][0] == '-') && (argv[4][1] == 'g') ) {
 			action = YKUSHXS_GET_STATUS;
-		} else {
+		} else if ( (argv[4][0] == '-') && (argv[4][1] == '-') && (argv[4][2] == 'd') && (argv[4][3] == 'a') ) { 
+                        if ((argv[5][0] == 'o') && (argv[5][1] == 'f')) {
+                                action = YKUSHXS_DATALINES_OFF;
+                        } else if ((argv[5][0] == 'o') && (argv[5][1] == 'n')) {
+                                action = YKUSHXS_DATALINES_ON;
+                        }
+                } else {
 			ykushxs.ykushxs_help(argv[0]);
 			return -1;
 		}
@@ -63,7 +71,13 @@ int ykushxs_cmd_parser(int argc, char** argv)
 		action = YKUSHXS_LIST_BOARDS;
 	} else if ( (argv[2][0] == '-') && (argv[2][1] == 'g') ) {
 		action = YKUSHXS_GET_STATUS;
-	} else {
+	} else if ( (argv[2][0] == '-') && (argv[2][1] == '-') && (argv[2][2] == 'd') && (argv[2][3] == 'a') ) { 
+                if ((argv[3][0] == 'o') && (argv[3][1] == 'f')) {
+                        action = YKUSHXS_DATALINES_OFF;
+                } else if ((argv[3][0] == 'o') && (argv[3][1] == 'n')) {
+                        action = YKUSHXS_DATALINES_ON;
+                }
+        } else {
 		ykushxs.ykushxs_help(argv[0]);
 		return -1;
 	}
@@ -101,6 +115,18 @@ int ykushxs_cmd_parser(int argc, char** argv)
 			}
 		}   
 		break;
+        case YKUSHXS_DATALINES_OFF:
+		if ( bySerialFlag )
+			return ykushxs.datalines(argv[3], 0);
+		else
+			return ykushxs.datalines(NULL, 0);
+                break;
+        case YKUSHXS_DATALINES_ON:
+		if ( bySerialFlag )
+			return ykushxs.datalines(argv[3], 1);
+		else
+			return ykushxs.datalines(NULL, 1);
+                break;
 	default:
 		ykushxs.ykushxs_help(argv[0]); 
 		return -1;
@@ -110,6 +136,23 @@ int ykushxs_cmd_parser(int argc, char** argv)
 
 }
 
+int YkushXs::datalines(char *serial, int on_flag) {
+
+        if (on_flag)
+	        hid_report_out[0] = 0x41;   //datalines On
+        else
+	        hid_report_out[0] = 0x40;   //dataline Off
+	
+	int res = sendHidReport(serial, hid_report_out, hid_report_in, 64);
+
+	if ( res < 0 )
+		return res;
+
+	if ( hid_report_in[0] == 0x01 )
+		return 0;
+	else
+		return -1;
+}
 
 int YkushXs::port_up(char *serial) {
 
