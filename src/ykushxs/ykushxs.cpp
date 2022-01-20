@@ -17,6 +17,7 @@ limitations under the License.
 #include "ykushxs.h"
 #include <stdio.h>
 #include <ykush_help.h>
+#include <iostream>
 
 
 enum ykushxsAction
