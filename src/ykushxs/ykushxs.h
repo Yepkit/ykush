@@ -48,7 +48,7 @@ public:
 
         int datalines(char *serial, int on_flag); 
 
-	int display_version_firmware(void);
+	int display_version_firmware(char *serial);
 };
 
 

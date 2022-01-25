@@ -154,7 +154,11 @@ void Help::print_ykushxs(void)
 
 	std::cout << "-g                        Switching state of a downstream port.\n";
 
-	std::cout << "-h                        Display help for YKUSHXS board specific commands.\n";
+        std::cout << "--firmware-version        Displays the firmware version of the YKUSHXS board.\n";
+        
+        std::cout << "--datalines on|off        Switch on or off the downstream port data-lines.\n";
+	
+        std::cout << "-h                        Display help for YKUSHXS board specific commands.\n";
 }
 
 

@@ -29,6 +29,7 @@ enum ykushxsAction
 	YKUSHXS_GET_STATUS,
         YKUSHXS_DATALINES_OFF,
         YKUSHXS_DATALINES_ON,
+        YKUSHXS_FW_VERSION,
 	YKUSHXS_HELP
 };
 
@@ -60,6 +61,8 @@ int ykushxs_cmd_parser(int argc, char** argv)
                         } else if ((argv[5][0] == 'o') && (argv[5][1] == 'n')) {
                                 action = YKUSHXS_DATALINES_ON;
                         }
+                } else if ((argv[4][0] == '-') && (argv[4][1] == '-') && (argv[4][2] == 'f') && (argv[4][3] == 'i')) {
+                        action = YKUSHXS_FW_VERSION;
                 } else {
 			ykushxs.ykushxs_help(argv[0]);
 			return -1;
@@ -78,6 +81,8 @@ int ykushxs_cmd_parser(int argc, char** argv)
                 } else if ((argv[3][0] == 'o') && (argv[3][1] == 'n')) {
                         action = YKUSHXS_DATALINES_ON;
                 }
+        } else if ((argv[2][0] == '-') && (argv[2][1] == '-') && (argv[2][2] == 'f') && (argv[2][3] == 'i')) {
+                action = YKUSHXS_FW_VERSION;
         } else {
 		ykushxs.ykushxs_help(argv[0]);
 		return -1;
@@ -128,19 +133,25 @@ int ykushxs_cmd_parser(int argc, char** argv)
 		else
 			return ykushxs.datalines(NULL, 1);
                 break;
+        case YKUSHXS_FW_VERSION:
+                if (bySerialFlag)
+                        return ykushxs.display_version_firmware(argv[3]);
+                else
+                        return ykushxs.display_version_firmware(NULL);
+                break;
 	default:
 		ykushxs.ykushxs_help(argv[0]); 
 		return -1;
 		break;
 
 	}
-
+        return 0;
 }
 
 
-int YkushXs::display_version_firmware(void) {
+int YkushXs::display_version_firmware(char *serial) {
         hid_report_out[0] = 0x30;
-        sendHidReport(usb_serial, hid_report_out, hid_report_in, 64);
+        sendHidReport(serial, hid_report_out, hid_report_in, 64);
         //print response
         if (( hid_report_in[0] != 0x30))
         {
