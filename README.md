@@ -12,7 +12,7 @@ It executes one command per run, being appropriate to be executed as a console c
 But it can be easily adapted to execute a work-flow with multiple commands and we encourage you to alter it to best fit your needs.
 
 The implementation makes use of libusb for Linux builds and hidapi for macOS and Windows.
-For Linux nad macOS we include a build and installation script, `build.sh` and `install.sh` respectively, for building and installing the application. 
+For Linux and macOS we include a build and installation script, `build.sh` and `install.sh` respectively, for building and installing the application. 
 
 
 Boards Supported
