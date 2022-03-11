@@ -11,8 +11,8 @@ Console application developed to illustrate the programmatic control of YKUSH fa
 It executes one command per run, being appropriate to be executed as a console command.
 But it can be easily adapted to execute a work-flow with multiple commands and we encourage you to alter it to best fit your needs.
 
-The implementation makes use of libusb for Linux builds and hidapi for Windows.
-For Linux we include a build and installation script, `build.sh` and `install.sh` respectively, for building and installing the application. 
+The implementation makes use of libusb for Linux builds and hidapi for macOS and Windows.
+For Linux and macOS we include a build and installation script, `build.sh` and `install.sh` respectively, for building and installing the application. 
 
 
 Boards Supported
@@ -32,7 +32,7 @@ Refer to [LICENSE](LICENSE.md) file.
 Building
 ========
 
-The steps for building on Linux and Windows are detailed bellow.
+The steps for building on Linux, macOS and Windows are detailed bellow.
 
 
 Linux
@@ -42,6 +42,27 @@ For Linux `libusb-1.0` must be installed. For Debian based systems run the follo
 ```
 sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev
 ```
+With these dependencies installed, build the application the running the following script.
+```
+./build.sh
+```
+
+After a successful build process you can install the ykush command in the system. To do so, run:
+```
+sudo ./install.sh
+```
+
+After install, the `ykushcmd` command is ready for use.
+
+
+macOS
+-----
+
+For macOS `hidapi` must be installed. It can be installed with brew with
+```
+brew install hidapi
+```
+
 With these dependencies installed, build the application the running the following script.
 ```
 ./build.sh
