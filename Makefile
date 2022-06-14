@@ -25,18 +25,18 @@ CUR_PATH = $(shell echo $(PWD))
 INCLUDEPATHS = $(addprefix -I$(CUR_PATH)/, $(dir $(SOURCE_FULL)) libusb )
 LOADPATHS = 
 LIBS = -lusb-1.0
-CPP = g++
+CXX ?= g++
  
 
 
 ykushcmd : $(PROG_OBJ) $(OBJS)
-	$(CPP) -o bin/$@ $(PROG_OBJ) $(OBJS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(COMPILE_FLAGS) -o bin/$@ $(PROG_OBJ) $(OBJS) $(LIBS) $(LDFLAGS)
 
 $(PROG_OBJ) :  %.o : %.cpp
-	$(CPP) $(COMPILE_FLAGS) $(INCLUDEPATHS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(COMPILE_FLAGS) $(INCLUDEPATHS) -c $< -o $@
 
 $(OBJS) : %.o : %.cpp %.h
-	$(CPP) $(COMPILE_FLAGS) $(INCLUDEPATHS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(COMPILE_FLAGS) $(INCLUDEPATHS) -c $< -o $@
 
 
 clean :
