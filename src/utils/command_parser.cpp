@@ -8,7 +8,7 @@
 
 CommandLine::CommandLine() 
 {
-
+	command.options = NULL;
 }
 
 CommandLine::~CommandLine()
