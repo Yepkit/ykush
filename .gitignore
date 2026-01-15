@@ -12,3 +12,4 @@ doc/ykushcmd-doxygen/*
 .vscode
 dev/
 
+build/

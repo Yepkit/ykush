@@ -19,7 +19,7 @@ limitations under the License.
 #ifdef _LIBUSB_
 #include <usbhid.h>
 #else
-#include <hidapi.h>
+#include <hidapi/hidapi.h>
 #include <string.h>
 #endif
 
@@ -154,8 +154,18 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
 			// Convert to a wchar_t*
 			size_t origsize = strlen(serial) + 1;
 			size_t convertedChars = 0;
+#ifdef _MSC_VER
+    size_t convertedChars = 0;
+    mbstowcs_s(&convertedChars,
+               cserial,
+               origsize,
+               serial,
+               _TRUNCATE);
+#else
+    mbstowcs(cserial, serial, origsize);
+#endif
 
-			mbstowcs_s(&convertedChars, cserial, origsize, serial, _TRUNCATE);
+			//mbstowcs_s(&convertedChars, cserial, origsize, serial, _TRUNCATE);
 
 		}
 
