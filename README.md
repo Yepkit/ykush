@@ -1,90 +1,236 @@
-# YKUSH Command Application
+# ykushcmd - YKUSH Command Application
 
+`ykushcmd` is a command-line utility for controlling **Yepkit YKUSH USB hub devices**, allowing you to programmatically power USB ports on and off.
 
-Control application for Yepkit YKUSH Switchable USB Hub boards.
+It is commonly used for:
+- Automated USB device testing
+- Power-cycling USB peripherals
+- CI / lab automation
+- Embedded and hardware development workflows
 
+---
 
-Description
-===========
+## Features
 
-Console application developed to illustrate the programmatic control of YKUSH family boards capabilities.
-It executes one command per run, being appropriate to be executed as a console command.
-But it can be easily adapted to execute a work-flow with multiple commands and we encourage you to alter it to best fit your needs.
+- Control individual YKUSH USB hub ports
+- Cross-platform support:
+  - Linux
+  - macOS
+  - Windows
+- Uses **HIDAPI** (no direct libusb dependency)
+- Modern **CMake** build system
+- Supports:
+  - `make install` / `cmake --install`
+  - Linux `.deb` packages
+  - Windows ZIP and NSIS installer
+- Works with shared HIDAPI (recommended)
 
-The implementation makes use of libusb for Linux builds and hidapi for Windows.
-For Linux we include a build and installation script, `build.sh` and `install.sh` respectively, for building and installing the application. 
+---
 
-
-Boards Supported
-================
+## Supported Devices
 - [YKUSH](https://www.yepkit.com/products/ykush)
 - [YKUSHXS](https://www.yepkit.com/product/300115/YKUSHXS)
 - [YKUSH3](https://www.yepkit.com/product/300110/YKUSH3)
 
 
-Licensing
-=========
+---
 
+## Dependencies
+
+### Build-time
+
+- CMake ≥ 3.15
+- C++ compiler with C++17 support
+- HIDAPI (vendored)
+
+### Runtime
+
+- **Linux**: `libhidapi-hidraw`
+- **macOS**: none (uses native IOKit)
+- **Windows**: `hidapi.dll` + MinGW runtime DLLs
+
+---
+
+## Repository Layout
+
+.
+├── hidapi/            # HIDAPI (vendored)
+├── src/               # ykushcmd sources
+├── scripts/           # Build & install helpers
+├── cmake/             # CMake helpers
+├── CMakeLists.txt
+└── README.md
+
+---
+
+## 🚀 Quick Start (End Users)
+
+### 1. Plug in your YKUSH device
+
+Connect your YKUSH hub to your computer via USB.
+
+---
+
+### 2. Verify the device is detected
+
+```bash
+# For YKUSH
+ykushcmd ykush -l
+
+# For YKUSH3
+ykushcmd ykush3 -l
+
+# For YKUSHXS
+ykushcm ykushxs -l
+```
+---
+
+### 3. Control USB ports
+
+Turn port 1 ON:
+```bash
+ykushcmd ykush3 -u 1
+```
+
+Turn port 1 OFF:
+```bash
+ykushcmd ykush3 -d 1
+```
+---
+
+### 4. Select a specific device (multiple YKUSH hubs)
+ ```bash
+ykushcmd -s YK12345 -u 1
+ ```
+---
+
+### 5. Get help
+```bash
+ykushcmd -h
+```
+---
+
+## 🔐 Linux Permissions (udev rules)
+
+On Linux, access to HID devices is restricted by default.
+
+### Install udev rules (recommended)
+
+Create a new rules file:
+```bash
+sudo nano /etc/udev/rules.d/99-ykush.rules
+```
+
+Add:
+```bash
+# Yepkit YKUSH USB hub
+SUBSYSTEM=="usb", ATTR{idVendor}=="04d8", MODE="0666"
+```
+Reload rules and replug device:
+```bash
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+Verify:
+```bash
+ykushcmd ykush3 -l
+```
+
+---
+
+## 🪟 Windows Notes
+- No special permissions required
+- Uses native Windows HID
+- Ensure `hidapi.dll` is present next to `ykushcmd.exe` or in `PATH`
+
+---
+
+## 🍎 macOS Notes
+- No additional permissions required
+- Uses native IOKit HID support
+- Works out of the box
+
+---
+
+## Building
+
+### Linux / macOS
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+---
+
+### Windows (MinGW cross-build)
+```bash
+./scripts/install-mingw64.sh
+```
+Runtime DLLs:
+```bash
+./scripts/windows-copy-dlls.sh dist/windows/bin
+```
+
+---
+
+## Installing
+
+## Linux / macOS
+```bash
+./scripts/install.sh
+```
+
+Custom prefix:
+```bash
+PREFIX=/opt/ykush ./scripts/install.sh
+```
+
+---
+
+## Uninstalling
+```bash
+cmake --build build --target uninstall
+```
+---
+
+## Packaging
+### Linux (.deb)
+```bash
+cmake -S . -B build
+cmake --build build
+cpack --config build/CPackConfig.cmake
+```
+---
+
+### Windows (ZIP / NSIS installer)
+```bash
+cpack --config build-mingw64/CPackConfig.cmake
+```
+---
+
+## Notes on HIDAPI
+- Uses shared HIDAPI by default
+- Static HIDAPI builds are intentionally avoided
+- Includes a MinGW-specific include-path workaround
+
+---
+
+## Contributing
+Contributions are welcome. Please ensure:
+- Linux and MinGW builds succeed
+- CMake remains cross-platform
+- No static HIDAPI assumptions are introduced
+
+---
+
+## Licensing
 The source code is licensed Apache License, Version 2.0. 
 Refer to [LICENSE](LICENSE.md) file.
 
+---
 
-Building
-========
-
-The steps for building on Linux and Windows are detailed bellow.
-
-
-Linux
------
-
-For Linux `libusb-1.0` must be installed. For Debian based systems run the following.
-```
-sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev
-```
-With these dependencies installed, build the application the running the following script.
-```
-./build.sh
-```
-
-After a successful build process you can install the ykush command in the system. To do so, run:
-```
-sudo ./install.sh
-```
-
-After install, the `ykushcmd` command is ready for use.
-
-
-
-Windows
--------
-
-To build using MinGW run the following command.
-
-For 32bit:
-```
-make -f Makefile_win32
-```
-
-For 64bit:
-```
-make -f Makefile_win64
-```
-
-After a successful build process the executable file will be created in the `bin\Win32` or `bin\Win64` folder depending if it was the 32 or 64 bit build.
-
-
-
-Using it
-========
-
-For details on using YKUSHCMD please refer to the [YKUSHCMD Reference Manual](https://www.learn.yepkit.com/reference/ykushcmd-reference-ykush/1/2).
-
-
-
-
-
-
+## Acknowledgements
+- HIDAPI maintainers
 
 
 

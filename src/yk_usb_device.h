@@ -19,7 +19,7 @@ limitations under the License.
 #ifdef _LIBUSB_
 #include <usbhid.h>
 #else
-#include <hidapi.h>
+#include <hidapi/hidapi.h>
 #endif
 #include <stdlib.h>
 

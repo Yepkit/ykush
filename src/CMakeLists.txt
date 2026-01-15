@@ -22,26 +22,18 @@ target_include_directories(ykushcmd PRIVATE
 # --------------------------------------
 target_link_libraries(ykushcmd PRIVATE hidapi::hidapi)
 
-# --------------------------------------
-# libusb support (if needed)
-# --------------------------------------
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBUSB REQUIRED libusb-1.0)
-
-target_include_directories(ykushcmd PRIVATE
-    ${LIBUSB_INCLUDE_DIRS}
-)
-
-target_link_libraries(ykushcmd PRIVATE
-    ${LIBUSB_LIBRARIES}
-)
-
-# --------------------------------------
-# Warnings
-# --------------------------------------
-if(MSVC)
-    target_compile_options(ykushcmd PRIVATE /W3)
-else()
-    target_compile_options(ykushcmd PRIVATE -Wall -Wextra -Wpedantic)
+# ---- FIX: correct HIDAPI include root on MinGW ----
+if(MINGW)
+    target_include_directories(ykushcmd PRIVATE
+        ${CMAKE_SOURCE_DIR}/hidapi
+    )
 endif()
+
+# ---------------------------
+# Install rules
+# ---------------------------
+install(TARGETS ykushcmd
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
 

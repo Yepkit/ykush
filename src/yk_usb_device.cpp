@@ -16,40 +16,13 @@ limitations under the License.
 
 #include "yk_usb_device.h"
 
-#ifdef _LIBUSB_
-#include <usbhid.h>
-#else
 #include <hidapi/hidapi.h>
 #include <string.h>
-#endif
 
 #include <iostream>
 #include <string>
 #include <stdlib.h>
 
-#ifdef _LIBUSB_
-// Uses libusb directly
-int UsbDevice::listConnected() 
-{
-	UsbHid *usbhid = new UsbHid();
-	struct hid_device_info *devs, *cur_dev;
-	int i = 1;
-
-	devs = usbhid->enumerate(vid, pid);
-	if (devs == NULL)
-		return 0;
-
-	cur_dev = devs;
-	while (cur_dev) {
-                std::cout << i << ". Board found with serial number: " << cur_dev->serial_number_ascii << "\n";
-                cur_dev = cur_dev->next;
-		i++;
-	}
-
-        usbhid->free_enumeration(devs);
-	return i;
-}
-#else
 // Uses hidapi
 int UsbDevice::listConnected() 
 {
@@ -72,7 +45,6 @@ int UsbDevice::listConnected()
 
 	return i;
 }
-#endif
 
 UsbDevice::UsbDevice(unsigned int vendor_id, unsigned int product_id) {
 	pid = product_id;
@@ -103,35 +75,6 @@ UsbDevice::UsbDevice(unsigned int vendor_id, unsigned int product_id) {
  *
  *
  *****************************************************************/
-#ifdef _LIBUSB_
-int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg, int report_size) 
-{
-	UsbHid *usbhid = new UsbHid();
-	int res;	
-
-	res = usbhid->open(vid, pid, serial);
-        if (res < 0) {
-		std::cout << "Unable to open device\n";
-		return -1;
-        }
-
-	res = usbhid->write(msg, report_size);
-	if (res < 0) {
-		std::cout << "Unable to write to device\n";
-		return -2;
-        }
-
-	res = usbhid->read(resp_msg, report_size);
-	if (res < 0) {
-		std::cout << "Unable to read from device\n";
-		return -3;
-        }
-
-	usbhid->close();
-
-	return 0;
-}
-#else
 int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *resp_msg, int report_size) 
 {	
 	const size_t newsize = 100;
@@ -199,15 +142,5 @@ int UsbDevice::sendHidReport(char *serial, unsigned char *msg, unsigned char *re
 
 	return 0; 
 }
-
-
-#endif
-
-
-
-
-
-
-
 
 

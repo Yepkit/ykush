@@ -13,3 +13,5 @@ doc/ykushcmd-doxygen/*
 dev/
 
 build/
+build-mingw64-static/
+build-mingw64/
