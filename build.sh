@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 #
 # YKUSH command application build script
 
