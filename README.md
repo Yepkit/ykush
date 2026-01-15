@@ -51,18 +51,6 @@ It is commonly used for:
 
 ---
 
-## Repository Layout
-
-.
-├── hidapi/            # HIDAPI (vendored)
-├── src/               # ykushcmd sources
-├── scripts/           # Build & install helpers
-├── cmake/             # CMake helpers
-├── CMakeLists.txt
-└── README.md
-
----
-
 ## 🚀 Quick Start (End Users)
 
 ### 1. Plug in your YKUSH device
