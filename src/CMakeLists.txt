@@ -17,17 +17,15 @@ target_include_directories(ykushcmd PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/utils       # src/utils/
 )
 
+target_include_directories(ykushcmd PRIVATE
+    ${PROJECT_SOURCE_DIR}/hidapi/hidapi
+)
+
 # --------------------------------------
 # Link HIDAPI (official CMake target from subtree)
 # --------------------------------------
 target_link_libraries(ykushcmd PRIVATE hidapi::hidapi)
 
-# ---- FIX: correct HIDAPI include root on MinGW ----
-if(MINGW)
-    target_include_directories(ykushcmd PRIVATE
-        ${CMAKE_SOURCE_DIR}/hidapi
-    )
-endif()
 
 # ---------------------------
 # Install rules
@@ -35,5 +33,6 @@ endif()
 install(TARGETS ykushcmd
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
 
 

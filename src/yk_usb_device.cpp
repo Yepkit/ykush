@@ -16,7 +16,7 @@ limitations under the License.
 
 #include "yk_usb_device.h"
 
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include <string.h>
 
 #include <iostream>

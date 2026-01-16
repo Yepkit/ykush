@@ -16,3 +16,4 @@ build/
 build-mingw64-static/
 build-mingw64/
 ykushcmd-*
+_CPack_Packages/
