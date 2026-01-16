@@ -163,9 +163,14 @@ Runtime DLLs:
 
 ## Installing
 
-## Linux / macOS
+## Linux
 ```bash
 ./scripts/install.sh
+```
+
+## macOS
+```bash
+./scripts/install-macos.sh
 ```
 
 Custom prefix:
